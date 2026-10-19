@@ -1,36 +1,32 @@
-# Presencia Pro — Página web + Agente IA
+# Presencia Pro — Páginas web de presencia para negocios
 
-Página de venta del servicio: **creamos páginas web de presencia para negocios y les conectamos un agente de IA (Claude)** que atiende a sus clientes 24/7.
+Página para vender el servicio: **creamos páginas web sencillas para negocios** (quién eres, qué ofreces, ubicación, horarios y contacto).
 
-La misma página es la demo: el chat de abajo a la derecha es el agente funcionando.
+> "Presencia Pro" es un nombre provisional. Se cambia en `config.js`.
 
 ## Estructura
 
-| Archivo | Para qué sirve |
+| Archivo / carpeta | Para qué sirve |
 |---|---|
-| `index.html` | La página (secciones: inicio, cómo funciona, planes, preguntas, contacto) |
-| `config.js` | **Lo que más vas a editar:** nombre de la marca, WhatsApp, email, planes y precios |
+| `index.html` | La página (inicio, cómo funciona, qué incluye, preguntas y formulario de contacto) |
+| `config.js` | **Lo que más vas a editar:** nombre de la marca, email, WhatsApp y la URL del formulario |
 | `styles.css` | Colores y diseño (los colores están arriba, en `:root`) |
-| `main.js` | Llena la página con `config.js` y maneja el chat |
-| `api/chat.js` | Función en el servidor que conecta el chat con Claude (la llave nunca llega al navegador) |
-| `api/_prompt.js` | **Las instrucciones del agente:** qué sabe, cómo habla, qué datos pide |
+| `main.js` | Llena la página con `config.js` y envía el formulario |
+| `hoja-de-contactos/` | Script para que los contactos del formulario se guarden en una hoja de Google ([instrucciones](hoja-de-contactos/README.md)) |
+| `agente/` | Extra en pausa: chat con IA para cuando un cliente lo quiera ([instrucciones](agente/README.md)) |
 
-## Publicarla (Vercel, gratis)
+## Publicarla gratis
 
-1. Crea una llave de API en https://console.anthropic.com (necesita saldo).
-2. Entra a https://vercel.com, “Add New → Project” e importa este repositorio.
-3. En **Settings → Environment Variables** agrega `ANTHROPIC_API_KEY` con tu llave.
-4. Deploy. Listo: te da una URL tipo `tu-proyecto.vercel.app` (luego puedes conectar tu dominio).
+Es una página estática (no necesita servidor ni llaves de API):
 
-Para probarla en tu compu: `npm install`, copia `.env.example` como `.env.local` con tu llave, y corre `npx vercel dev`.
+- **Vercel o Netlify:** importa este repositorio desde https://vercel.com o https://netlify.com y dale *Deploy*.
+- **GitHub Pages:** en el repo, *Settings → Pages → Deploy from a branch* y elige la rama.
 
-## Hacer la página de un cliente nuevo
+Para verla en tu compu basta con abrir `index.html` en el navegador.
 
-1. Copia este proyecto (o haz un “fork”).
-2. Cambia `config.js` con los datos del cliente y los textos de `index.html`.
-3. Reescribe `api/_prompt.js` con la info del negocio del cliente (productos, precios, horarios, preguntas frecuentes).
-4. Publica en Vercel con su propia llave o la tuya (y lo cobras en la mensualidad).
+## Pendientes
 
-## Modelo de IA y costos
-
-Por defecto usa `claude-opus-5-5`. Para un chat de atención a clientes, un modelo más barato suele bastar: define la variable `CLAUDE_MODEL=claude-sonnet-5-5` (o `claude-haiku-5-5`, el más económico) en Vercel.
+- [ ] Elegir nombre de la marca (`config.js` → `marca`)
+- [ ] Conectar el formulario con la hoja de Google (`hoja-de-contactos/README.md`)
+- [ ] (Opcional) Número de WhatsApp (`config.js` → `whatsapp`)
+- [ ] Definir precios
