@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Presencia Pro · La página web de tu negocio</title>
   <meta name="description" content="Creamos la página web de tu negocio: sencilla, bonita y lista para que tus clientes te encuentren y te contacten.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- Vista previa al compartir el link (WhatsApp, Facebook). Cuando tengas dominio, cambia og:image a la dirección completa, ej. https://tudominio.com/img/compartir.png -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Presencia Pro · La página web de tu negocio">
+  <meta property="og:description" content="Creamos la página web de tu negocio: sencilla, bonita y lista para que tus clientes te encuentren. Cotiza gratis.">
+  <meta property="og:image" content="img/compartir.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -16,6 +23,7 @@
       <a href="#" class="logo" data-marca>Presencia Pro</a>
       <nav class="nav-links">
         <a href="#como">Cómo funciona</a>
+        <a href="#ejemplos">Ejemplos</a>
         <a href="#incluye">Qué incluye</a>
         <a href="#faq">Preguntas</a>
       </nav>
@@ -32,22 +40,12 @@
           <p class="lead">Creamos la página web de tu negocio: sencilla, bonita y lista para que la gente sepa quién eres, qué ofreces y cómo contactarte.</p>
           <div class="hero-cta">
             <a class="btn" href="#contacto">Cotiza gratis</a>
-            <a class="btn btn-ghost" href="#incluye">Ver qué incluye</a>
+            <a class="btn btn-ghost" href="#ejemplos">Ver ejemplos</a>
           </div>
         </div>
-        <div class="mock" aria-hidden="true">
-          <div class="mock-bar"><span></span><span></span><span></span></div>
-          <div class="mock-body">
-            <div class="mock-hero"></div>
-            <div class="mock-line w60"></div>
-            <div class="mock-line w90"></div>
-            <div class="mock-line w40"></div>
-            <div class="mock-row">
-              <div class="mock-box"></div><div class="mock-box"></div><div class="mock-box"></div>
-            </div>
-            <div class="mock-btn"></div>
-          </div>
-        </div>
+        <a class="phone" href="ejemplos/taqueria.html" aria-label="Ver página de ejemplo de una taquería">
+          <img src="img/ejemplo-taqueria.jpg" alt="Página de ejemplo de una taquería vista en celular" width="390" height="780">
+        </a>
       </div>
     </section>
 
@@ -74,7 +72,28 @@
       </div>
     </section>
 
-    <section id="incluye" class="section alt">
+    <section id="ejemplos" class="section alt">
+      <div class="container">
+        <h2>Mira cómo quedaría la tuya</h2>
+        <p class="sub">Ejemplos de páginas para distintos tipos de negocio. Ábrelos desde tu celular.</p>
+        <div class="ejemplos">
+          <a class="ejemplo" href="ejemplos/taqueria.html">
+            <div class="phone small"><img src="img/ejemplo-taqueria.jpg" alt="" width="390" height="780" loading="lazy"></div>
+            <h3>Taquería</h3><span>Menú, horarios y pedidos por WhatsApp →</span>
+          </a>
+          <a class="ejemplo" href="ejemplos/estetica.html">
+            <div class="phone small"><img src="img/ejemplo-estetica.jpg" alt="" width="390" height="780" loading="lazy"></div>
+            <h3>Estética</h3><span>Servicios, galería y citas →</span>
+          </a>
+          <a class="ejemplo" href="ejemplos/taller.html">
+            <div class="phone small"><img src="img/ejemplo-taller.jpg" alt="" width="390" height="780" loading="lazy"></div>
+            <h3>Taller mecánico</h3><span>Servicios, garantía y cotizaciones →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="incluye" class="section">
       <div class="container">
         <h2>Qué incluye tu página</h2>
         <p class="sub">Todo lo que un negocio necesita para tener presencia en internet.</p>
@@ -93,7 +112,7 @@
       </div>
     </section>
 
-    <section id="faq" class="section">
+    <section id="faq" class="section alt">
       <div class="container narrow">
         <h2>Preguntas frecuentes</h2>
         <details>
@@ -103,6 +122,18 @@
         <details>
           <summary>¿Cuánto cuesta?</summary>
           <p>Depende de lo que necesites. Escríbenos y te mandamos una cotización gratis y sin compromiso.</p>
+        </details>
+        <details>
+          <summary>¿Cuánto tarda?</summary>
+          <p>Normalmente unos días desde que nos mandas tu información. Te enseñamos cómo va antes de publicarla.</p>
+        </details>
+        <details>
+          <summary>¿Qué necesito darte?</summary>
+          <p>El nombre de tu negocio, qué vendes o qué servicios das, tus horarios, la dirección, tu WhatsApp y algunas fotos (pueden ser del celular). Si tienes logo, también.</p>
+        </details>
+        <details>
+          <summary>¿Hay que pagar cada mes?</summary>
+          <p>Te lo explicamos claro en la cotización. Lo único que suele costar aparte es el dominio propio (tunegocio.com), que se paga una vez al año.</p>
         </details>
         <details>
           <summary>¿Necesito saber de tecnología?</summary>

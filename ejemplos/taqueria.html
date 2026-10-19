@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tacos El Güero · Ejemplo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="../config.js"></script>
+  <style>
+    :root { --rojo: #c8102e; --amarillo: #ffc72c; --crema: #fff8ec; --tinta: #2a1a12; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--tinta); background: var(--crema); line-height: 1.55; }
+    .wrap { width: min(1000px, 100% - 32px); margin-inline: auto; }
+    h1, h2 { font-family: "Bebas Neue", Impact, sans-serif; font-weight: 400; letter-spacing: .02em; line-height: 1; margin: 0 0 .4em; }
+    h1 { font-size: clamp(3.2rem, 11vw, 6rem); }
+    h2 { font-size: clamp(2.2rem, 6vw, 3rem); color: var(--rojo); }
+    .hero { background: var(--rojo); color: #fff; padding: 56px 0 64px; position: relative; overflow: hidden; }
+    .hero::after { content: "🌮"; position: absolute; right: -20px; bottom: -40px; font-size: 220px; opacity: .18; transform: rotate(-15deg); }
+    .hero p { font-size: 1.2rem; max-width: 36ch; margin: 0 0 24px; }
+    .tag { display: inline-block; background: var(--amarillo); color: var(--tinta); font-weight: 700; padding: 4px 12px; border-radius: 6px; margin-bottom: 16px; }
+    .btn { display: inline-block; background: var(--amarillo); color: var(--tinta); font-weight: 700; text-decoration: none; padding: 14px 24px; border-radius: 10px; margin: 0 8px 8px 0; }
+    .btn.out { background: transparent; color: #fff; border: 2px solid #fff; }
+    section { padding: 56px 0; }
+    .menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 40px; }
+    .item { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 2px dotted #e6cfa8; }
+    .item b { display: block; } .item small { color: #7a6250; }
+    .precio { font-weight: 700; color: var(--rojo); white-space: nowrap; }
+    .info { background: #fff; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    table { border-collapse: collapse; width: 100%; } td { padding: 8px 0; border-bottom: 1px solid #f0e4d0; }
+    td:last-child { text-align: right; font-weight: 600; }
+    .mapa { background: repeating-linear-gradient(45deg, #f3e7d3 0 12px, #efe0c6 12px 24px); border-radius: 14px; min-height: 220px; display: grid; place-items: center; text-align: center; font-weight: 600; padding: 16px; }
+    footer { background: var(--tinta); color: #e9dccb; padding: 28px 0; text-align: center; }
+    footer a { color: var(--amarillo); margin: 0 8px; }
+    .wa { position: fixed; right: 18px; bottom: 18px; background: #25d366; color: #fff; text-decoration: none; font-weight: 700; padding: 14px 18px; border-radius: 999px; box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+    @media (max-width: 720px) { .menu, .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <span class="tag">Desde 1998 · Col. Centro</span>
+      <h1>Tacos<br>El Güero</h1>
+      <p>Tacos al pastor, suadero y campechanos hechos al momento. Tortilla hecha a mano y salsas de la casa.</p>
+      <a class="btn" href="#" data-demo="abre tu WhatsApp para recibir pedidos">Pedir por WhatsApp</a>
+      <a class="btn out" href="#menu">Ver menú</a>
+    </div>
+  </header>
+
+  <section id="menu">
+    <div class="wrap">
+      <h2>Menú</h2>
+      <div class="menu">
+        <div class="item"><div><b>Taco al pastor</b><small>Con piña, cebolla y cilantro</small></div><span class="precio">$22</span></div>
+        <div class="item"><div><b>Taco de suadero</b><small>El favorito de la casa</small></div><span class="precio">$22</span></div>
+        <div class="item"><div><b>Campechano</b><small>Suadero con longaniza</small></div><span class="precio">$25</span></div>
+        <div class="item"><div><b>Gringa</b><small>Pastor con queso en tortilla de harina</small></div><span class="precio">$55</span></div>
+        <div class="item"><div><b>Orden de 5 tacos</b><small>Del guisado que quieras</small></div><span class="precio">$100</span></div>
+        <div class="item"><div><b>Agua fresca</b><small>Horchata, jamaica o del día · 1 L</small></div><span class="precio">$35</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="info">
+    <div class="wrap grid">
+      <div>
+        <h2>Horarios</h2>
+        <table>
+          <tr><td>Lunes a jueves</td><td>6:00 pm – 12:00 am</td></tr>
+          <tr><td>Viernes y sábado</td><td>6:00 pm – 2:00 am</td></tr>
+          <tr><td>Domingo</td><td>2:00 pm – 11:00 pm</td></tr>
+        </table>
+        <p>🛵 Servicio a domicilio en un radio de 3 km.</p>
+      </div>
+      <div>
+        <h2>Dónde estamos</h2>
+        <div class="mapa">📍 Av. Juárez 123, Col. Centro<br><small>(aquí va el mapa de Google de tu negocio)</small></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p>Tacos El Güero · Av. Juárez 123, Col. Centro</p>
+      <a href="#" data-demo="lleva a tu Facebook">Facebook</a><a href="#" data-demo="lleva a tu Instagram">Instagram</a><a href="#" data-demo="hace una llamada a tu negocio">Llamar</a>
+    </div>
+  </footer>
+  <a class="wa" href="#" data-demo="abre tu WhatsApp">💬 WhatsApp</a>
+  <script src="demo.js"></script>
+</body>
+</html>
