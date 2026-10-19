@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Presencia Pro · Tu página web con agente IA</title>
+  <meta name="description" content="Creamos la página web de tu negocio con un agente de inteligencia artificial que atiende a tus clientes 24/7.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="logo" data-marca>Presencia Pro</a>
+      <nav class="nav-links">
+        <a href="#como">Cómo funciona</a>
+        <a href="#planes">Planes</a>
+        <a href="#faq">Preguntas</a>
+      </nav>
+      <a class="btn btn-small" data-whatsapp href="#">Escríbenos</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <span class="pill">Página web + Agente de IA</span>
+          <h1>Tu negocio en internet, <span class="accent">atendiendo clientes 24/7</span></h1>
+          <p class="lead">Creamos la página de presencia de tu negocio y le conectamos un agente de inteligencia artificial que responde dudas, da precios y te pasa a los clientes listos para comprar.</p>
+          <div class="hero-cta">
+            <a class="btn" href="#planes">Ver planes</a>
+            <button class="btn btn-ghost" type="button" data-open-chat>Habla con nuestro agente</button>
+          </div>
+          <p class="hint">👉 El chat de abajo a la derecha es un ejemplo real de lo que tendría tu página.</p>
+        </div>
+        <div class="mock" aria-hidden="true">
+          <div class="mock-bar"><span></span><span></span><span></span></div>
+          <div class="mock-body">
+            <div class="mock-line w60"></div>
+            <div class="mock-line w90"></div>
+            <div class="mock-line w40"></div>
+            <div class="mock-chat">
+              <div class="bubble bot">¡Hola! ¿En qué te ayudo?</div>
+              <div class="bubble user">¿Tienen servicio a domicilio?</div>
+              <div class="bubble bot">Sí 🙌 de 9 a 8. ¿A qué colonia?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="como" class="section">
+      <div class="container">
+        <h2>Cómo funciona</h2>
+        <div class="grid3">
+          <div class="card">
+            <div class="step">1</div>
+            <h3>Nos cuentas de tu negocio</h3>
+            <p>Qué vendes, precios, horarios, ubicación y las preguntas que más te hacen.</p>
+          </div>
+          <div class="card">
+            <div class="step">2</div>
+            <h3>Creamos tu página</h3>
+            <p>Una página clara, rápida y bonita en celular, con tu marca y botón a WhatsApp.</p>
+          </div>
+          <div class="card">
+            <div class="step">3</div>
+            <h3>Conectamos tu agente</h3>
+            <p>Un asistente de IA entrenado con tu información que atiende a tus visitantes al instante.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="planes" class="section alt">
+      <div class="container">
+        <h2>Planes</h2>
+        <p class="sub">Sin complicaciones: una página, un agente y listo.</p>
+        <div class="plans" id="plans"></div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="container narrow">
+        <h2>Preguntas frecuentes</h2>
+        <details>
+          <summary>¿Qué es una “página de presencia”?</summary>
+          <p>Es una página sencilla donde la gente encuentra quién eres, qué ofreces, cómo contactarte y dónde estás. Ideal para negocios que hoy solo tienen redes sociales.</p>
+        </details>
+        <details>
+          <summary>¿Qué hace el agente de IA?</summary>
+          <p>Responde preguntas de tus clientes en tu página a cualquier hora, usando la información de tu negocio, y te pasa los datos de quien quiere comprar o agendar.</p>
+        </details>
+        <details>
+          <summary>¿Necesito saber de tecnología?</summary>
+          <p>No. Nosotros lo hacemos todo; tú solo nos das la información de tu negocio.</p>
+        </details>
+        <details>
+          <summary>¿Puedo empezar solo con la página y agregar el agente después?</summary>
+          <p>Sí. Puedes empezar con la página de presencia y sumar el agente cuando quieras.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="section cta-final">
+      <div class="container narrow center">
+        <h2>¿Listo para tener tu página?</h2>
+        <p class="sub">Escríbenos y en minutos te decimos cómo quedaría la tuya.</p>
+        <a class="btn" data-whatsapp href="#">Hablar por WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <span>© <span id="year"></span> <span data-marca>Presencia Pro</span></span>
+      <a data-email href="#"></a>
+    </div>
+  </footer>
+
+  <!-- Widget del agente -->
+  <button class="chat-fab" type="button" data-open-chat aria-label="Abrir chat">💬</button>
+  <div class="chat" id="chat" hidden>
+    <div class="chat-head">
+      <div>
+        <strong>Asistente de <span data-marca>Presencia Pro</span></strong>
+        <small>Responde al instante</small>
+      </div>
+      <button type="button" class="chat-close" aria-label="Cerrar chat">×</button>
+    </div>
+    <div class="chat-log" id="chat-log" aria-live="polite"></div>
+    <form class="chat-form" id="chat-form">
+      <input id="chat-input" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" maxlength="1000" required>
+      <button type="submit" class="btn btn-small">Enviar</button>
+    </form>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

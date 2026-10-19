@@ -1,0 +1,13 @@
+{
+  "name": "pagina-claude",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Página de presencia con agente de IA (Claude) para negocios",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0"
+  }
+}
