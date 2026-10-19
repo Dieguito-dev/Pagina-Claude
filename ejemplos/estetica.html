@@ -5,89 +5,370 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Estética Lucía · Ejemplo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="../config.js"></script>
   <style>
-    :root { --rosa: #f6e3e1; --rosa-fuerte: #b8606a; --oro: #b08a4e; --tinta: #3a2a2c; --blanco: #fffdfb; }
+    :root {
+      --crema: #fbf6f1; --blush: #f3dcd6; --blush-2: #ebc7be; --rosa: #b45f68; --rosa-osc: #8c3f49;
+      --oro: #b48a52; --tinta: #3b2a2d; --suave: #7d6a6c; --blanco: #fffdfb;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--tinta); background: var(--blanco); line-height: 1.6; }
-    .wrap { width: min(1000px, 100% - 32px); margin-inline: auto; }
-    h1, h2, h3 { font-family: "Playfair Display", Georgia, serif; font-weight: 600; margin: 0 0 .4em; line-height: 1.15; }
-    h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); }
-    h1 em { font-weight: 500; color: var(--rosa-fuerte); }
-    h2 { font-size: clamp(1.8rem, 5vw, 2.4rem); text-align: center; }
-    .hero { background: linear-gradient(160deg, var(--rosa), #fdf3ef 70%); padding: 72px 0; text-align: center; }
-    .hero p { font-size: 1.15rem; max-width: 46ch; margin: 0 auto 28px; color: #6b5557; }
-    .kicker { letter-spacing: .25em; text-transform: uppercase; font-size: .8rem; color: var(--oro); font-weight: 600; }
-    .btn { display: inline-block; background: var(--rosa-fuerte); color: #fff; text-decoration: none; font-weight: 600; padding: 14px 28px; border-radius: 999px; margin: 4px; }
-    .btn.out { background: transparent; color: var(--rosa-fuerte); border: 1.5px solid var(--rosa-fuerte); }
-    section { padding: 64px 0; }
-    .servicios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
-    .serv { background: #fff; border: 1px solid #f0dcd8; border-radius: 20px; padding: 28px 24px; text-align: center; }
-    .serv .ico { font-size: 2.2rem; } .serv p { color: #7a6466; margin: 0 0 8px; }
-    .serv .precio { color: var(--oro); font-weight: 600; }
-    .galeria { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 32px; }
-    .galeria div { aspect-ratio: 1; border-radius: 16px; display: grid; place-items: center; font-size: 2.6rem; }
-    .g1 { background: #f3d9d6; } .g2 { background: #efe4d4; } .g3 { background: #e9d6e0; } .g4 { background: #f6e6dc; }
-    .cita { background: var(--tinta); color: #f7ece9; text-align: center; }
-    .cita h2 { color: #fff; }
-    .cita p { color: #d9c7c4; margin: 0 0 24px; }
-    .datos { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 28px; font-size: .95rem; }
-    footer { text-align: center; padding: 28px 0; color: #8a7476; font-size: .9rem; }
-    footer a { color: var(--rosa-fuerte); margin: 0 8px; }
-    @media (max-width: 720px) { .servicios { grid-template-columns: 1fr; } .galeria { grid-template-columns: repeat(2, 1fr); } }
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--tinta); background: var(--crema); line-height: 1.65; }
+    a { color: inherit; }
+    .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+    h1, h2, h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; line-height: 1.05; margin: 0 0 .4em; }
+    h2 { font-size: clamp(2.4rem, 6vw, 3.6rem); }
+    h2 em, h1 em { color: var(--rosa); }
+    .kicker { letter-spacing: .28em; text-transform: uppercase; font-size: .75rem; color: var(--oro); font-weight: 600; display: block; margin-bottom: 14px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--tinta); color: #fff; text-decoration: none; font-weight: 600; padding: 15px 30px; border-radius: 999px; border: 0; cursor: pointer; font-size: .95rem; transition: background .2s, transform .2s; }
+    .btn:hover { background: var(--rosa-osc); transform: translateY(-2px); }
+    .btn.out { background: transparent; color: var(--tinta); box-shadow: inset 0 0 0 1.5px var(--tinta); }
+    .btn.out:hover { background: var(--tinta); color: #fff; }
+    [data-reveal] { opacity: 0; transform: translateY(30px); transition: opacity .9s ease, transform .9s ease; }
+    [data-reveal].in { opacity: 1; transform: none; }
+    section { padding: 110px 0; }
+
+    /* Nav */
+    .nav { position: sticky; top: 0; z-index: 40; transition: background .3s, box-shadow .3s; }
+    .nav.solid { background: rgba(251,246,241,.92); backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgba(59,42,45,.08); }
+    .nav .wrap { height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .logo { font-family: "Cormorant Garamond"; font-size: 1.8rem; text-decoration: none; }
+    .logo em { color: var(--rosa); }
+    .nav-links { display: flex; gap: 30px; font-size: .92rem; font-weight: 500; }
+    .nav-links a { text-decoration: none; color: var(--suave); } .nav-links a:hover { color: var(--tinta); }
+
+    /* Hero */
+    .hero { padding: 50px 0 110px; position: relative; overflow: hidden; }
+    .hero .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .hero h1 { font-size: clamp(3.4rem, 8vw, 6rem); }
+    .hero p { font-size: 1.15rem; color: var(--suave); max-width: 42ch; margin: 0 0 32px; }
+    .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+    .datos-hero { display: flex; gap: 34px; margin-top: 44px; flex-wrap: wrap; }
+    .datos-hero b { display: block; font-family: "Cormorant Garamond"; font-size: 2.2rem; font-weight: 600; line-height: 1; }
+    .datos-hero span { font-size: .85rem; color: var(--suave); }
+    .arco { position: relative; aspect-ratio: 4/5; max-width: 460px; justify-self: end; width: 100%; }
+    .arco .marco { position: absolute; inset: 0; border-radius: 999px 999px 24px 24px; overflow: hidden;
+      background: radial-gradient(circle at 30% 25%, #fff4ef 0, transparent 35%), radial-gradient(circle at 75% 70%, #e8b4a9 0, transparent 45%), linear-gradient(170deg, var(--blush), var(--blush-2)); }
+    .arco .marco::after { content: ""; position: absolute; inset: 14px; border-radius: 999px 999px 16px 16px; border: 1px solid rgba(255,255,255,.7); }
+    .arco .figura { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); font-size: clamp(9rem, 26vw, 15rem); line-height: 1; filter: drop-shadow(0 20px 30px rgba(140,63,73,.25)); }
+    .arco .tarjeta { position: absolute; background: var(--blanco); border-radius: 18px; padding: 14px 18px; box-shadow: 0 20px 50px rgba(59,42,45,.14); font-size: .88rem; display: flex; align-items: center; gap: 12px; animation: flota 6s ease-in-out infinite; }
+    .arco .tarjeta b { display: block; font-size: .95rem; }
+    .arco .tarjeta i { font-style: normal; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--blush); font-size: 1.3rem; }
+    .arco .c1 { left: -40px; top: 18%; }
+    .arco .c2 { right: -24px; bottom: 16%; animation-delay: -3s; }
+    @keyframes flota { 50% { translate: 0 -10px; } }
+    .hoja { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; z-index: -1; }
+
+    /* Servicios */
+    .servicios-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+    .tabs { display: flex; gap: 6px; background: var(--blanco); padding: 6px; border-radius: 999px; box-shadow: 0 1px 0 rgba(59,42,45,.06); }
+    .tabs button { border: 0; background: transparent; padding: 10px 20px; border-radius: 999px; font: inherit; font-weight: 600; font-size: .9rem; color: var(--suave); cursor: pointer; }
+    .tabs button[aria-selected="true"] { background: var(--tinta); color: #fff; }
+    .lista { display: grid; grid-template-columns: 1fr 1fr; gap: 0 60px; }
+    .lista[hidden] { display: none; }
+    .serv { display: grid; grid-template-columns: 56px 1fr auto; gap: 18px; align-items: center; padding: 22px 0; border-bottom: 1px solid #ead9d2; }
+    .serv .ico { width: 56px; height: 56px; border-radius: 50%; background: var(--blush); display: grid; place-items: center; font-size: 1.5rem; }
+    .serv h3 { font-size: 1.5rem; margin: 0; }
+    .serv p { margin: 0; color: var(--suave); font-size: .9rem; }
+    .serv .precio { font-family: "Cormorant Garamond"; font-size: 1.5rem; font-weight: 600; color: var(--rosa-osc); white-space: nowrap; }
+    .serv .precio small { display: block; font-family: Inter; font-size: .72rem; color: var(--suave); font-weight: 500; text-align: right; }
+
+    /* Agendar */
+    .agenda { background: var(--tinta); color: #f6ebe8; border-radius: 36px; padding: 60px; display: grid; grid-template-columns: .9fr 1.1fr; gap: 50px; position: relative; overflow: hidden; }
+    .agenda::before { content: ""; position: absolute; width: 380px; height: 380px; right: -120px; top: -140px; border-radius: 50%; background: radial-gradient(circle, rgba(180,95,104,.55), transparent 70%); }
+    .agenda h2 em { color: var(--blush-2); }
+    .agenda p { color: #cdbab8; }
+    .paso { margin-bottom: 22px; position: relative; }
+    .paso label { display: block; font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--blush-2); margin-bottom: 10px; font-weight: 600; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { border: 1px solid rgba(255,255,255,.2); background: transparent; color: #f6ebe8; padding: 9px 16px; border-radius: 999px; cursor: pointer; font: inherit; font-size: .9rem; transition: all .15s; }
+    .chip:hover { border-color: #fff; }
+    .chip[aria-pressed="true"] { background: var(--blush); color: var(--tinta); border-color: var(--blush); font-weight: 600; }
+    .resumen { background: rgba(255,255,255,.07); border-radius: 18px; padding: 16px 20px; margin: 6px 0 20px; font-size: .95rem; min-height: 56px; }
+    .agenda .btn { background: var(--blush); color: var(--tinta); }
+    .agenda .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    /* Galería */
+    .galeria { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .gal { aspect-ratio: 3/4; border-radius: 999px 999px 20px 20px; display: grid; place-items: center; font-size: 4rem; position: relative; overflow: hidden; transition: transform .3s; }
+    .gal:hover { transform: translateY(-8px); }
+    .gal span { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: rgba(255,253,251,.9); font-size: .78rem; padding: 5px 12px; border-radius: 999px; white-space: nowrap; font-weight: 600; }
+    .gal:nth-child(2), .gal:nth-child(4) { margin-top: 50px; }
+    .g1 { background: linear-gradient(160deg, #f3d3cc, #dba49a); } .g2 { background: linear-gradient(160deg, #efe0cd, #d6b88f); }
+    .g3 { background: linear-gradient(160deg, #ecd6e1, #c99ab3); } .g4 { background: linear-gradient(160deg, #f7e4da, #e3b8a4); }
+
+    /* Equipo */
+    .equipo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; text-align: center; }
+    .persona .foto { width: 150px; height: 150px; margin: 0 auto 16px; border-radius: 50%; display: grid; place-items: center; font-size: 4rem; background: var(--blush); box-shadow: 0 0 0 8px var(--blanco), 0 0 0 9px #ead9d2; }
+    .persona h3 { font-size: 1.6rem; margin-bottom: 0; }
+    .persona p { color: var(--suave); margin: 0; font-size: .92rem; }
+
+    /* Testimonio */
+    .testimonio { text-align: center; max-width: 820px; margin: 0 auto; }
+    .testimonio blockquote { font-family: "Cormorant Garamond"; font-style: italic; font-size: clamp(1.7rem, 4vw, 2.5rem); line-height: 1.3; margin: 0 0 24px; transition: opacity .4s; }
+    .testimonio cite { font-style: normal; font-weight: 600; }
+    .testimonio cite small { display: block; color: var(--suave); font-weight: 400; }
+    .estrellas { color: var(--oro); letter-spacing: 4px; margin-bottom: 18px; }
+    .puntos { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
+    .puntos button { width: 9px; height: 9px; border-radius: 50%; border: 0; background: #e1cbc3; cursor: pointer; padding: 0; }
+    .puntos button[aria-current="true"] { background: var(--rosa); width: 26px; border-radius: 999px; }
+
+    /* Visita */
+    .visita { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: var(--blanco); border-radius: 32px; overflow: hidden; box-shadow: 0 30px 60px rgba(59,42,45,.07); }
+    .visita .txt { padding: 50px; }
+    .estado { display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 600; padding: 6px 14px; border-radius: 999px; background: var(--crema); margin-bottom: 18px; }
+    .estado::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #b9a9a7; }
+    .estado.abierto::before { background: #3fae6a; }
+    .visita table { width: 100%; border-collapse: collapse; margin: 10px 0 26px; font-size: .95rem; }
+    .visita td { padding: 9px 0; border-bottom: 1px solid #f0e4de; }
+    .visita td:last-child { text-align: right; }
+    .visita tr.hoy td { font-weight: 700; color: var(--rosa-osc); }
+    .mapa { position: relative; min-height: 380px; background:
+      linear-gradient(90deg, rgba(59,42,45,.05) 1px, transparent 1px) 0 0 / 36px 36px,
+      linear-gradient(rgba(59,42,45,.05) 1px, transparent 1px) 0 0 / 36px 36px, var(--blush); }
+    .mapa .calle { position: absolute; background: #fff; opacity: .8; }
+    .mapa .pin { position: absolute; left: 52%; top: 46%; transform: translate(-50%, -100%); background: var(--tinta); color: #fff; padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: .9rem; box-shadow: 0 10px 30px rgba(59,42,45,.3); white-space: nowrap; }
+    .mapa .pin::after { content: ""; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; background: var(--tinta); transform: translateX(-50%) rotate(45deg); }
+
+    footer { padding: 60px 0 40px; text-align: center; color: var(--suave); font-size: .9rem; }
+    footer .logo { display: block; margin-bottom: 14px; }
+    footer nav { display: flex; justify-content: center; gap: 22px; margin-bottom: 18px; }
+
+    .wa { position: fixed; right: 18px; bottom: 18px; z-index: 50; width: 58px; height: 58px; border-radius: 50%; background: #25d366; color: #fff; display: grid; place-items: center; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 30px rgba(37,211,102,.4); }
+
+    @media (max-width: 880px) {
+      .hero .wrap, .agenda, .visita { grid-template-columns: 1fr; }
+      .arco { justify-self: center; max-width: 340px; margin-top: 20px; }
+      .arco .c1 { left: -10px; } .arco .c2 { right: -6px; }
+      .lista { grid-template-columns: 1fr; }
+      .galeria { grid-template-columns: repeat(2, 1fr); }
+      .gal:nth-child(4) { margin-top: 0; } .gal:nth-child(3) { margin-top: -50px; }
+      .equipo { grid-template-columns: 1fr; }
+      .agenda { padding: 36px 24px; border-radius: 26px; }
+      .visita .txt { padding: 32px 24px; }
+      .nav-links { display: none; }
+      section { padding: 76px 0; }
+    }
   </style>
 </head>
 <body>
-  <header class="hero">
+  <header class="nav" data-nav>
     <div class="wrap">
-      <div class="kicker">Estética & Spa</div>
-      <h1>Estética <em>Lucía</em></h1>
-      <p>Corte, color, uñas y tratamientos faciales en un espacio tranquilo, pensado para que salgas sintiéndote increíble.</p>
-      <a class="btn" href="#" data-demo="abre tu WhatsApp para agendar citas">Agendar cita</a>
-      <a class="btn out" href="#servicios">Ver servicios</a>
+      <a class="logo" href="#">Estética <em>Lucía</em></a>
+      <nav class="nav-links"><a href="#servicios">Servicios</a><a href="#trabajos">Trabajos</a><a href="#equipo">Equipo</a><a href="#visitanos">Visítanos</a></nav>
+      <a class="btn" href="#agendar" style="padding:11px 22px">Agendar cita</a>
     </div>
   </header>
 
-  <section id="servicios">
+  <section class="hero">
+    <div class="hoja" style="width:420px;height:420px;background:#f0c9c0;left:-160px;top:40px"></div>
+    <div class="hoja" style="width:360px;height:360px;background:#f3e2c8;right:-80px;bottom:-60px"></div>
     <div class="wrap">
-      <h2>Servicios</h2>
-      <div class="servicios">
-        <div class="serv"><div class="ico">✂️</div><h3>Corte y peinado</h3><p>Corte personalizado, lavado y secado.</p><span class="precio">Desde $250</span></div>
-        <div class="serv"><div class="ico">🎨</div><h3>Color y mechas</h3><p>Tinte, balayage y retoque de raíz.</p><span class="precio">Desde $650</span></div>
-        <div class="serv"><div class="ico">💅</div><h3>Uñas</h3><p>Manicure, pedicure, gel y acrílico.</p><span class="precio">Desde $200</span></div>
-        <div class="serv"><div class="ico">🌸</div><h3>Faciales</h3><p>Limpieza profunda e hidratación.</p><span class="precio">Desde $450</span></div>
-        <div class="serv"><div class="ico">👁️</div><h3>Cejas y pestañas</h3><p>Diseño, laminado y lifting.</p><span class="precio">Desde $180</span></div>
-        <div class="serv"><div class="ico">👰</div><h3>Novias y eventos</h3><p>Peinado y maquillaje a domicilio.</p><span class="precio">Cotiza</span></div>
+      <div data-reveal>
+        <span class="kicker">Estética & Spa · Col. Jardines</span>
+        <h1>Tu momento para <em>sentirte</em> increíble</h1>
+        <p>Corte, color, uñas y faciales en un espacio tranquilo, con productos profesionales y un equipo que de verdad te escucha.</p>
+        <div class="ctas">
+          <a class="btn" href="#agendar">Agendar mi cita</a>
+          <a class="btn out" href="#servicios">Ver servicios y precios</a>
+        </div>
+        <div class="datos-hero">
+          <div><b>12</b><span>años de experiencia</span></div>
+          <div><b>4.9 ★</b><span>en Google</span></div>
+          <div><b>3,000+</b><span>clientas felices</span></div>
+        </div>
+      </div>
+      <div class="arco" data-reveal aria-hidden="true">
+        <div class="marco"></div>
+        <div class="figura">💇‍♀️</div>
+        <div class="tarjeta c1"><i>💅</i><div><b>Manicure en gel</b>Dura hasta 3 semanas</div></div>
+        <div class="tarjeta c2"><i>✨</i><div><b>Nueva clienta</b>15% en tu primera visita</div></div>
       </div>
     </div>
   </section>
 
-  <section style="padding-top:0">
-    <div class="wrap">
-      <h2>Nuestro trabajo</h2>
-      <div class="galeria"><div class="g1">💇‍♀️</div><div class="g2">💅</div><div class="g3">💄</div><div class="g4">✨</div></div>
-      <p style="text-align:center;color:#8a7476"><small>(aquí van las fotos reales de tus trabajos)</small></p>
+  <section id="servicios" style="background:var(--blanco)">
+    <div class="wrap" data-tabs>
+      <div class="servicios-head" data-reveal>
+        <div><span class="kicker">Servicios</span><h2>Lo que hacemos <em>por ti</em></h2></div>
+        <div class="tabs" role="tablist">
+          <button data-tab="cabello" aria-selected="true">Cabello</button>
+          <button data-tab="unas" aria-selected="false">Uñas</button>
+          <button data-tab="rostro" aria-selected="false">Rostro</button>
+        </div>
+      </div>
+      <div class="lista" data-panel="cabello">
+        <div class="serv"><div class="ico">✂️</div><div><h3>Corte y peinado</h3><p>Lavado, corte personalizado y secado.</p></div><div class="precio">$250<small>45 min</small></div></div>
+        <div class="serv"><div class="ico">🎨</div><div><h3>Tinte completo</h3><p>Color uniforme con productos sin amoniaco.</p></div><div class="precio">$650<small>1 h 30</small></div></div>
+        <div class="serv"><div class="ico">🌅</div><div><h3>Balayage</h3><p>Iluminación natural hecha a mano alzada.</p></div><div class="precio">$1,400<small>3 h</small></div></div>
+        <div class="serv"><div class="ico">💧</div><div><h3>Tratamiento hidratante</h3><p>Para cabello seco o maltratado.</p></div><div class="precio">$380<small>40 min</small></div></div>
+      </div>
+      <div class="lista" data-panel="unas" hidden>
+        <div class="serv"><div class="ico">💅</div><div><h3>Manicure en gel</h3><p>Brillo que dura hasta 3 semanas.</p></div><div class="precio">$280<small>1 h</small></div></div>
+        <div class="serv"><div class="ico">💎</div><div><h3>Uñas acrílicas</h3><p>Largo y forma a tu gusto, con diseño.</p></div><div class="precio">$450<small>1 h 30</small></div></div>
+        <div class="serv"><div class="ico">🦶</div><div><h3>Pedicure spa</h3><p>Exfoliación, masaje y esmaltado.</p></div><div class="precio">$350<small>1 h</small></div></div>
+        <div class="serv"><div class="ico">🎀</div><div><h3>Diseño de uñas</h3><p>Decoración a mano, por uña.</p></div><div class="precio">$20<small>por uña</small></div></div>
+      </div>
+      <div class="lista" data-panel="rostro" hidden>
+        <div class="serv"><div class="ico">🌸</div><div><h3>Facial profundo</h3><p>Limpieza, extracción e hidratación.</p></div><div class="precio">$550<small>1 h</small></div></div>
+        <div class="serv"><div class="ico">👁️</div><div><h3>Lifting de pestañas</h3><p>Curvatura natural por 6 semanas.</p></div><div class="precio">$480<small>1 h</small></div></div>
+        <div class="serv"><div class="ico">〰️</div><div><h3>Diseño de cejas</h3><p>Depilación y diseño según tu rostro.</p></div><div class="precio">$180<small>30 min</small></div></div>
+        <div class="serv"><div class="ico">💄</div><div><h3>Maquillaje social</h3><p>Para eventos, incluye pestañas.</p></div><div class="precio">$750<small>1 h</small></div></div>
+      </div>
     </div>
   </section>
 
-  <section class="cita">
+  <section id="agendar">
     <div class="wrap">
-      <h2>¿Lista para tu cambio?</h2>
-      <p>Agenda tu cita en un mensaje. Te confirmamos al momento.</p>
-      <a class="btn" href="#" data-demo="abre tu WhatsApp para agendar citas">Agendar por WhatsApp</a>
-      <div class="datos">
-        <span>📍 Calle Rosas 45, Col. Jardines</span>
-        <span>🕘 Mar a sáb · 10:00 – 20:00</span>
-        <span>📞 Llámanos</span>
+      <div class="agenda" data-reveal>
+        <div style="position:relative">
+          <span class="kicker" style="color:var(--blush-2)">Agenda en 1 minuto</span>
+          <h2>Reserva tu <em>cita</em></h2>
+          <p>Elige el servicio, el día y la hora. Te confirmamos por WhatsApp en minutos.</p>
+          <p style="margin-top:30px">📍 Calle Rosas 45, Col. Jardines<br>🕘 Martes a sábado · 10:00 – 20:00</p>
+        </div>
+        <form id="reserva" style="position:relative">
+          <div class="paso"><label>1 · Servicio</label><div class="chips" data-grupo="servicio">
+            <button type="button" class="chip">Corte</button><button type="button" class="chip">Tinte</button><button type="button" class="chip">Balayage</button>
+            <button type="button" class="chip">Manicure</button><button type="button" class="chip">Pedicure</button><button type="button" class="chip">Facial</button><button type="button" class="chip">Pestañas</button>
+          </div></div>
+          <div class="paso"><label>2 · Día</label><div class="chips" data-grupo="dia" id="dias"></div></div>
+          <div class="paso"><label>3 · Hora</label><div class="chips" data-grupo="hora">
+            <button type="button" class="chip">10:00</button><button type="button" class="chip">12:00</button><button type="button" class="chip">14:00</button>
+            <button type="button" class="chip">16:00</button><button type="button" class="chip">18:00</button>
+          </div></div>
+          <div class="resumen" id="resumen">Elige servicio, día y hora ✨</div>
+          <button class="btn" type="submit" id="confirmar" disabled>Confirmar por WhatsApp</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="trabajos" style="padding-top:0">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:50px" data-reveal><span class="kicker">Nuestro trabajo</span><h2>Resultados que <em>enamoran</em></h2></div>
+      <div class="galeria">
+        <div class="gal g1" data-reveal>👩‍🦰<span>Balayage miel</span></div>
+        <div class="gal g2" data-reveal>💅<span>Uñas nude</span></div>
+        <div class="gal g3" data-reveal>💄<span>Maquillaje de noche</span></div>
+        <div class="gal g4" data-reveal>👰<span>Peinado de novia</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipo" style="background:var(--blanco)">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:50px" data-reveal><span class="kicker">Equipo</span><h2>Manos <em>expertas</em></h2></div>
+      <div class="equipo">
+        <div class="persona" data-reveal><div class="foto">👩🏻</div><h3>Lucía Herrera</h3><p>Fundadora · Colorista</p></div>
+        <div class="persona" data-reveal><div class="foto" style="background:#efe0cd">👩🏽</div><h3>Fernanda Ruiz</h3><p>Uñas y pedicure</p></div>
+        <div class="persona" data-reveal><div class="foto" style="background:#ecd6e1">👩🏼</div><h3>Sofía Méndez</h3><p>Faciales y pestañas</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap testimonio" data-reveal>
+      <div class="estrellas">★★★★★</div>
+      <blockquote id="cita">"Llegué con el cabello maltratado y salí con el mejor balayage de mi vida. Lucía tiene manos de oro."</blockquote>
+      <cite id="autor">Andrea M.<small>Clienta desde 2019</small></cite>
+      <div class="puntos" id="puntos"></div>
+    </div>
+  </section>
+
+  <section id="visitanos" style="padding-top:0">
+    <div class="wrap">
+      <div class="visita" data-reveal>
+        <div class="txt">
+          <span class="kicker">Visítanos</span>
+          <h2>Te <em>esperamos</em></h2>
+          <span class="estado" data-horario='{"2":[10,20],"3":[10,20],"4":[10,20],"5":[10,20],"6":[10,20]}'>Horario</span>
+          <table>
+            <tr data-dia="1"><td>Lunes</td><td>Cerrado</td></tr>
+            <tr data-dia="2 3 4 5"><td>Martes a viernes</td><td>10:00 – 20:00</td></tr>
+            <tr data-dia="6"><td>Sábado</td><td>10:00 – 20:00</td></tr>
+            <tr data-dia="0"><td>Domingo</td><td>Cerrado</td></tr>
+          </table>
+          <a class="btn" href="#" data-demo="abre Google Maps con la ruta a tu negocio">Cómo llegar</a>
+        </div>
+        <div class="mapa" aria-label="Mapa de ubicación">
+          <div class="calle" style="left:0;right:0;top:46%;height:18px"></div>
+          <div class="calle" style="top:0;bottom:0;left:30%;width:14px"></div>
+          <div class="calle" style="left:0;right:0;top:15%;height:10px"></div>
+          <div class="pin">📍 Estética Lucía</div>
+        </div>
       </div>
     </div>
   </section>
 
   <footer>
-    <a href="#" data-demo="lleva a tu Instagram">Instagram</a><a href="#" data-demo="lleva a tu Facebook">Facebook</a><a href="#" data-demo="lleva a tu TikTok">TikTok</a>
-    <p>© Estética Lucía</p>
+    <a class="logo" href="#">Estética <em>Lucía</em></a>
+    <nav><a href="#" data-demo="lleva a tu Instagram">Instagram</a><a href="#" data-demo="lleva a tu Facebook">Facebook</a><a href="#" data-demo="lleva a tu TikTok">TikTok</a></nav>
+    <div>Calle Rosas 45, Col. Jardines · © Estética Lucía</div>
   </footer>
+  <a class="wa" href="#" data-demo="abre tu WhatsApp" aria-label="WhatsApp">💬</a>
+
   <script src="demo.js"></script>
+  <script>
+    // Próximos 6 días que abre (martes a sábado)
+    const dias = document.getElementById("dias");
+    const nombres = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+    for (let d = new Date(), n = 0; n < 6; d.setDate(d.getDate() + 1)) {
+      if (d.getDay() === 0 || d.getDay() === 1) continue;
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "chip";
+      b.textContent = `${n === 0 && d.toDateString() === new Date().toDateString() ? "Hoy" : nombres[d.getDay()]} ${d.getDate()}`;
+      dias.appendChild(b); n++;
+    }
+
+    const eleccion = {};
+    const resumen = document.getElementById("resumen");
+    const confirmar = document.getElementById("confirmar");
+    document.querySelectorAll("[data-grupo]").forEach((grupo) =>
+      grupo.addEventListener("click", (e) => {
+        const chip = e.target.closest(".chip");
+        if (!chip) return;
+        grupo.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", c === chip));
+        eleccion[grupo.dataset.grupo] = chip.textContent;
+        const listo = eleccion.servicio && eleccion.dia && eleccion.hora;
+        resumen.innerHTML = listo
+          ? `✨ <b>${eleccion.servicio}</b> el <b>${eleccion.dia}</b> a las <b>${eleccion.hora}</b>`
+          : `Te falta elegir: ${["servicio", "dia", "hora"].filter((k) => !eleccion[k]).map((k) => (k === "dia" ? "día" : k)).join(", ")}`;
+        confirmar.disabled = !listo;
+      })
+    );
+    document.getElementById("reserva").addEventListener("submit", (e) => {
+      e.preventDefault();
+      demoWhatsApp(`Hola, quiero agendar ${eleccion.servicio} el ${eleccion.dia} a las ${eleccion.hora}.`);
+    });
+
+    // Testimonios que cambian solos
+    const testimonios = [
+      ["\"Llegué con el cabello maltratado y salí con el mejor balayage de mi vida. Lucía tiene manos de oro.\"", "Andrea M.", "Clienta desde 2019"],
+      ["\"Las uñas me duran perfectas tres semanas. El lugar es precioso y siempre te reciben con un café.\"", "Karla V.", "Clienta desde 2021"],
+      ["\"Me hicieron el peinado y maquillaje de mi boda. Todas las fotos salieron hermosas.\"", "Paola S.", "Novia 2024"],
+    ];
+    const cita = document.getElementById("cita"), autor = document.getElementById("autor"), puntos = document.getElementById("puntos");
+    let actual = 0;
+    function mostrar(i) {
+      actual = i;
+      cita.style.opacity = 0;
+      setTimeout(() => {
+        cita.textContent = testimonios[i][0];
+        autor.innerHTML = `${testimonios[i][1]}<small>${testimonios[i][2]}</small>`;
+        cita.style.opacity = 1;
+      }, 300);
+      puntos.querySelectorAll("button").forEach((b, j) => b.setAttribute("aria-current", j === i));
+    }
+    testimonios.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.setAttribute("aria-label", `Testimonio ${i + 1}`);
+      b.setAttribute("aria-current", i === 0);
+      b.onclick = () => mostrar(i);
+      puntos.appendChild(b);
+    });
+    setInterval(() => mostrar((actual + 1) % testimonios.length), 6000);
+  </script>
 </body>
 </html>
