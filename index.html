@@ -4,90 +4,134 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Presencia Pro · La página web de tu negocio</title>
-  <meta name="description" content="Creamos la página web de tu negocio: sencilla, bonita y lista para que tus clientes te encuentren y te contacten.">
+  <meta name="description" content="Creamos la página web de tu negocio: bonita, rápida y lista para que tus clientes te encuentren y te escriban por WhatsApp.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <!-- Vista previa al compartir el link (WhatsApp, Facebook). Cuando tengas dominio, cambia og:image a la dirección completa, ej. https://tudominio.com/img/compartir.png -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Presencia Pro · La página web de tu negocio">
-  <meta property="og:description" content="Creamos la página web de tu negocio: sencilla, bonita y lista para que tus clientes te encuentren. Cotiza gratis.">
+  <meta property="og:description" content="Creamos la página web de tu negocio: bonita, rápida y lista para que tus clientes te encuentren. Cotiza gratis.">
   <meta property="og:image" content="img/compartir.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b1020">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="config.js"></script>
 </head>
 <body>
-  <header class="nav">
+  <header class="nav" data-nav>
     <div class="container nav-inner">
-      <a href="#" class="logo" data-marca>Presencia Pro</a>
+      <a href="#" class="logo"><span class="logo-mark" aria-hidden="true">P</span><span data-marca>Presencia Pro</span></a>
       <nav class="nav-links">
-        <a href="#como">Cómo funciona</a>
         <a href="#ejemplos">Ejemplos</a>
         <a href="#incluye">Qué incluye</a>
+        <a href="#como">Cómo funciona</a>
         <a href="#faq">Preguntas</a>
       </nav>
-      <a class="btn btn-small" href="#contacto">Cotizar</a>
+      <a class="btn btn-small" href="#contacto">Cotiza gratis</a>
     </div>
   </header>
 
   <main>
     <section class="hero">
+      <div class="glow g1" aria-hidden="true"></div>
+      <div class="glow g2" aria-hidden="true"></div>
       <div class="container hero-inner">
-        <div>
-          <span class="pill">Páginas web para negocios</span>
-          <h1>Que tus clientes te <span class="accent">encuentren en internet</span></h1>
-          <p class="lead">Creamos la página web de tu negocio: sencilla, bonita y lista para que la gente sepa quién eres, qué ofreces y cómo contactarte.</p>
+        <div class="hero-text" data-reveal>
+          <span class="pill"><span class="dot"></span>Páginas web para negocios locales</span>
+          <h1>Tu negocio merece verse <span class="grad">así de bien</span> en internet</h1>
+          <p class="lead">Creamos la página de tu negocio: bonita, rápida en celular y con botón directo a tu WhatsApp. Tú sigues atendiendo; nosotros nos encargamos de todo lo demás.</p>
+
+          <div class="probador">
+            <label for="demo-nombre">✨ Pruébalo: escribe el nombre de tu negocio</label>
+            <input id="demo-nombre" type="text" maxlength="40" placeholder="Ej. Tacos Don Pepe" autocomplete="off">
+            <div class="giros" role="group" aria-label="Tipo de negocio">
+              <button type="button" data-giro="restaurante" aria-pressed="true">🌮 Comida</button>
+              <button type="button" data-giro="belleza" aria-pressed="false">💇‍♀️ Belleza</button>
+              <button type="button" data-giro="taller" aria-pressed="false">🔧 Taller</button>
+              <button type="button" data-giro="cafe" aria-pressed="false">☕ Café</button>
+              <button type="button" data-giro="tienda" aria-pressed="false">🛒 Tienda</button>
+              <button type="button" data-giro="servicios" aria-pressed="false">💼 Servicios</button>
+            </div>
+          </div>
+
           <div class="hero-cta">
-            <a class="btn" href="#contacto">Cotiza gratis</a>
+            <a class="btn" href="#contacto">Quiero mi página</a>
             <a class="btn btn-ghost" href="#ejemplos">Ver ejemplos</a>
           </div>
+          <ul class="garantias">
+            <li>Cotización gratis</li><li>Sin saber de tecnología</li><li>Lista en días</li>
+          </ul>
         </div>
-        <a class="phone" href="ejemplos/taqueria.html" aria-label="Ver página de ejemplo de una taquería">
-          <img src="img/ejemplo-taqueria.jpg" alt="Página de ejemplo de una taquería vista en celular" width="390" height="780">
-        </a>
-      </div>
-    </section>
 
-    <section id="como" class="section">
-      <div class="container">
-        <h2>Cómo funciona</h2>
-        <div class="grid3">
-          <div class="card">
-            <div class="step">1</div>
-            <h3>Nos cuentas de tu negocio</h3>
-            <p>Qué vendes, horarios, ubicación, fotos y tus redes sociales.</p>
+        <div class="hero-phone" data-reveal>
+          <div class="phone-live">
+            <iframe id="demo-iframe" title="Vista previa de tu página" sandbox="allow-scripts"></iframe>
           </div>
-          <div class="card">
-            <div class="step">2</div>
-            <h3>Diseñamos tu página</h3>
-            <p>Te mostramos cómo queda y la ajustamos hasta que te guste.</p>
-          </div>
-          <div class="card">
-            <div class="step">3</div>
-            <h3>La publicamos</h3>
-            <p>Tu página queda en línea, lista para compartir en redes, tarjetas y Google.</p>
-          </div>
+          <span class="burbuja b1">📱 Se ve perfecta en celular</span>
+          <span class="burbuja b2">💬 Te escriben directo a WhatsApp</span>
         </div>
       </div>
     </section>
 
-    <section id="ejemplos" class="section alt">
+    <section class="section comparacion">
       <div class="container">
-        <h2>Mira cómo quedaría la tuya</h2>
-        <p class="sub">Ejemplos de páginas para distintos tipos de negocio. Ábrelos y pruébalos: puedes pedir, agendar y cotizar.</p>
+        <div class="titulo" data-reveal>
+          <span class="kicker">¿Por qué una página?</span>
+          <h2>Tener solo Facebook ya no es suficiente</h2>
+          <p class="sub">Cuando alguien busca lo que vendes, lo primero que hace es buscar en Google. Con tu página, te encuentra a ti.</p>
+        </div>
+        <div class="vs">
+          <div class="vs-card malo" data-reveal>
+            <h3>😕 Solo redes sociales</h3>
+            <ul>
+              <li>Tu información se pierde entre publicaciones</li>
+              <li>Horarios y precios difíciles de encontrar</li>
+              <li>Te ves igual que todos los demás</li>
+              <li>Dependes de lo que decida el algoritmo</li>
+            </ul>
+          </div>
+          <div class="vs-card bueno" data-reveal>
+            <h3>🚀 Con tu propia página</h3>
+            <ul>
+              <li>Todo en un solo lugar: qué vendes, precios, horario y ubicación</li>
+              <li>Más fácil de encontrar cuando te buscan en Google</li>
+              <li>Te ves profesional y das más confianza</li>
+              <li>Un link para compartir en WhatsApp, tarjetas y redes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ejemplos" class="section dark">
+      <div class="container">
+        <div class="titulo" data-reveal>
+          <span class="kicker">Ejemplos</span>
+          <h2>Mira lo que podemos hacer</h2>
+          <p class="sub">Cada negocio tiene su estilo. Ábrelos y pruébalos: puedes pedir, agendar y cotizar.</p>
+        </div>
         <div class="ejemplos">
-          <a class="ejemplo" href="ejemplos/taqueria.html">
+          <a class="ejemplo" href="ejemplos/taqueria.html" data-reveal>
             <div class="phone small"><img src="img/ejemplo-taqueria.jpg" alt="" width="390" height="780" loading="lazy"></div>
-            <h3>Taquería</h3><span>Menú interactivo, "abierto ahora" y pedidos por WhatsApp →</span>
+            <span class="tag" style="--c:#ffc531">Taquería</span>
+            <h3>Tacos El Güero</h3>
+            <p>Menú interactivo, "abierto ahora" y pedidos por WhatsApp.</p>
+            <span class="ver">Ver ejemplo →</span>
           </a>
-          <a class="ejemplo" href="ejemplos/estetica.html">
+          <a class="ejemplo" href="ejemplos/estetica.html" data-reveal>
             <div class="phone small"><img src="img/ejemplo-estetica.jpg" alt="" width="390" height="780" loading="lazy"></div>
-            <h3>Estética</h3><span>Precios, galería y agenda de citas en línea →</span>
+            <span class="tag" style="--c:#f3a6b0">Estética</span>
+            <h3>Estética Lucía</h3>
+            <p>Precios por categoría, galería y agenda de citas en línea.</p>
+            <span class="ver">Ver ejemplo →</span>
           </a>
-          <a class="ejemplo" href="ejemplos/taller.html">
+          <a class="ejemplo" href="ejemplos/taller.html" data-reveal>
             <div class="phone small"><img src="img/ejemplo-taller.jpg" alt="" width="390" height="780" loading="lazy"></div>
-            <h3>Taller mecánico</h3><span>Cotizador al instante, garantía y reseñas →</span>
+            <span class="tag" style="--c:#ff8f4d">Taller mecánico</span>
+            <h3>Taller Hermanos Ruiz</h3>
+            <p>Cotizador al instante, garantía y reseñas de clientes.</p>
+            <span class="ver">Ver ejemplo →</span>
           </a>
         </div>
       </div>
@@ -95,26 +139,69 @@
 
     <section id="incluye" class="section">
       <div class="container">
-        <h2>Qué incluye tu página</h2>
-        <p class="sub">Todo lo que un negocio necesita para tener presencia en internet.</p>
-        <div class="features">
-          <div class="feature"><span>📱</span><div><h3>Se ve perfecta en celular</h3><p>Donde la mayoría de tus clientes te va a buscar.</p></div></div>
-          <div class="feature"><span>🏪</span><div><h3>Tu negocio en una página</h3><p>Quién eres, qué ofreces, fotos y lo que te hace diferente.</p></div></div>
-          <div class="feature"><span>📍</span><div><h3>Ubicación y horarios</h3><p>Mapa para llegar y cuándo estás abierto.</p></div></div>
-          <div class="feature"><span>💬</span><div><h3>Contacto directo</h3><p>Botones a WhatsApp, llamada y redes sociales.</p></div></div>
-          <div class="feature"><span>⚡</span><div><h3>Rápida y sencilla</h3><p>Carga al instante, sin cosas de más.</p></div></div>
-          <div class="feature"><span>🤝</span><div><h3>Nosotros nos encargamos</h3><p>No necesitas saber nada de tecnología.</p></div></div>
+        <div class="titulo" data-reveal>
+          <span class="kicker">Qué incluye</span>
+          <h2>Todo lo que tu página necesita</h2>
         </div>
-        <div class="extras">
-          <h3>Extras opcionales</h3>
-          <p>Dominio propio (tunegocio.com), formulario de contacto o un asistente con inteligencia artificial que responda a tus clientes. Pregúntanos.</p>
+        <div class="bento">
+          <div class="b-card grande" data-reveal>
+            <span class="ico">📱</span>
+            <h3>Hecha para celular</h3>
+            <p>La mayoría de tus clientes te va a buscar desde el teléfono. Tu página se ve perfecta en cualquier pantalla y carga al instante.</p>
+          </div>
+          <div class="b-card verde" data-reveal>
+            <span class="ico">💬</span>
+            <h3>Botón a WhatsApp</h3>
+            <p>Un toque y te escriben con el mensaje ya listo.</p>
+          </div>
+          <div class="b-card" data-reveal>
+            <span class="ico">📍</span>
+            <h3>Mapa y horarios</h3>
+            <p>Con aviso de "abierto ahora" que se actualiza solo.</p>
+          </div>
+          <div class="b-card" data-reveal>
+            <span class="ico">🛍️</span>
+            <h3>Productos y precios</h3>
+            <p>Tu menú, catálogo o servicios, claros y bonitos.</p>
+          </div>
+          <div class="b-card" data-reveal>
+            <span class="ico">📸</span>
+            <h3>Tus fotos</h3>
+            <p>Galería con tus productos, tu local y tu trabajo.</p>
+          </div>
+          <div class="b-card morado" data-reveal>
+            <span class="ico">🤝</span>
+            <h3>Nosotros nos encargamos</h3>
+            <p>Tú nos mandas tu información; nosotros la diseñamos, la publicamos y te ayudamos con los cambios.</p>
+          </div>
+        </div>
+        <div class="extras" data-reveal>
+          <strong>Extras opcionales:</strong> dominio propio (tunegocio.com), agenda de citas, cotizador, formulario de contacto o un asistente con inteligencia artificial que responda a tus clientes.
         </div>
       </div>
     </section>
 
-    <section id="faq" class="section alt">
+    <section id="como" class="section alt">
+      <div class="container">
+        <div class="titulo" data-reveal>
+          <span class="kicker">Cómo funciona</span>
+          <h2>De la idea a tu página, en 4 pasos</h2>
+        </div>
+        <ol class="pasos">
+          <li data-reveal><span class="num">1</span><h3>Nos escribes</h3><p>Llenas el formulario o nos mandas mensaje. Te respondemos rápido.</p></li>
+          <li data-reveal><span class="num">2</span><h3>Nos mandas tu info</h3><p>Te decimos exactamente qué necesitamos: datos, fotos y horarios.</p></li>
+          <li data-reveal><span class="num">3</span><h3>Te la mostramos</h3><p>Ves tu página antes de publicarla y la ajustamos hasta que te encante.</p></li>
+          <li data-reveal><span class="num">4</span><h3>¡Ya estás en internet!</h3><p>La publicamos y te damos tu link para compartirlo en todos lados.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
       <div class="container narrow">
-        <h2>Preguntas frecuentes</h2>
+        <div class="titulo" data-reveal>
+          <span class="kicker">Preguntas</span>
+          <h2>Preguntas frecuentes</h2>
+        </div>
         <details>
           <summary>¿Qué es una “página de presencia”?</summary>
           <p>Es una página sencilla donde la gente encuentra quién eres, qué ofreces, cómo contactarte y dónde estás. Ideal para negocios que hoy solo tienen redes sociales.</p>
@@ -146,11 +233,19 @@
       </div>
     </section>
 
-    <section id="contacto" class="section cta-final">
-      <div class="container narrow">
-        <h2 class="center">Cotiza tu página gratis</h2>
-        <p class="sub center">Déjanos tus datos y te contactamos.</p>
-        <form class="contact-form" id="contact-form">
+    <section id="contacto" class="section contacto">
+      <div class="glow g3" aria-hidden="true"></div>
+      <div class="container contacto-inner">
+        <div class="contacto-text" data-reveal>
+          <span class="kicker">Cotiza gratis</span>
+          <h2>¿Listo para tener tu página?</h2>
+          <p class="sub">Déjanos tus datos y te contactamos para platicar de tu negocio. Sin compromiso.</p>
+          <ul class="garantias">
+            <li>Respuesta rápida</li><li>Ves tu página antes de publicarla</li><li>Te ayudamos con los cambios</li>
+          </ul>
+          <p class="alt-contact">O escríbenos a <a data-email href="#"></a><span data-whatsapp-wrap hidden> · <a data-whatsapp href="#">WhatsApp</a></span></p>
+        </div>
+        <form class="contact-form" id="contact-form" data-reveal>
           <div class="row2">
             <label>Tu nombre<input name="nombre" required maxlength="100"></label>
             <label>Tu negocio<input name="negocio" required maxlength="150" placeholder="Ej. taquería, estética, taller…"></label>
@@ -160,23 +255,23 @@
             <label><span>Email <small>(opcional)</small></span><input name="email" type="email" maxlength="150"></label>
           </div>
           <label><span>¿Qué te gustaría en tu página? <small>(opcional)</small></span><textarea name="mensaje" rows="3" maxlength="1000"></textarea></label>
-          <button class="btn" type="submit">Enviar</button>
+          <button class="btn" type="submit">Quiero mi cotización →</button>
           <p class="form-status" id="form-status" role="status"></p>
         </form>
-        <p class="center alt-contact">
-          O escríbenos a <a data-email href="#"></a><span data-whatsapp-wrap hidden> · <a data-whatsapp href="#">WhatsApp</a></span>
-        </p>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="container">
-      <span>© <span id="year"></span> <span data-marca>Presencia Pro</span></span>
+      <a href="#" class="logo"><span class="logo-mark" aria-hidden="true">P</span><span data-marca>Presencia Pro</span></a>
+      <span>© <span id="year"></span> <span data-marca>Presencia Pro</span> · Páginas web para negocios</span>
       <a data-email href="#"></a>
     </div>
   </footer>
 
+  <script src="generador/plantilla.js"></script>
+  <script src="demo-en-vivo.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

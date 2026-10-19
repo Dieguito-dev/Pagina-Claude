@@ -11,7 +11,8 @@ Página para vender el servicio: **creamos páginas web sencillas para negocios*
 | `index.html` | La página (inicio, cómo funciona, qué incluye, preguntas y formulario de contacto) |
 | `config.js` | **Lo que más vas a editar:** nombre de la marca, email, WhatsApp y la URL del formulario |
 | `styles.css` | Colores y diseño (los colores están arriba, en `:root`) |
-| `main.js` | Llena la página con `config.js` y envía el formulario |
+| `main.js` | Llena la página con `config.js`, envía el formulario y hace las animaciones |
+| `demo-en-vivo.js` | La demo del inicio: el visitante escribe el nombre de su negocio y ve su página en el celular (usa el motor del generador) |
 | `ejemplos/` | 3 páginas de ejemplo (taquería, estética, taller) para mostrar a clientes. Sirven de plantilla para clientes reales |
 | `img/` | Capturas de los ejemplos y `compartir.png` (la imagen que sale al mandar el link por WhatsApp/Facebook) |
 | `favicon.svg` | Iconito de la pestaña del navegador |

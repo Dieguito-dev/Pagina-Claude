@@ -47,3 +47,22 @@
     }
   });
 })();
+
+// Animaciones al hacer scroll y barra de navegación que cambia al bajar
+(function () {
+  const reveal = document.querySelectorAll("[data-reveal]");
+  if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }),
+      { threshold: 0.12 }
+    );
+    reveal.forEach((el) => io.observe(el));
+  } else {
+    reveal.forEach((el) => el.classList.add("in"));
+  }
+
+  const nav = document.querySelector("[data-nav]");
+  const update = () => nav.classList.toggle("solid", window.scrollY > 40);
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+})();
