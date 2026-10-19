@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generador de páginas</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary: #4f46e5; --tinta: #0f172a; --suave: #5b6475; --borde: #e3e7ef; --fondo: #f5f7fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--tinta); background: var(--fondo); height: 100vh; display: flex; flex-direction: column; }
+    header { background: #fff; border-bottom: 1px solid var(--borde); padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    header h1 { font-size: 1.05rem; margin: 0 auto 0 0; }
+    button, .boton { font: inherit; font-weight: 600; font-size: .88rem; border: 1px solid var(--borde); background: #fff; color: var(--tinta); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+    button:hover, .boton:hover { border-color: var(--tinta); }
+    .principal { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .principal:hover { background: #4338ca; }
+    main { flex: 1; display: grid; grid-template-columns: 430px 1fr; min-height: 0; }
+    .form { overflow-y: auto; padding: 16px; border-right: 1px solid var(--borde); background: #fff; }
+    details.seccion { border: 1px solid var(--borde); border-radius: 14px; margin-bottom: 12px; background: #fff; }
+    details.seccion > summary { padding: 14px 16px; font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+    details.seccion > summary::after { content: "+"; color: var(--suave); }
+    details.seccion[open] > summary::after { content: "–"; }
+    .cuerpo { padding: 0 16px 16px; display: grid; gap: 12px; }
+    label { display: grid; gap: 5px; font-size: .85rem; font-weight: 600; }
+    label small, .ayuda { color: var(--suave); font-weight: 400; font-size: .8rem; }
+    input, textarea, select { font: inherit; font-size: .92rem; font-weight: 400; border: 1px solid var(--borde); border-radius: 10px; padding: 9px 11px; width: 100%; background: #fff; }
+    input:focus, textarea:focus, select:focus { outline: 2px solid var(--primary); border-color: transparent; }
+    textarea { resize: vertical; min-height: 70px; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .temas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .temas button { padding: 10px 6px; border-radius: 12px; font-size: .8rem; }
+    .temas button[aria-pressed="true"] { border: 2px solid var(--primary); background: #eef2ff; }
+    .colores { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .colores .muestra { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--borde); padding: 0; }
+    .colores input[type=color] { width: 44px; height: 34px; padding: 2px; }
+    .dia { display: grid; grid-template-columns: 92px 24px 1fr 1fr; gap: 6px; align-items: center; font-size: .85rem; }
+    .dia input[type=checkbox] { width: 18px; height: 18px; }
+    .dia input[type=time]:disabled { opacity: .35; }
+    .item { border: 1px dashed var(--borde); border-radius: 12px; padding: 10px; display: grid; gap: 8px; position: relative; }
+    .item .quitar { position: absolute; top: 6px; right: 6px; padding: 2px 9px; font-size: .8rem; }
+    .item .fila3 { display: grid; grid-template-columns: 56px 1fr; gap: 8px; }
+    .fotos { display: flex; flex-wrap: wrap; gap: 8px; }
+    .fotos .miniatura { position: relative; }
+    .fotos img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; display: block; }
+    .fotos .miniatura button { position: absolute; top: -6px; right: -6px; padding: 0 7px; font-size: .75rem; }
+    .vista { display: flex; flex-direction: column; min-height: 0; }
+    .vista .barra { display: flex; justify-content: center; gap: 6px; padding: 10px; }
+    .vista .barra button[aria-pressed="true"] { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+    .marco { flex: 1; display: flex; justify-content: center; padding: 0 16px 16px; min-height: 0; }
+    iframe { border: 1px solid var(--borde); border-radius: 12px; background: #fff; width: 100%; height: 100%; transition: width .25s; box-shadow: 0 10px 30px rgba(15,23,42,.08); }
+    iframe.celular { width: 390px; }
+    dialog { border: 0; border-radius: 18px; padding: 24px; max-width: 560px; width: calc(100% - 32px); box-shadow: 0 30px 80px rgba(0,0,0,.3); }
+    dialog::backdrop { background: rgba(15,23,42,.5); }
+    dialog pre { white-space: pre-wrap; background: var(--fondo); border-radius: 12px; padding: 16px; font: .88rem/1.55 Inter, sans-serif; max-height: 55vh; overflow: auto; }
+    .acciones { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
+    .aviso { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--tinta); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: .9rem; opacity: 0; transition: opacity .3s; pointer-events: none; }
+    .aviso.ver { opacity: 1; }
+    @media (max-width: 900px) {
+      body { height: auto; }
+      main { grid-template-columns: 1fr; }
+      .form { border-right: 0; }
+      .vista { height: 85vh; }
+      iframe.celular { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚡ Generador de páginas</h1>
+    <button type="button" id="btn-lista">📋 Lista para el cliente</button>
+    <button type="button" id="btn-ejemplo">Cargar ejemplo</button>
+    <button type="button" id="btn-nuevo">Nuevo</button>
+    <label class="boton" style="display:inline-block">📂 Abrir datos<input type="file" id="abrir" accept=".json,application/json" hidden></label>
+    <button type="button" id="btn-guardar">💾 Guardar datos</button>
+    <button type="button" class="principal" id="btn-descargar">⬇️ Descargar página</button>
+  </header>
+
+  <main>
+    <form class="form" id="form" autocomplete="off" onsubmit="return false">
+      <details class="seccion" open>
+        <summary>1. El negocio</summary>
+        <div class="cuerpo">
+          <label>Nombre del negocio<input name="nombre" placeholder="Ej. Panadería Doña Mary"></label>
+          <label>Giro o frase corta <small>(aparece arriba del título)</small><input name="giro" placeholder="Ej. Panadería artesanal desde 1985"></label>
+          <label>Título principal <small>(la frase grande; si lo dejas vacío se usa el nombre)</small><input name="titulo" placeholder="Ej. Pan recién horneado, todos los días"></label>
+          <label>Descripción<textarea name="descripcion" placeholder="2 o 3 líneas sobre qué hace el negocio y por qué elegirlo"></textarea></label>
+        </div>
+      </details>
+
+      <details class="seccion" open>
+        <summary>2. Estilo</summary>
+        <div class="cuerpo">
+          <div><span class="ayuda">Diseño</span><div class="temas" id="temas"></div></div>
+          <div><span class="ayuda">Color principal (usa el del logo o local del cliente)</span>
+            <div class="colores" id="colores"><input type="color" name="color" value="#4f46e5" aria-label="Elegir otro color"></div></div>
+        </div>
+      </details>
+
+      <details class="seccion">
+        <summary>3. Contacto y ubicación</summary>
+        <div class="cuerpo">
+          <label>WhatsApp <small>(con código de país, ej. 52 1 55 1234 5678)</small><input name="whatsapp" inputmode="tel" placeholder="5215512345678"></label>
+          <label>Mensaje que llega por WhatsApp<input name="mensajeWhatsapp" placeholder="Hola, vi su página y quiero información."></label>
+          <div class="fila">
+            <label>Teléfono<input name="telefono" inputmode="tel"></label>
+            <label>Email<input name="email" type="email"></label>
+          </div>
+          <label>Dirección <small>(se usa para el mapa)</small><input name="direccion" placeholder="Calle, número, colonia, ciudad"></label>
+          <label>Link de Google Maps <small>(opcional, si el mapa no sale bien con la dirección)</small><input name="mapsLink" placeholder="https://maps.app.goo.gl/..."></label>
+        </div>
+      </details>
+
+      <details class="seccion">
+        <summary>4. Horario</summary>
+        <div class="cuerpo" id="horario"><span class="ayuda">Marca los días que abre. Si cierra después de medianoche, pon la hora tal cual (ej. 02:00).</span></div>
+      </details>
+
+      <details class="seccion">
+        <summary>5. Productos o servicios</summary>
+        <div class="cuerpo">
+          <label>Título de la sección<input name="tituloServicios" placeholder="Servicios, Menú, Productos…"></label>
+          <div id="lista-servicios" style="display:grid;gap:10px"></div>
+          <button type="button" data-agregar="servicios">+ Agregar</button>
+        </div>
+      </details>
+
+      <details class="seccion">
+        <summary>6. ¿Por qué elegirlos?</summary>
+        <div class="cuerpo">
+          <span class="ayuda">3 cosas que hacen especial al negocio. Opcional.</span>
+          <div id="lista-razones" style="display:grid;gap:10px"></div>
+          <button type="button" data-agregar="razones">+ Agregar</button>
+        </div>
+      </details>
+
+      <details class="seccion">
+        <summary>7. Fotos</summary>
+        <div class="cuerpo">
+          <span class="ayuda">Se ajustan de tamaño solas. Todo queda dentro del archivo de la página.</span>
+          <label>Logo<input type="file" accept="image/*" data-foto="logo"></label>
+          <div class="fotos" id="foto-logo"></div>
+          <label>Foto de portada <small>(va de fondo en la parte de arriba)</small><input type="file" accept="image/*" data-foto="portada"></label>
+          <div class="fotos" id="foto-portada"></div>
+          <label>Galería <small>(puedes elegir varias)</small><input type="file" accept="image/*" multiple data-foto="galeria"></label>
+          <div class="fotos" id="foto-galeria"></div>
+        </div>
+      </details>
+
+      <details class="seccion">
+        <summary>8. Reseñas</summary>
+        <div class="cuerpo">
+          <span class="ayuda">Solo reseñas reales (cópialas de Google o Facebook del cliente). Opcional.</span>
+          <div id="lista-resenas" style="display:grid;gap:10px"></div>
+          <button type="button" data-agregar="resenas">+ Agregar</button>
+        </div>
+      </details>
+
+      <details class="seccion">
+        <summary>9. Redes y cierre</summary>
+        <div class="cuerpo">
+          <label>Facebook <small>(link o usuario)</small><input name="redes.facebook"></label>
+          <label>Instagram <small>(link o @usuario)</small><input name="redes.instagram"></label>
+          <label>TikTok <small>(link o @usuario)</small><input name="redes.tiktok"></label>
+          <label>Frase final <small>(antes del último botón de WhatsApp)</small><input name="textoFinal" placeholder="¿Te ayudamos?"></label>
+        </div>
+      </details>
+    </form>
+
+    <div class="vista">
+      <div class="barra">
+        <button type="button" data-vista="celular" aria-pressed="true">📱 Celular</button>
+        <button type="button" data-vista="compu" aria-pressed="false">💻 Compu</button>
+      </div>
+      <div class="marco"><iframe id="preview" class="celular" title="Vista previa"></iframe></div>
+    </div>
+  </main>
+
+  <dialog id="dlg-lista">
+    <h2 style="margin-top:0">📋 Lista para el cliente</h2>
+    <p class="ayuda">Cópiala y mándasela por WhatsApp a tu cliente.</p>
+    <pre id="texto-lista"></pre>
+    <div class="acciones"><button type="button" onclick="this.closest('dialog').close()">Cerrar</button><button type="button" class="principal" id="copiar-lista">Copiar</button></div>
+  </dialog>
+
+  <div class="aviso" id="aviso"></div>
+
+  <script src="lista-cliente.js"></script>
+  <script src="plantilla.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>

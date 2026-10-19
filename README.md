@@ -15,6 +15,7 @@ Página para vender el servicio: **creamos páginas web sencillas para negocios*
 | `ejemplos/` | 3 páginas de ejemplo (taquería, estética, taller) para mostrar a clientes. Sirven de plantilla para clientes reales |
 | `img/` | Capturas de los ejemplos y `compartir.png` (la imagen que sale al mandar el link por WhatsApp/Facebook) |
 | `favicon.svg` | Iconito de la pestaña del navegador |
+| `generador/` | **Para hacer las páginas de tus clientes sin código**: formulario → vista previa → descargar ([instrucciones](generador/README.md)) |
 | `hoja-de-contactos/` | Script para que los contactos del formulario se guarden en una hoja de Google ([instrucciones](hoja-de-contactos/README.md)) |
 | `agente/` | Extra en pausa: chat con IA para cuando un cliente lo quiera ([instrucciones](agente/README.md)) |
 
@@ -26,6 +27,12 @@ Es una página estática (no necesita servidor ni llaves de API):
 - **GitHub Pages:** en el repo, *Settings → Pages → Deploy from a branch* y elige la rama.
 
 Para verla en tu compu basta con abrir `index.html` en el navegador.
+
+## Cuando llega un cliente
+
+1. Mándale la lista de lo que necesitas (botón **📋 Lista para el cliente** del generador).
+2. Abre `generador/index.html`, llena sus datos y descarga su página.
+3. Publícala gratis con Netlify Drop (pasos en [generador/README.md](generador/README.md)).
 
 ## Pendientes
 
