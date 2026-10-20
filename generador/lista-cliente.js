@@ -14,7 +14,7 @@ window.LISTA_CLIENTE = `¡Hola! 👋 Para armar tu página necesito lo siguiente
 📞 *Contacto*
 6. WhatsApp para recibir mensajes de clientes
 7. Teléfono (si es distinto) y correo (opcional)
-8. Dirección completa (calle, número, colonia, ciudad)
+8. Dirección completa (dirección, barrio y ciudad)
 9. Link de tu negocio en Google Maps (si tienes)
 
 🕘 *Horario*

@@ -3,7 +3,7 @@
 
   // Datos del negocio
   document.querySelectorAll("[data-marca]").forEach((el) => (el.textContent = cfg.marca));
-  document.title = document.title.replace("Presencia Pro", cfg.marca);
+  document.title = document.title.replace("Vitrina", cfg.marca);
   document.querySelectorAll("[data-email]").forEach((el) => {
     el.href = `mailto:${cfg.email}`;
     el.textContent = cfg.email;

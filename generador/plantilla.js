@@ -54,7 +54,7 @@
   const horaTexto = (h) => {
     if (!h) return "";
     const [hh, mm] = h.split(":").map(Number);
-    const sufijo = hh < 12 || hh === 24 ? "am" : "pm";
+    const sufijo = hh < 12 || hh === 24 ? "a. m." : "p. m.";
     const h12 = hh % 12 === 0 ? 12 : hh % 12;
     return `${h12}:${String(mm).padStart(2, "0")} ${sufijo}`;
   };

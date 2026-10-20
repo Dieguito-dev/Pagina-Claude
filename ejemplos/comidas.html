@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tacos El Güero · Ejemplo</title>
+  <title>El Mono Comidas Rápidas · Ejemplo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
   <script src="../config.js"></script>
@@ -37,9 +37,12 @@
     .nav-links { display: flex; gap: 26px; font-weight: 600; font-size: .95rem; }
     .nav-links a { text-decoration: none; opacity: .8; } .nav-links a:hover { opacity: 1; }
 
-    /* Papel picado */
-    .papel { position: absolute; top: 68px; left: 0; right: 0; height: 70px; display: flex; pointer-events: none; z-index: 1; }
-    .papel svg { flex: 1; height: 100%; }
+    /* Guirnalda de bombillos */
+    .bombillos { position: absolute; top: 68px; left: 0; right: 0; height: 70px; pointer-events: none; z-index: 1; }
+    .bombillos svg { width: 100%; height: 100%; }
+    .bombillos circle { animation: brillo 2.4s ease-in-out infinite; }
+    .bombillos circle:nth-child(odd) { animation-delay: -1.2s; }
+    @keyframes brillo { 50% { opacity: .55; } }
 
     /* Hero */
     .hero { position: relative; margin-top: -68px; padding: 190px 0 90px; overflow: hidden;
@@ -60,16 +63,16 @@
     .rating b { color: var(--crema); font-size: 1.1rem; }
     .estrellas { color: var(--amarillo); letter-spacing: 2px; }
 
-    /* Trompo ilustrado */
-    .trompo { position: relative; aspect-ratio: 1; max-width: 440px; justify-self: center; width: 100%; }
-    .trompo .plato { position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #3a2a20, #1c120d 70%); box-shadow: 0 40px 80px rgba(0,0,0,.6), inset 0 0 0 10px rgba(255,255,255,.03); }
-    .trompo .taco { position: absolute; font-size: clamp(7rem, 22vw, 11rem); filter: drop-shadow(0 20px 30px rgba(0,0,0,.5)); animation: flota 5s ease-in-out infinite; }
-    .trompo .t1 { left: 14%; top: 18%; transform: rotate(-12deg); }
-    .trompo .t2 { right: 8%; top: 38%; font-size: clamp(5rem, 16vw, 8rem); animation-delay: -1.5s; }
-    .trompo .t3 { left: 30%; bottom: 6%; font-size: clamp(3.6rem, 11vw, 5.5rem); animation-delay: -3s; }
+    /* Comida ilustrada */
+    .platos { position: relative; aspect-ratio: 1; max-width: 440px; justify-self: center; width: 100%; }
+    .platos .plato { position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #3a2a20, #1c120d 70%); box-shadow: 0 40px 80px rgba(0,0,0,.6), inset 0 0 0 10px rgba(255,255,255,.03); }
+    .platos .comida { position: absolute; font-size: clamp(7rem, 22vw, 11rem); filter: drop-shadow(0 20px 30px rgba(0,0,0,.5)); animation: flota 5s ease-in-out infinite; }
+    .platos .t1 { left: 14%; top: 18%; transform: rotate(-12deg); }
+    .platos .t2 { right: 8%; top: 38%; font-size: clamp(5rem, 16vw, 8rem); animation-delay: -1.5s; }
+    .platos .t3 { left: 30%; bottom: 6%; font-size: clamp(3.6rem, 11vw, 5.5rem); animation-delay: -3s; }
     @keyframes flota { 50% { translate: 0 -12px; } }
     .sello { position: absolute; right: 0; top: 4%; width: 120px; height: 120px; border-radius: 50%; background: var(--rojo); display: grid; place-items: center; text-align: center; font-family: "Bebas Neue"; font-size: 1.35rem; line-height: 1; transform: rotate(12deg); box-shadow: 0 10px 30px rgba(227,38,47,.4); animation: gira 18s linear infinite; }
-    .sello span { display: block; font-size: 2.3rem; color: var(--amarillo); }
+    .sello span { display: block; font-size: 1.55rem; color: var(--amarillo); }
     @keyframes gira { to { transform: rotate(372deg); } }
 
     /* Cinta */
@@ -145,7 +148,7 @@
 
     /* CTA final */
     .final { text-align: center; background: var(--rojo); position: relative; overflow: hidden; }
-    .final::before { content: "🌮 🌶️ 🌮 🌶️ 🌮 🌶️ 🌮 🌶️ 🌮 🌶️ 🌮 🌶️"; position: absolute; inset: 0; font-size: 4rem; opacity: .08; word-spacing: 30px; line-height: 1.6; transform: rotate(-8deg) scale(1.4); }
+    .final::before { content: "🍔 🌭 🍟 🍔 🌭 🍟 🍔 🌭 🍟 🍔 🌭 🍟"; position: absolute; inset: 0; font-size: 4rem; opacity: .08; word-spacing: 30px; line-height: 1.6; transform: rotate(-8deg) scale(1.4); }
     .final .wrap { position: relative; }
     .final h2 { font-size: clamp(3rem, 9vw, 5.5rem); }
     .final p { font-size: 1.15rem; margin: 0 0 28px; }
@@ -163,7 +166,7 @@
       .nav-links { display: none; }
       .menu-box { padding: 28px 20px; }
       .hero { padding-top: 165px; }
-      .trompo { max-width: 320px; }
+      .platos { max-width: 320px; }
       section { padding: 72px 0; }
     }
   </style>
@@ -171,45 +174,41 @@
 <body>
   <header class="nav" data-nav>
     <div class="wrap">
-      <a class="logo" href="#">Tacos <span>El Güero</span></a>
+      <a class="logo" href="#">El <span>Mono</span></a>
       <nav class="nav-links"><a href="#menu">Menú</a><a href="#resenas">Reseñas</a><a href="#visitanos">Visítanos</a></nav>
       <a class="btn" href="#" data-demo="abre tu WhatsApp para recibir pedidos" style="padding:10px 18px">Pedir</a>
     </div>
   </header>
 
   <section class="hero">
-    <div class="papel" aria-hidden="true">
-      <svg viewBox="0 0 120 60" preserveAspectRatio="none"><path d="M0 0h120v44l-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16z" fill="#e3262f"/><circle cx="30" cy="20" r="6" fill="#140d0a"/><circle cx="60" cy="24" r="8" fill="#140d0a"/><circle cx="90" cy="20" r="6" fill="#140d0a"/></svg>
-      <svg viewBox="0 0 120 60" preserveAspectRatio="none"><path d="M0 0h120v44l-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16z" fill="#ffc531"/><rect x="50" y="12" width="20" height="20" transform="rotate(45 60 22)" fill="#140d0a"/></svg>
-      <svg viewBox="0 0 120 60" preserveAspectRatio="none"><path d="M0 0h120v44l-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16z" fill="#2fb563"/><circle cx="60" cy="22" r="10" fill="#140d0a"/></svg>
-      <svg viewBox="0 0 120 60" preserveAspectRatio="none"><path d="M0 0h120v44l-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16z" fill="#ff4f8b"/><circle cx="35" cy="22" r="7" fill="#140d0a"/><circle cx="85" cy="22" r="7" fill="#140d0a"/></svg>
-      <svg viewBox="0 0 120 60" preserveAspectRatio="none"><path d="M0 0h120v44l-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16-10 16-10-16z" fill="#e3262f"/><rect x="50" y="12" width="20" height="20" transform="rotate(45 60 22)" fill="#140d0a"/></svg>
+    <div class="bombillos" aria-hidden="true">
+      <svg viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0 14 Q 60 40 120 22 T 240 22 T 360 22 T 480 22 T 600 22 T 720 22 T 840 22 T 960 22 T 1080 22 T 1200 14" stroke="#3a2a21" stroke-width="2" fill="none"/><circle cx="30" cy="44" r="7" fill="#ffc531" style="filter:drop-shadow(0 0 6px #ffc531)"/><circle cx="90" cy="32" r="7" fill="#ff4f8b" style="filter:drop-shadow(0 0 6px #ff4f8b)"/><circle cx="150" cy="44" r="7" fill="#2fb563" style="filter:drop-shadow(0 0 6px #2fb563)"/><circle cx="210" cy="32" r="7" fill="#e3262f" style="filter:drop-shadow(0 0 6px #e3262f)"/><circle cx="270" cy="44" r="7" fill="#4fc3ff" style="filter:drop-shadow(0 0 6px #4fc3ff)"/><circle cx="330" cy="32" r="7" fill="#ffc531" style="filter:drop-shadow(0 0 6px #ffc531)"/><circle cx="390" cy="44" r="7" fill="#ff4f8b" style="filter:drop-shadow(0 0 6px #ff4f8b)"/><circle cx="450" cy="32" r="7" fill="#2fb563" style="filter:drop-shadow(0 0 6px #2fb563)"/><circle cx="510" cy="44" r="7" fill="#e3262f" style="filter:drop-shadow(0 0 6px #e3262f)"/><circle cx="570" cy="32" r="7" fill="#4fc3ff" style="filter:drop-shadow(0 0 6px #4fc3ff)"/><circle cx="630" cy="44" r="7" fill="#ffc531" style="filter:drop-shadow(0 0 6px #ffc531)"/><circle cx="690" cy="32" r="7" fill="#ff4f8b" style="filter:drop-shadow(0 0 6px #ff4f8b)"/><circle cx="750" cy="44" r="7" fill="#2fb563" style="filter:drop-shadow(0 0 6px #2fb563)"/><circle cx="810" cy="32" r="7" fill="#e3262f" style="filter:drop-shadow(0 0 6px #e3262f)"/><circle cx="870" cy="44" r="7" fill="#4fc3ff" style="filter:drop-shadow(0 0 6px #4fc3ff)"/><circle cx="930" cy="32" r="7" fill="#ffc531" style="filter:drop-shadow(0 0 6px #ffc531)"/><circle cx="990" cy="44" r="7" fill="#ff4f8b" style="filter:drop-shadow(0 0 6px #ff4f8b)"/><circle cx="1050" cy="32" r="7" fill="#2fb563" style="filter:drop-shadow(0 0 6px #2fb563)"/><circle cx="1110" cy="44" r="7" fill="#e3262f" style="filter:drop-shadow(0 0 6px #e3262f)"/><circle cx="1170" cy="32" r="7" fill="#4fc3ff" style="filter:drop-shadow(0 0 6px #4fc3ff)"/></svg>
     </div>
     <div class="wrap">
       <div data-reveal>
-        <span class="estado" data-horario='{"0":[14,23],"1":[18,24],"2":[18,24],"3":[18,24],"4":[18,24],"5":[18,26],"6":[18,26]}'>Horario</span>
-        <span class="mano">desde 1998 en el Centro</span>
-        <h1>El pastor que <em>se te antoja</em> a medianoche</h1>
-        <p class="lead">Trompo al carbón, tortilla hecha a mano y salsas de la casa. Ven a la taquería o pídelos a tu casa en 30 minutos.</p>
+        <span class="estado" data-horario='{"0":[16,23],"1":[17,24],"2":[17,24],"3":[17,24],"4":[17,24],"5":[17,26],"6":[17,26]}'>Horario</span>
+        <span class="mano">desde 2005 en Laureles</span>
+        <h1>Las comidas rápidas que <em>se te antojan</em> de noche</h1>
+        <p class="lead">Perros, hamburguesas, salchipapas y arepas rellenas hechas al momento, con las salsas de la casa. Ven al local o pide a domicilio.</p>
         <div class="ctas">
           <a class="btn" href="#" data-demo="abre tu WhatsApp para recibir pedidos">🛵 Pedir a domicilio</a>
           <a class="btn out" href="#menu">Ver el menú</a>
         </div>
-        <div class="rating"><span class="estrellas">★★★★★</span><span><b>4.8</b> · más de 1,200 reseñas en Google</span></div>
+        <div class="rating"><span class="estrellas">★★★★★</span><span><b>4.8</b> · más de 1.200 reseñas en Google</span></div>
       </div>
-      <div class="trompo" aria-hidden="true">
+      <div class="platos" aria-hidden="true">
         <div class="plato"></div>
-        <div class="taco t1">🌮</div>
-        <div class="taco t2">🌮</div>
-        <div class="taco t3">🌶️</div>
-        <div class="sello"><div><span>3×$60</span>los martes</div></div>
+        <div class="comida t1">🍔</div>
+        <div class="comida t2">🌭</div>
+        <div class="comida t3">🍟</div>
+        <div class="sello"><div><span>2×$25.000</span>los martes</div></div>
       </div>
     </div>
   </section>
 
   <div class="cinta" aria-hidden="true"><div>
-    <span>★ AL PASTOR</span><span>★ SUADERO</span><span>★ CAMPECHANO</span><span>★ GRINGAS</span><span>★ CEBOLLITAS</span><span>★ AGUAS FRESCAS</span>
-    <span>★ AL PASTOR</span><span>★ SUADERO</span><span>★ CAMPECHANO</span><span>★ GRINGAS</span><span>★ CEBOLLITAS</span><span>★ AGUAS FRESCAS</span>
+    <span>★ PERROS</span><span>★ HAMBURGUESAS</span><span>★ SALCHIPAPAS</span><span>★ AREPAS RELLENAS</span><span>★ PATACONES</span><span>★ JUGOS NATURALES</span>
+    <span>★ PERROS</span><span>★ HAMBURGUESAS</span><span>★ SALCHIPAPAS</span><span>★ AREPAS RELLENAS</span><span>★ PATACONES</span><span>★ JUGOS NATURALES</span>
   </div></div>
 
   <section id="favoritos">
@@ -220,19 +219,19 @@
       </div>
       <div class="favoritos">
         <article class="fav" data-reveal>
-          <div class="foto f1">🌮<small>🔥 El más pedido</small></div>
-          <div class="info"><h3>Al pastor</h3><p>Del trompo, con piña asada, cebolla y cilantro.</p>
-            <div class="pie"><span class="precio">$22</span><button class="mini" onclick="demoWhatsApp('Hola, quiero pedir 5 tacos al pastor')">+ Pedir</button></div></div>
+          <div class="foto f1">🌭<small>🔥 El más pedido</small></div>
+          <div class="info"><h3>Perro especial</h3><p>Salchicha americana, queso, tocineta, papita y salsas de la casa.</p>
+            <div class="pie"><span class="precio">$14.000</span><button class="mini" onclick="demoWhatsApp('Hola, quiero pedir 2 perros especiales')">+ Pedir</button></div></div>
         </article>
         <article class="fav" data-reveal>
-          <div class="foto f2">🫓<small>🧀 Con queso</small></div>
-          <div class="info"><h3>Gringa</h3><p>Pastor con queso gratinado en tortilla de harina.</p>
-            <div class="pie"><span class="precio">$55</span><button class="mini" onclick="demoWhatsApp('Hola, quiero pedir 2 gringas')">+ Pedir</button></div></div>
+          <div class="foto f2">🍔<small>🧀 Doble queso</small></div>
+          <div class="info"><h3>Hamburguesa doble</h3><p>Doble carne a la parrilla, queso cheddar, tocineta y papas.</p>
+            <div class="pie"><span class="precio">$22.000</span><button class="mini" onclick="demoWhatsApp('Hola, quiero pedir 2 hamburguesas dobles')">+ Pedir</button></div></div>
         </article>
         <article class="fav" data-reveal>
-          <div class="foto f3">🥩<small>⭐ Receta del Güero</small></div>
-          <div class="info"><h3>Campechano</h3><p>Suadero con longaniza dorada en el comal.</p>
-            <div class="pie"><span class="precio">$25</span><button class="mini" onclick="demoWhatsApp('Hola, quiero pedir 5 campechanos')">+ Pedir</button></div></div>
+          <div class="foto f3">🍟<small>⭐ Receta del Mono</small></div>
+          <div class="info"><h3>Salchipapa</h3><p>Papa a la francesa, salchicha, queso gratinado y salsas.</p>
+            <div class="pie"><span class="precio">$16.000</span><button class="mini" onclick="demoWhatsApp('Hola, quiero pedir una salchipapa grande')">+ Pedir</button></div></div>
         </article>
       </div>
     </div>
@@ -243,52 +242,52 @@
       <div class="menu-box" data-reveal data-tabs>
         <h2 style="color:var(--rojo)">Menú completo</h2>
         <div class="tabs" role="tablist">
-          <button data-tab="tacos" aria-selected="true">Tacos</button>
-          <button data-tab="especiales" aria-selected="false">Especialidades</button>
+          <button data-tab="rapidas" aria-selected="true">Comidas rápidas</button>
+          <button data-tab="especiales" aria-selected="false">Para compartir</button>
           <button data-tab="bebidas" aria-selected="false">Bebidas</button>
         </div>
-        <div class="platillos" data-panel="tacos">
-          <div class="platillo"><b>Al pastor<small>Con piña</small></b><span class="linea"></span><span class="precio">$22</span></div>
-          <div class="platillo"><b>Suadero<small>Suavecito</small></b><span class="linea"></span><span class="precio">$22</span></div>
-          <div class="platillo"><b>Campechano<small>Suadero y longaniza</small></b><span class="linea"></span><span class="precio">$25</span></div>
-          <div class="platillo"><b>Bistec<small>Con cebollitas</small></b><span class="linea"></span><span class="precio">$24</span></div>
-          <div class="platillo"><b>Tripa<small>Dorada o suave</small></b><span class="linea"></span><span class="precio">$26</span></div>
-          <div class="platillo"><b>Orden de 5<small>Del que quieras</small></b><span class="linea"></span><span class="precio">$100</span></div>
+        <div class="platillos" data-panel="rapidas">
+          <div class="platillo"><b>Perro sencillo<small>Salchicha, papita y salsas</small></b><span class="linea"></span><span class="precio">$10.000</span></div>
+          <div class="platillo"><b>Perro especial<small>Con queso y tocineta</small></b><span class="linea"></span><span class="precio">$14.000</span></div>
+          <div class="platillo"><b>Hamburguesa sencilla<small>Con papas</small></b><span class="linea"></span><span class="precio">$15.000</span></div>
+          <div class="platillo"><b>Hamburguesa doble<small>Doble carne y queso</small></b><span class="linea"></span><span class="precio">$22.000</span></div>
+          <div class="platillo"><b>Arepa rellena<small>Pollo, carne o mixta</small></b><span class="linea"></span><span class="precio">$12.000</span></div>
+          <div class="platillo"><b>Salchipapa<small>Personal</small></b><span class="linea"></span><span class="precio">$16.000</span></div>
         </div>
         <div class="platillos" data-panel="especiales" hidden>
-          <div class="platillo"><b>Gringa<small>Pastor y queso</small></b><span class="linea"></span><span class="precio">$55</span></div>
-          <div class="platillo"><b>Volcán<small>Tostada con queso y carne</small></b><span class="linea"></span><span class="precio">$35</span></div>
-          <div class="platillo"><b>Quesadilla<small>Harina o maíz</small></b><span class="linea"></span><span class="precio">$45</span></div>
-          <div class="platillo"><b>Alambre<small>Con pimiento y tocino</small></b><span class="linea"></span><span class="precio">$120</span></div>
-          <div class="platillo"><b>Kilo de pastor<small>Con tortillas y salsas</small></b><span class="linea"></span><span class="precio">$380</span></div>
-          <div class="platillo"><b>Cebollitas asadas<small>Con limón y sal</small></b><span class="linea"></span><span class="precio">$30</span></div>
+          <div class="platillo"><b>Picada para 2<small>Carnes, chorizo, papa y arepa</small></b><span class="linea"></span><span class="precio">$35.000</span></div>
+          <div class="platillo"><b>Picada familiar<small>Para 4 personas</small></b><span class="linea"></span><span class="precio">$65.000</span></div>
+          <div class="platillo"><b>Patacón con todo<small>Pollo, carne, queso y hogao</small></b><span class="linea"></span><span class="precio">$18.000</span></div>
+          <div class="platillo"><b>Salchipapa familiar<small>Para compartir</small></b><span class="linea"></span><span class="precio">$30.000</span></div>
+          <div class="platillo"><b>Combo pareja<small>2 hamburguesas y 2 gaseosas</small></b><span class="linea"></span><span class="precio">$34.000</span></div>
+          <div class="platillo"><b>Papas a la francesa<small>Porción grande</small></b><span class="linea"></span><span class="precio">$7.000</span></div>
         </div>
         <div class="platillos" data-panel="bebidas" hidden>
-          <div class="platillo"><b>Horchata<small>1 litro</small></b><span class="linea"></span><span class="precio">$35</span></div>
-          <div class="platillo"><b>Jamaica<small>1 litro</small></b><span class="linea"></span><span class="precio">$35</span></div>
-          <div class="platillo"><b>Refresco<small>De vidrio</small></b><span class="linea"></span><span class="precio">$25</span></div>
-          <div class="platillo"><b>Agua del día<small>Pregunta el sabor</small></b><span class="linea"></span><span class="precio">$35</span></div>
+          <div class="platillo"><b>Jugo natural en agua<small>Mora, lulo, maracuyá o mango</small></b><span class="linea"></span><span class="precio">$6.000</span></div>
+          <div class="platillo"><b>Jugo natural en leche<small>El sabor que quieras</small></b><span class="linea"></span><span class="precio">$8.000</span></div>
+          <div class="platillo"><b>Limonada de coco<small>La favorita</small></b><span class="linea"></span><span class="precio">$9.000</span></div>
+          <div class="platillo"><b>Gaseosa<small>Personal</small></b><span class="linea"></span><span class="precio">$4.000</span></div>
         </div>
-        <p class="nota">🌶️ Salsas de la casa: verde cruda, roja de árbol y la "del Güero" (aguas, pica).</p>
+        <p class="nota">🌶️ Salsas de la casa: rosada, piña, tártara y la "del Mono" (ojo, pica).</p>
       </div>
     </div>
   </section>
 
   <section style="padding-top:0">
     <div class="wrap porque">
-      <div class="razon" data-reveal><div class="ico">🔥</div><h3>Al carbón, siempre</h3><p>El trompo se cocina a la leña, como hace 25 años. Ese sabor no se finge.</p></div>
-      <div class="razon" data-reveal><div class="ico">🫓</div><h3>Tortilla a mano</h3><p>Hacemos la masa todos los días. Nada de tortilla de paquete.</p></div>
-      <div class="razon" data-reveal><div class="ico">🛵</div><h3>En tu casa en 30 min</h3><p>Llevamos a domicilio en 3 km a la redonda, bien calientitos.</p></div>
+      <div class="razon" data-reveal><div class="ico">🔥</div><h3>A la parrilla</h3><p>Las carnes se asan al carbón al momento. Ese sabor no se finge.</p></div>
+      <div class="razon" data-reveal><div class="ico">🥫</div><h3>Salsas de la casa</h3><p>Las preparamos nosotros todos los días, con nuestra receta.</p></div>
+      <div class="razon" data-reveal><div class="ico">🛵</div><h3>Domicilio en 30 min</h3><p>Llevamos a domicilio en el barrio y alrededores, bien calientico.</p></div>
     </div>
   </section>
 
   <section id="resenas" style="padding-top:0">
     <div class="wrap">
-      <div class="titulo" data-reveal><h2>Lo que dice la banda</h2><p>Reseñas de Google de nuestros clientes.</p></div>
+      <div class="titulo" data-reveal><h2>Lo que dicen los clientes</h2><p>Reseñas de Google de nuestros clientes.</p></div>
       <div class="resenas">
-        <div class="resena" data-reveal><span class="estrellas">★★★★★</span><p>"Los mejores al pastor de la zona, sin exagerar. La salsa del Güero es otro nivel."</p><div class="autor"><i style="background:#ffc531">M</i><div>Mariana G.<small>hace 2 semanas</small></div></div></div>
-        <div class="resena" data-reveal><span class="estrellas">★★★★★</span><p>"Pedí a domicilio y llegaron calientitos en 25 minutos. Ya es nuestro lugar de los viernes."</p><div class="autor"><i style="background:#ff4f8b">J</i><div>Jorge R.<small>hace 1 mes</small></div></div></div>
-        <div class="resena" data-reveal><span class="estrellas">★★★★★</span><p>"Atención rapidísima aunque esté lleno. Las gringas, una maravilla."</p><div class="autor"><i style="background:#2fb563">D</i><div>Daniela P.<small>hace 3 meses</small></div></div></div>
+        <div class="resena" data-reveal><span class="estrellas">★★★★★</span><p>"Las mejores salchipapas del barrio, sin exagerar. La salsa del Mono es otro nivel."</p><div class="autor"><i style="background:#ffc531">V</i><div>Valentina R.<small>hace 2 semanas</small></div></div></div>
+        <div class="resena" data-reveal><span class="estrellas">★★★★★</span><p>"Pedimos domicilio y llegó calientico en 25 minutos. Ya es fijo los viernes."</p><div class="autor"><i style="background:#ff4f8b">A</i><div>Andrés M.<small>hace 1 mes</small></div></div></div>
+        <div class="resena" data-reveal><span class="estrellas">★★★★★</span><p>"Atienden rapidísimo aunque esté lleno. La hamburguesa doble, una delicia."</p><div class="autor"><i style="background:#2fb563">C</i><div>Camila P.<small>hace 3 meses</small></div></div></div>
       </div>
     </div>
   </section>
@@ -297,27 +296,27 @@
     <div class="wrap visita">
       <div class="horario" data-reveal>
         <h2>Horarios</h2>
-        <span class="estado" data-horario='{"0":[14,23],"1":[18,24],"2":[18,24],"3":[18,24],"4":[18,24],"5":[18,26],"6":[18,26]}'>Horario</span>
+        <span class="estado" data-horario='{"0":[16,23],"1":[17,24],"2":[17,24],"3":[17,24],"4":[17,24],"5":[17,26],"6":[17,26]}'>Horario</span>
         <table>
-          <tr data-dia="1 2 3 4"><td>Lunes a jueves</td><td>6:00 pm – 12:00 am</td></tr>
-          <tr data-dia="5 6"><td>Viernes y sábado</td><td>6:00 pm – 2:00 am</td></tr>
-          <tr data-dia="0"><td>Domingo</td><td>2:00 pm – 11:00 pm</td></tr>
+          <tr data-dia="1 2 3 4"><td>Lunes a jueves</td><td>5:00 p. m. – 12:00 a. m.</td></tr>
+          <tr data-dia="5 6"><td>Viernes y sábado</td><td>5:00 p. m. – 2:00 a. m.</td></tr>
+          <tr data-dia="0"><td>Domingos y festivos</td><td>4:00 p. m. – 11:00 p. m.</td></tr>
         </table>
-        <p style="color:var(--gris);margin:0">💳 Aceptamos efectivo, tarjeta y transferencia.</p>
+        <p style="color:var(--gris);margin:0">💳 Recibimos efectivo, tarjeta, Nequi y Daviplata.</p>
       </div>
       <div class="mapa" data-reveal aria-label="Mapa de ubicación">
         <div class="calle" style="left:0;right:0;top:40%;height:26px"></div>
         <div class="calle" style="top:0;bottom:0;left:58%;width:22px"></div>
         <div class="calle" style="top:0;bottom:0;left:18%;width:14px"></div>
         <div class="pin">📍</div>
-        <div class="dir"><div><b>Av. Juárez 123, Col. Centro</b><small>Frente al jardín principal</small></div><a class="btn" href="#" data-demo="abre Google Maps con la ruta a tu negocio" style="padding:10px 16px">Cómo llegar</a></div>
+        <div class="dir"><div><b>Cra. 70 # 44-23, Laureles</b><small>Frente al parque</small></div><a class="btn" href="#" data-demo="abre Google Maps con la ruta a tu negocio" style="padding:10px 16px">Cómo llegar</a></div>
       </div>
     </div>
   </section>
 
   <section class="final">
     <div class="wrap" data-reveal>
-      <h2>¿Ya se te antojó?</h2>
+      <h2>¿Ya te dio hambre?</h2>
       <p>Mándanos tu pedido por WhatsApp y te lo llevamos.</p>
       <a class="btn" href="#" data-demo="abre tu WhatsApp para recibir pedidos">💬 Pedir por WhatsApp</a>
     </div>
@@ -325,7 +324,7 @@
 
   <footer>
     <div class="wrap">
-      <span>© Tacos El Güero · Av. Juárez 123, Col. Centro</span>
+      <span>© El Mono Comidas Rápidas · Cra. 70 # 44-23, Laureles</span>
       <nav><a href="#" data-demo="lleva a tu Facebook">Facebook</a><a href="#" data-demo="lleva a tu Instagram">Instagram</a><a href="#" data-demo="lleva a tu TikTok">TikTok</a></nav>
     </div>
   </footer>

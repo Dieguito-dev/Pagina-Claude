@@ -1,8 +1,8 @@
-# Presencia Pro — Páginas web de presencia para negocios
+# Vitrina — Páginas web de presencia para negocios
 
 Página para vender el servicio: **creamos páginas web sencillas para negocios** (quién eres, qué ofreces, ubicación, horarios y contacto).
 
-> "Presencia Pro" es un nombre provisional. Se cambia en `config.js`.
+> El nombre de la marca se cambia en `config.js`.
 
 ## Estructura
 
@@ -13,7 +13,7 @@ Página para vender el servicio: **creamos páginas web sencillas para negocios*
 | `styles.css` | Colores y diseño (los colores están arriba, en `:root`) |
 | `main.js` | Llena la página con `config.js`, envía el formulario y hace las animaciones |
 | `demo-en-vivo.js` | La demo del inicio: el visitante escribe el nombre de su negocio y ve su página en el celular (usa el motor del generador) |
-| `ejemplos/` | 3 páginas de ejemplo (taquería, estética, taller) para mostrar a clientes. Sirven de plantilla para clientes reales |
+| `ejemplos/` | 3 páginas de ejemplo (comidas rápidas, peluquería y spa, taller) para mostrar a clientes. Sirven de plantilla para clientes reales |
 | `img/` | Capturas de los ejemplos y `compartir.png` (la imagen que sale al mandar el link por WhatsApp/Facebook) |
 | `favicon.svg` | Iconito de la pestaña del navegador |
 | `generador/` | **Para hacer las páginas de tus clientes sin código**: formulario → vista previa → descargar ([instrucciones](generador/README.md)) |
@@ -37,7 +37,7 @@ Para verla en tu compu basta con abrir `index.html` en el navegador.
 
 ## Pendientes
 
-- [ ] Elegir nombre de la marca (`config.js` → `marca`)
+- [x] Elegir nombre de la marca: **Vitrina**
 - [ ] Conectar el formulario con la hoja de Google (`hoja-de-contactos/README.md`)
 - [ ] (Opcional) Número de WhatsApp (`config.js` → `whatsapp`)
 - [ ] Definir precios
