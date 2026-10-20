@@ -66,3 +66,21 @@
   update();
   window.addEventListener("scroll", update, { passive: true });
 })();
+
+// Fondo dinámico: cada sección define su color y sus luces (data-tono="fondo,luz1,luz2")
+(function () {
+  const raiz = document.documentElement.style;
+  const secciones = document.querySelectorAll("[data-tono]");
+  const aplicar = (sec) => {
+    const [fondo, luz1, luz2] = sec.dataset.tono.split(",");
+    raiz.setProperty("--fondo", fondo);
+    raiz.setProperty("--luz-1", luz1);
+    raiz.setProperty("--luz-2", luz2);
+  };
+  if (!("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((en) => en.isIntersecting && aplicar(en.target)),
+    { rootMargin: "-45% 0px -45% 0px" }
+  );
+  secciones.forEach((s) => io.observe(s));
+})();
