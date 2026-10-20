@@ -67,7 +67,7 @@
       fotos: {},
     });
     // Sin animación de entrada: se re-dibuja con cada letra y parpadearía
-    iframe.srcdoc = html.replace("</head>", "<style>[data-reveal]{opacity:1!important;transform:none!important;transition:none!important}</style></head>");
+    iframe.srcdoc = html.replace("</head>", "<style>[data-reveal]{opacity:1!important;transform:none!important;transition:none!important}html{scrollbar-width:none}::-webkit-scrollbar{display:none}</style></head>");
   }
 
   let t;

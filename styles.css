@@ -77,8 +77,8 @@ h3 { font-size: 1.15rem; font-weight: 700; }
 .phone-live { width: 300px; height: 615px; border-radius: 46px; padding: 12px; background: #1b2136; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 40px 80px rgba(0,0,0,.55), 0 0 120px rgba(91,76,240,.35); position: relative; overflow: hidden; }
 .phone-live iframe { width: 390px; height: 835px; border: 0; border-radius: 44px; transform: scale(.7077); transform-origin: 0 0; background: #fff; display: block; }
 .burbuja { position: absolute; background: #fff; color: var(--text); font-weight: 700; font-size: .85rem; padding: 10px 14px; border-radius: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.35); white-space: nowrap; animation: flota 6s ease-in-out infinite; }
-.b1 { left: -90px; top: 22%; }
-.b2 { right: -70px; bottom: 18%; animation-delay: -3s; }
+.b1 { left: -90px; top: 44%; }
+.b2 { right: -70px; bottom: 10%; animation-delay: -3s; }
 @keyframes flota { 50% { translate: 0 -10px; } }
 
 /* Secciones */
