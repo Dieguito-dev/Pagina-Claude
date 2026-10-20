@@ -3,15 +3,6 @@
 
   // Datos del negocio
   document.querySelectorAll("[data-marca]").forEach((el) => (el.textContent = cfg.marca));
-  if (cfg.logo) {
-    document.querySelectorAll(".logo-mark").forEach((el) => {
-      const img = document.createElement("img");
-      img.src = cfg.logo;
-      img.alt = "";
-      img.className = "logo-img";
-      el.replaceWith(img);
-    });
-  }
   document.title = document.title.replace("Vitrina", cfg.marca);
   document.querySelectorAll("[data-email]").forEach((el) => {
     el.href = `mailto:${cfg.email}`;

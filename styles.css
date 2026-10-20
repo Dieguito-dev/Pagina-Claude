@@ -42,9 +42,11 @@ h3 { font-size: 1.15rem; font-weight: 700; }
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 30; color: #fff; transition: background .3s, color .3s, box-shadow .3s; }
 .nav.solid { background: rgba(255,255,255,.9); color: var(--text); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border); }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 70px; }
-.logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; text-decoration: none; font-size: 1.1rem; }
-.logo-img { width: 38px; height: 38px; object-fit: contain; border-radius: 10px; }
-.logo-mark { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; font-weight: 900; }
+.logo { display: inline-flex; align-items: center; text-decoration: none; }
+.logo img { display: block; height: 58px; width: auto; }
+.logo-solido { display: none !important; }
+.nav.solid .logo-claro { display: none; }
+.nav.solid .logo-solido { display: block !important; }
 .nav-links { display: flex; gap: 28px; }
 .nav-links a { text-decoration: none; font-weight: 500; opacity: .75; }
 .nav-links a:hover { opacity: 1; }
@@ -164,7 +166,7 @@ details p { color: var(--muted); margin: 12px 0 0; }
 
 .footer { padding: 30px 0; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--border); }
 .footer .container { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
-.footer .logo { color: var(--text); font-size: 1rem; }
+.footer .logo img { height: 45px; }
 
 @media (max-width: 960px) {
   .hero-inner, .contacto-inner { grid-template-columns: 1fr; }
