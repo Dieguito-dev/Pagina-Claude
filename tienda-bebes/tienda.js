@@ -415,44 +415,54 @@
 
   function abrirCarrito() {
     $("[data-datos-pedido]").hidden = $("[data-datos-pedido]").disabled = true;
-    $("[data-finalizar]").textContent = "Finalizar pedido";
+    $("[data-finalizar]").hidden = false;
+    $("[data-enviar]").hidden = true;
     pintarCarrito();
     abrir(carrito);
   }
   $("[data-abrir-carrito]").addEventListener("click", abrirCarrito);
 
-  // Primer clic: pide los datos de envío. Segundo: arma el mensaje y abre WhatsApp.
-  $("[data-pedido]").addEventListener("submit", (e) => {
+  // "Finalizar pedido" pide los datos de envío; después "Enviar pedido por WhatsApp" es un enlace
+  // normal (window.open lo bloquean algunos navegadores) que se arma al tocarlo.
+  const formPedido = $("[data-pedido]");
+  formPedido.addEventListener("submit", (e) => {
     e.preventDefault();
     const datos = $("[data-datos-pedido]");
-    if (datos.hidden) {
-      datos.hidden = datos.disabled = false;
-      $("[data-finalizar]").textContent = T.whatsapp ? "Enviar pedido por WhatsApp" : "Enviar pedido";
-      $("input", datos).focus();
+    datos.hidden = datos.disabled = false;
+    $("[data-finalizar]").hidden = true;
+    $("[data-enviar]").hidden = false;
+    $("input", datos).focus();
+  });
+
+  $("[data-enviar]").addEventListener("click", (e) => {
+    if (!T.whatsapp) {
+      e.preventDefault();
+      avisar("Falta el número de WhatsApp en config.js");
       return;
     }
-    const f = new FormData(e.target);
+    if (!items.length || !formPedido.reportValidity()) {
+      e.preventDefault();
+      return;
+    }
+    const f = new FormData(formPedido);
     const lineas = items.map((it) => {
       const { p, v, subtotal } = linea(it);
       return `• ${it.cant} × ${p.nombre}${v.color ? ` (${v.color})` : ""} [${v.sku}]: ${precio(subtotal)}`;
     });
-    const texto = [
-      `¡Hola ${T.marca}! Quiero hacer este pedido:`,
-      "",
-      ...lineas,
-      "",
-      `Subtotal: ${precio(total())} (sin envío)`,
-      "",
-      `Nombre: ${f.get("nombre")}`,
-      `Ciudad: ${f.get("ciudad")}`,
-      `Dirección: ${f.get("direccion")}`,
-      `Pago: ${f.get("pago")}`,
-    ].join("\n");
-    if (!T.whatsapp) {
-      avisar("Falta el número de WhatsApp en config.js");
-      return;
-    }
-    window.open(waLink(texto), "_blank", "noopener");
+    e.currentTarget.href = waLink(
+      [
+        `¡Hola ${T.marca}! Quiero hacer este pedido:`,
+        "",
+        ...lineas,
+        "",
+        `Subtotal: ${precio(total())} (sin envío)`,
+        "",
+        `Nombre: ${f.get("nombre")}`,
+        `Ciudad: ${f.get("ciudad")}`,
+        `Dirección: ${f.get("direccion")}`,
+        `Pago: ${f.get("pago")}`,
+      ].join("\n")
+    );
   });
 
   // ---------- Aviso flotante ----------
