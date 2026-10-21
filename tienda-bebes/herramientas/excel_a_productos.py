@@ -156,6 +156,9 @@ def main(ruta):
             titulo = titulo[: -len(c)].strip()
         grupos.setdefault(titulo, []).append(f)
 
+    archivo_fotos = CARPETA / "herramientas" / "fotos.json"
+    fotos = json.loads(archivo_fotos.read_text(encoding="utf-8")) if archivo_fotos.exists() else {}
+
     productos = []
     usados = set()
     for titulo, fs in grupos.items():
@@ -204,13 +207,21 @@ def main(ruta):
         if EDAD.get(cat):
             p["edad"] = list(EDAD[cat])
         p["descripcion"] = desc
+        if fotos.get("producto", {}).get(pid):
+            p["fotos"] = fotos["producto"][pid]
+        for v in variantes:
+            if v["sku"] in fotos.get("sku", {}):
+                v["foto"] = fotos["sku"][v["sku"]]
         p["variantes"] = variantes
         productos.append(p)
 
     escribir_js(productos)
+    tiene_foto = lambda p: p.get("fotos") or any(v.get("foto") for v in p["variantes"])
+    pend["sin_foto"] = [p["nombre"] for p in productos if estado(p) == "disponible" and not tiene_foto(p)]
+    pend["fotos_sueltas"] = fotos.get("no_emparejadas", []) + [f"{s} (no está en el Excel)" for s in fotos.get("skus_sin_producto", [])] + fotos.get("errores", [])
     escribir_pendientes(pend, productos)
     estados = Counter(estado(p) for p in productos)
-    print(f"{len(productos)} productos ({sum(len(p['variantes']) for p in productos)} referencias): "
+    print(f"{sum(1 for p in productos if tiene_foto(p))} con foto. {len(productos)} productos ({sum(len(p['variantes']) for p in productos)} referencias): "
           f"{estados['disponible']} disponibles, {estados['agotado']} agotados, {estados['consultar']} para consultar")
 
 
@@ -251,6 +262,8 @@ def escribir_pendientes(pend, productos):
         "varias_categorias": "Mismo producto con categorías distintas",
         "sku_repetido": "SKU repetidos (se usó solo la primera fila)",
         "sin_descripcion": "Productos sin descripción",
+        "sin_foto": "Productos disponibles sin foto en Drive",
+        "fotos_sueltas": "Fotos de Drive que no se pudieron unir a un producto",
     }
     partes = [
         "# Pendientes del catálogo",

@@ -43,7 +43,22 @@ Cómo se leen los datos:
 - La **edad** para las recomendaciones de Nubi sale de la categoría (por ejemplo, Caminadores = 6 a 18 meses), porque el Excel casi no trae `RangoEdad`.
 - Las filas de ejemplo de la plantilla (BW-2025 y BW-0002) se ignoran.
 
-Para la foto de un producto, sube la imagen a `tienda-bebes/img/` y agrégala en el producto: `imagen: "img/coche.jpg"`. Si no tiene foto, se muestra un dibujito de la categoría.
+## Actualizar las fotos desde Drive
+
+Las fotos están en la carpeta de Drive del cliente (compartida como "cualquier persona con el enlace"), organizadas así: `CATEGORÍA / NOMBRE DEL PRODUCTO / fotos`, con una subcarpeta por SKU (`BW-…`) para la foto de cada color.
+
+```
+python3 tienda-bebes/herramientas/fotos_drive.py 1hiDjeYmj7r9zZRl59Z9NiWWfT7bm3v6h
+python3 tienda-bebes/herramientas/excel_a_productos.py ruta/al/archivo.xlsx
+```
+
+El primero baja las fotos, las une con cada producto (por SKU o por el nombre de la carpeta) y las guarda livianas en `img/p/` (WebP: grande de 1000 px y miniatura `-p` de 400 px). El segundo las agrega a `productos.js`. Hasta 6 fotos de galería por producto, más la de cada color.
+
+Si una carpeta de producto trae la foto de otro producto, se quita y queda anotado en `pendientes-catalogo.md`, junto con los productos disponibles que no tienen foto.
+
+Para que el entorno de Claude pueda bajar las fotos, la red tiene que permitir `drive.google.com`, `drive.usercontent.google.com` y `*.googleusercontent.com`.
+
+Los productos sin foto muestran un dibujito de su categoría.
 
 ## Verla
 

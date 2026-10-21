@@ -54,9 +54,13 @@
       .map((r) => r.p);
   }
 
-  function imagen(p, clase) {
-    return p.imagen
-      ? `<img class="${clase}" src="${esc(p.imagen)}" alt="${esc(p.nombre)}" loading="lazy">`
+  // Fotos: las del producto y la de cada color. Cada foto tiene su miniatura "-p.webp".
+  const fotosDe = (p) => [...new Set([...(p.fotos || []), ...p.variantes.map((v) => v.foto).filter(Boolean)])];
+  const mini = (src) => src.replace(/\.webp$/, "-p.webp");
+
+  function imagen(p, clase, src = fotosDe(p)[0], grande = false) {
+    return src
+      ? `<img class="${clase}" src="${esc(grande ? src : mini(src))}" alt="${esc(p.nombre)}" loading="lazy">`
       : `<div class="${clase} emoji" aria-hidden="true">${p.emoji || categoria(p.categoria).emoji}</div>`;
   }
 
@@ -168,7 +172,8 @@
     // Los que no tienen precio van al final.
     if (estado.orden === "menor") lista.sort((a, b) => (a.precio ?? Infinity) - (b.precio ?? Infinity));
     else if (estado.orden === "mayor") lista.sort((a, b) => (b.precio ?? -1) - (a.precio ?? -1));
-    else if (!estado.texto) lista.sort((a, b) => ORDEN_ESTADO[estadoDe(a)] - ORDEN_ESTADO[estadoDe(b)]);
+    else if (!estado.texto)
+      lista.sort((a, b) => ORDEN_ESTADO[estadoDe(a)] - ORDEN_ESTADO[estadoDe(b)] || !fotosDe(a).length - !fotosDe(b).length);
     return lista;
   }
 
@@ -265,7 +270,12 @@
     }[est];
     const textoBoton = { disponible: "Preguntar por WhatsApp", agotado: "Avísame cuando llegue", consultar: "Consultar por WhatsApp" }[est];
     $("[data-modal-contenido]").innerHTML = `
-      <div class="ficha-foto">${imagen(p, "foto")}${sello(p)}</div>
+      <div class="ficha-foto" data-ficha-foto>${imagen(p, "foto", v.foto || fotosDe(p)[0], true)}${sello(p)}</div>
+      ${fotosDe(p).length > 1
+        ? `<div class="miniaturas">${fotosDe(p)
+            .map((f, i) => `<button type="button" data-foto="${esc(f)}" aria-label="Foto ${i + 1}"><img src="${esc(mini(f))}" alt="" loading="lazy"></button>`)
+            .join("")}</div>`
+        : ""}
       <p class="etiqueta">${cat.emoji} ${esc(cat.nombre)}</p>
       <h2>${esc(p.nombre)}</h2>
       <p class="ficha-precio" data-ficha-precio>${precioHTML(p, est === "disponible" ? v : null)}</p>
@@ -293,7 +303,14 @@
     const caja = $("[data-modal-contenido]");
     let cant = 1;
     const out = $("[data-cant]", caja);
+    const verFoto = (src) => {
+      if (!src) return;
+      $("[data-ficha-foto] .foto", caja).outerHTML = imagen(p, "foto", src, true);
+      caja.querySelectorAll("[data-foto]").forEach((b) => b.classList.toggle("activa", b.dataset.foto === src));
+    };
+    caja.querySelectorAll("[data-foto]").forEach((b) => b.addEventListener("click", () => verFoto(b.dataset.foto)));
     const pintarVariante = () => {
+      verFoto(v.foto || $("[data-foto].activa", caja)?.dataset.foto || fotosDe(p)[0]);
       if (est !== "disponible") return;
       $("[data-ficha-precio]", caja).innerHTML = precioHTML(p, v);
       $("[data-ficha-stock]", caja).textContent = v.stock <= 3 ? `¡Quedan solo ${v.stock}!` : "Disponible";
@@ -365,7 +382,7 @@
           .map((it, i) => {
             const { p, v, subtotal } = linea(it);
             return `<div class="item">
-              ${imagen(p, "item-foto")}
+              ${imagen(p, "item-foto", v.foto || fotosDe(p)[0])}
               <div class="item-info">
                 <strong>${esc(p.nombre)}</strong>
                 ${v.color ? `<small>${esc(v.color)}</small>` : ""}
