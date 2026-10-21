@@ -236,6 +236,7 @@ s { color: var(--suave); font-size: 0.85em; }
 .opciones legend { font-weight: 800; margin-bottom: 6px; }
 .opciones input { position: absolute; opacity: 0; }
 .opciones span { display: block; padding: 6px 14px; border-radius: 999px; border: 2px solid var(--azul); background: var(--blanco); font-weight: 700; }
+.opciones input:disabled + span { opacity: 0.45; border-style: dashed; }
 .opciones input:checked + span { background: var(--azul-osc); border-color: var(--azul-osc); color: var(--blanco); }
 .opciones input:focus-visible + span { outline: 3px solid var(--azul-osc); outline-offset: 2px; }
 .ficha-acciones { display: flex; gap: 10px; align-items: center; margin-top: 16px; }
@@ -244,6 +245,7 @@ s { color: var(--suave); font-size: 0.85em; }
 .cantidad button { width: 36px; height: 36px; border: 0; background: none; font-size: 1.2rem; font-weight: 800; }
 .cantidad output { min-width: 22px; text-align: center; font-weight: 800; }
 .nota { font-size: 0.85rem; color: var(--suave); }
+.ficha-desc { white-space: pre-line; margin-top: 20px; padding-top: 16px; border-top: 1px solid #e3ddd0; font-size: 0.95rem; }
 .ficha-ayuda { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .ficha-ayuda .btn { flex: 1; }
 

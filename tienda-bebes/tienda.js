@@ -16,7 +16,18 @@
   const categoria = (id) => CATS.find((c) => c.id === id) || CATS[CATS.length - 1];
   const producto = (id) => PRODS.find((p) => p.id === id);
   const enPromo = (p) => p.precioAntes > p.precio;
-  const disponible = (p) => p.stock > 0;
+  const deLaPromo = (p) => enPromo(p) || p.categoria === "promos";
+  // Cada producto tiene variantes (colores), cada una con su SKU, su stock y a veces su propio precio.
+  const variante = (p, sku) => p.variantes.find((v) => v.sku === sku);
+  const precioDe = (p, v) => (v && v.precio != null ? v.precio : p.precio);
+  const comprable = (p, v) => v.stock > 0 && precioDe(p, v) != null;
+  const elegibles = (p) => p.variantes.filter((v) => comprable(p, v));
+  const hayQueElegir = (p) => p.variantes.length > 1 || !!p.variantes[0].color;
+  // disponible: se puede comprar ya · agotado: todo en 0 · consultar: falta el precio o el stock en el Excel
+  const estadoDe = (p) =>
+    elegibles(p).length ? "disponible" : p.variantes.every((v) => v.stock === 0) ? "agotado" : "consultar";
+  const disponible = (p) => estadoDe(p) === "disponible";
+  const ORDEN_ESTADO = { disponible: 0, consultar: 1, agotado: 2 };
 
   function waLink(texto) {
     return T.whatsapp ? `https://wa.me/${T.whatsapp}?text=${encodeURIComponent(texto)}` : "";
@@ -39,7 +50,7 @@
       return { p, puntos };
     })
       .filter((r) => r.puntos > 0)
-      .sort((a, b) => b.puntos - a.puntos || disponible(b.p) - disponible(a.p))
+      .sort((a, b) => b.puntos - a.puntos || ORDEN_ESTADO[estadoDe(a.p)] - ORDEN_ESTADO[estadoDe(b.p)])
       .map((r) => r.p);
   }
 
@@ -50,13 +61,23 @@
   }
 
   function sello(p) {
-    if (!disponible(p)) return `<span class="sello agotado">Agotado</span>`;
+    const est = estadoDe(p);
+    if (est === "agotado") return `<span class="sello agotado">Agotado</span>`;
+    if (est === "consultar") return `<span class="sello">Consultar</span>`;
     if (enPromo(p)) return `<span class="sello promo">-${Math.round((1 - p.precio / p.precioAntes) * 100)}%</span>`;
     return "";
   }
 
-  function precioHTML(p) {
-    return `<span class="precio">${precio(p.precio)}</span>${enPromo(p) ? ` <s>${precio(p.precioAntes)}</s>` : ""}`;
+  // Sin variante: precio del producto ("Desde" si los colores cambian de precio).
+  function precioTexto(p, v) {
+    const n = v ? precioDe(p, v) : p.precio;
+    if (n == null) return "Consultar precio";
+    const desde = !v && p.variantes.some((x) => x.precio != null && x.precio !== p.precio);
+    return (desde ? "Desde " : "") + precio(n);
+  }
+
+  function precioHTML(p, v) {
+    return `<span class="precio">${precioTexto(p, v)}</span>${enPromo(p) ? ` <s>${precio(p.precioAntes)}</s>` : ""}`;
   }
 
   // ---------- Datos fijos de la página ----------
@@ -118,7 +139,10 @@
     $("[data-menu-categorias]").hidden = true;
   });
   $$("a", menu).forEach((a) => a.addEventListener("click", cerrarTodo));
-  $("[data-lista-categorias]").innerHTML = CATS.map((c) => `<button type="button" data-cat="${c.id}">${c.nombre}</button>`).join("");
+  const conProductos = CATS.filter((c) =>
+    c.id === "promos" ? PRODS.some(deLaPromo) : PRODS.some((p) => p.categoria === c.id)
+  );
+  $("[data-lista-categorias]").innerHTML = conProductos.map((c) => `<button type="button" data-cat="${c.id}">${c.nombre}</button>`).join("");
   $$("[data-lista-categorias] button").forEach((b) =>
     b.addEventListener("click", () => {
       cerrarTodo();
@@ -131,9 +155,7 @@
   const grilla = $("[data-grilla]");
   const inputBusqueda = $("[data-busqueda]");
 
-  const chips = [{ id: "", nombre: "Todo", emoji: "✨" }, ...CATS].filter(
-    (c) => !c.id || c.id === "promos" || PRODS.some((p) => p.categoria === c.id)
-  );
+  const chips = [{ id: "", nombre: "Todo", emoji: "✨" }, ...conProductos];
   $("[data-chips]").innerHTML = chips
     .map((c) => `<button type="button" role="tab" data-chip="${c.id}">${c.emoji} ${c.nombre}</button>`)
     .join("");
@@ -141,11 +163,12 @@
 
   function filtrados() {
     let lista = estado.texto ? buscar(estado.texto) : [...PRODS];
-    if (estado.cat === "promos") lista = lista.filter(enPromo);
+    if (estado.cat === "promos") lista = lista.filter(deLaPromo);
     else if (estado.cat) lista = lista.filter((p) => p.categoria === estado.cat);
-    if (estado.orden === "menor") lista.sort((a, b) => a.precio - b.precio);
-    else if (estado.orden === "mayor") lista.sort((a, b) => b.precio - a.precio);
-    else if (!estado.texto) lista.sort((a, b) => disponible(b) - disponible(a));
+    // Los que no tienen precio van al final.
+    if (estado.orden === "menor") lista.sort((a, b) => (a.precio ?? Infinity) - (b.precio ?? Infinity));
+    else if (estado.orden === "mayor") lista.sort((a, b) => (b.precio ?? -1) - (a.precio ?? -1));
+    else if (!estado.texto) lista.sort((a, b) => ORDEN_ESTADO[estadoDe(a)] - ORDEN_ESTADO[estadoDe(b)]);
     return lista;
   }
 
@@ -155,13 +178,13 @@
     grilla.innerHTML = lista
       .slice(0, estado.mostrar)
       .map(
-        (p) => `<article class="tarjeta${disponible(p) ? "" : " sin-stock"}">
+        (p) => `<article class="tarjeta${estadoDe(p) === "agotado" ? " sin-stock" : ""}">
           <button type="button" class="tarjeta-foto" data-ver="${p.id}" aria-label="Ver ${esc(p.nombre)}">${imagen(p, "foto")}${sello(p)}</button>
           <h3><button type="button" data-ver="${p.id}">${esc(p.nombre)}</button></h3>
           <p>${precioHTML(p)}</p>
           ${disponible(p)
             ? `<button type="button" class="btn btn-mini" data-agregar="${p.id}">Agregar</button>`
-            : `<button type="button" class="btn btn-mini btn-borde" data-ver="${p.id}">Avísame</button>`}
+            : `<button type="button" class="btn btn-mini btn-borde" data-ver="${p.id}">${estadoDe(p) === "agotado" ? "Avísame" : "Consultar"}</button>`}
         </article>`
       )
       .join("");
@@ -180,8 +203,8 @@
     if (ver) abrirProducto(ver.dataset.ver);
     else if (agregarBtn) {
       const p = producto(agregarBtn.dataset.agregar);
-      // Si tiene colores o tallas, hay que elegir en la ficha.
-      if (p.opciones?.length) abrirProducto(p.id);
+      // Si tiene colores, hay que elegir en la ficha.
+      if (hayQueElegir(p)) abrirProducto(p.id);
       else agregar(p.id);
     }
   });
@@ -232,40 +255,60 @@
     const p = producto(id);
     if (!p) return;
     const cat = categoria(p.categoria);
+    const est = estadoDe(p);
+    let v = elegibles(p)[0] || p.variantes[0];
+    const conColor = p.variantes.some((x) => x.color);
+    const mensaje = {
+      disponible: `Hola, quiero saber más de: ${p.nombre}`,
+      agotado: `Hola, ¿me avisan cuando llegue: ${p.nombre}?`,
+      consultar: `Hola, quiero saber el precio y la disponibilidad de: ${p.nombre}`,
+    }[est];
+    const textoBoton = { disponible: "Preguntar por WhatsApp", agotado: "Avísame cuando llegue", consultar: "Consultar por WhatsApp" }[est];
     $("[data-modal-contenido]").innerHTML = `
       <div class="ficha-foto">${imagen(p, "foto")}${sello(p)}</div>
       <p class="etiqueta">${cat.emoji} ${esc(cat.nombre)}</p>
       <h2>${esc(p.nombre)}</h2>
-      <p class="ficha-precio">${precioHTML(p)}</p>
-      <p>${esc(p.descripcion || "")}</p>
-      ${p.opciones?.length
-        ? `<fieldset class="opciones"><legend>Elige una opción</legend>${p.opciones
-            .map((o, i) => `<label><input type="radio" name="opcion" value="${esc(o)}"${i ? "" : " checked"}><span>${esc(o)}</span></label>`)
+      <p class="ficha-precio" data-ficha-precio>${precioHTML(p, est === "disponible" ? v : null)}</p>
+      ${hayQueElegir(p)
+        ? `<fieldset class="opciones"><legend>${conColor ? "Elige un color" : "Elige una opción"}</legend>${p.variantes
+            .map((x) => {
+              const ok = comprable(p, x);
+              const nota = ok ? "" : x.stock === 0 ? " · agotado" : " · consultar";
+              return `<label><input type="radio" name="variante" value="${esc(x.sku)}"${x === v && ok ? " checked" : ""}${ok ? "" : " disabled"}><span>${esc(x.color || x.sku)}${nota}</span></label>`;
+            })
             .join("")}</fieldset>`
         : ""}
-      ${disponible(p)
+      ${est === "disponible"
         ? `<div class="ficha-acciones">
             <div class="cantidad"><button type="button" data-menos aria-label="Menos">−</button><output data-cant>1</output><button type="button" data-mas aria-label="Más">+</button></div>
             <button class="btn btn-principal" type="button" data-agregar-ficha>Agregar al carrito</button>
           </div>
-          <p class="nota">${p.stock <= 3 ? `¡Quedan solo ${p.stock}!` : "Disponible"}</p>`
-        : `<p class="nota">Este producto está agotado por ahora.</p>`}
+          <p class="nota" data-ficha-stock></p>`
+        : `<p class="nota">${est === "agotado" ? "Este producto está agotado por ahora." : "Escríbenos y te confirmamos precio y disponibilidad."}</p>`}
       <div class="ficha-ayuda">
-        ${T.whatsapp
-          ? `<a class="btn btn-wa" target="_blank" rel="noopener" href="${esc(
-              waLink(disponible(p) ? `Hola, quiero saber más de: ${p.nombre}` : `Hola, ¿me avisan cuando llegue: ${p.nombre}?`)
-            )}">${disponible(p) ? "Preguntar por WhatsApp" : "Avísame cuando llegue"}</a>`
-          : ""}
+        ${T.whatsapp ? `<a class="btn btn-wa" target="_blank" rel="noopener" href="${esc(waLink(mensaje))}">${textoBoton}</a>` : ""}
         <button class="btn btn-borde" type="button" data-similares>Ver parecidos</button>
-      </div>`;
+      </div>
+      ${p.descripcion ? `<div class="ficha-desc">${esc(p.descripcion)}</div>` : ""}`;
     const caja = $("[data-modal-contenido]");
     let cant = 1;
     const out = $("[data-cant]", caja);
+    const pintarVariante = () => {
+      if (est !== "disponible") return;
+      $("[data-ficha-precio]", caja).innerHTML = precioHTML(p, v);
+      $("[data-ficha-stock]", caja).textContent = v.stock <= 3 ? `¡Quedan solo ${v.stock}!` : "Disponible";
+      out.textContent = cant = 1;
+    };
+    pintarVariante();
+    caja.querySelectorAll("input[name=variante]").forEach((r) =>
+      r.addEventListener("change", () => {
+        v = variante(p, r.value);
+        pintarVariante();
+      })
+    );
     $("[data-menos]", caja)?.addEventListener("click", () => (out.textContent = cant = Math.max(1, cant - 1)));
-    $("[data-mas]", caja)?.addEventListener("click", () => (out.textContent = cant = Math.min(p.stock, cant + 1)));
-    $("[data-agregar-ficha]", caja)?.addEventListener("click", () => {
-      agregar(p.id, $("input[name=opcion]:checked", caja)?.value || "", cant);
-    });
+    $("[data-mas]", caja)?.addEventListener("click", () => (out.textContent = cant = Math.min(v.stock, cant + 1)));
+    $("[data-agregar-ficha]", caja)?.addEventListener("click", () => agregar(p.id, v.sku, cant));
     $("[data-similares]", caja).addEventListener("click", () => {
       cerrarTodo();
       irACategoria(p.categoria);
@@ -279,7 +322,7 @@
   try {
     items = JSON.parse(localStorage.getItem(CLAVE)) || [];
   } catch {}
-  items = items.filter((it) => producto(it.id));
+  items = items.filter((it) => producto(it.id) && variante(producto(it.id), it.sku));
 
   function guardar() {
     try {
@@ -288,19 +331,26 @@
     pintarCarrito();
   }
 
-  function agregar(id, opcion = "", cant = 1) {
+  // Sin sku se agrega la primera variante que se pueda comprar.
+  function agregar(id, sku = "", cant = 1) {
     const p = producto(id);
-    if (!p || !disponible(p)) return false;
-    const it = items.find((i) => i.id === id && i.opcion === opcion);
-    if (it) it.cant = Math.min(p.stock, it.cant + cant);
-    else items.push({ id, opcion, cant: Math.min(p.stock, cant) });
+    const v = p && (sku ? variante(p, sku) : elegibles(p)[0]);
+    if (!v || !comprable(p, v)) return false;
+    const it = items.find((i) => i.id === id && i.sku === v.sku);
+    if (it) it.cant = Math.min(v.stock, it.cant + cant);
+    else items.push({ id, sku: v.sku, cant: Math.min(v.stock, cant) });
     guardar();
     avisar(`${p.nombre} se agregó al carrito`);
     if (!modal.hidden) cerrarTodo();
     return true;
   }
 
-  const total = () => items.reduce((s, it) => s + producto(it.id).precio * it.cant, 0);
+  const linea = (it) => {
+    const p = producto(it.id);
+    const v = variante(p, it.sku);
+    return { p, v, subtotal: precioDe(p, v) * it.cant };
+  };
+  const total = () => items.reduce((s, it) => s + linea(it).subtotal, 0);
   const unidades = () => items.reduce((s, it) => s + it.cant, 0);
 
   function pintarCarrito() {
@@ -313,13 +363,13 @@
     $("[data-items]").innerHTML = n
       ? items
           .map((it, i) => {
-            const p = producto(it.id);
+            const { p, v, subtotal } = linea(it);
             return `<div class="item">
               ${imagen(p, "item-foto")}
               <div class="item-info">
                 <strong>${esc(p.nombre)}</strong>
-                ${it.opcion ? `<small>${esc(it.opcion)}</small>` : ""}
-                <span>${precio(p.precio * it.cant)}</span>
+                ${v.color ? `<small>${esc(v.color)}</small>` : ""}
+                <span>${precio(subtotal)}</span>
                 <div class="cantidad"><button type="button" data-item-menos="${i}" aria-label="Menos">−</button><output>${it.cant}</output><button type="button" data-item-mas="${i}" aria-label="Más">+</button></div>
               </div>
               <button type="button" class="item-quitar" data-quitar="${i}" aria-label="Quitar">×</button>
@@ -341,7 +391,7 @@
     const it = items[i];
     if (!it) return;
     if ("itemMenos" in b.dataset) it.cant -= 1;
-    if ("itemMas" in b.dataset) it.cant = Math.min(producto(it.id).stock, it.cant + 1);
+    if ("itemMas" in b.dataset) it.cant = Math.min(linea(it).v.stock, it.cant + 1);
     if ("quitar" in b.dataset || it.cant < 1) items.splice(i, 1);
     guardar();
   });
@@ -366,8 +416,8 @@
     }
     const f = new FormData(e.target);
     const lineas = items.map((it) => {
-      const p = producto(it.id);
-      return `• ${it.cant} × ${p.nombre}${it.opcion ? ` (${it.opcion})` : ""}: ${precio(p.precio * it.cant)}`;
+      const { p, v, subtotal } = linea(it);
+      return `• ${it.cant} × ${p.nombre}${v.color ? ` (${v.color})` : ""} [${v.sku}]: ${precio(subtotal)}`;
     });
     const texto = [
       `¡Hola ${T.marca}! Quiero hacer este pedido:`,
@@ -434,7 +484,11 @@
     normal,
     esc,
     enPromo,
+    deLaPromo,
     disponible,
+    estadoDe,
+    hayQueElegir,
+    precioTexto,
     imagen,
     waLink,
     agregar,

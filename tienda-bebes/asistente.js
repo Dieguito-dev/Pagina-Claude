@@ -56,10 +56,10 @@
         (p) => `<div class="mini">
           <button type="button" class="mini-foto" data-ver="${p.id}">${S.imagen(p, "foto")}</button>
           <strong>${S.esc(p.nombre)}</strong>
-          <span>${S.precio(p.precio)}${S.enPromo(p) ? " 🏷️" : ""}</span>
+          <span>${S.precioTexto(p)}${S.deLaPromo(p) ? " 🏷️" : ""}</span>
           ${S.disponible(p)
             ? `<button type="button" class="btn btn-mini" data-agregar="${p.id}">Agregar</button>`
-            : `<button type="button" class="btn btn-mini btn-borde" data-ver="${p.id}">Agotado · avísame</button>`}
+            : `<button type="button" class="btn btn-mini btn-borde" data-ver="${p.id}">${S.estadoDe(p) === "agotado" ? "Agotado · avísame" : "Consultar"}</button>`}
         </div>`
       )
       .join("");
@@ -141,18 +141,30 @@
 
   const sirveEdad = (p, [desde, hasta]) => !p.edad || (p.edad[0] <= hasta && p.edad[1] >= desde);
 
+  // Mezcla categorías (un coche, una silla para carro, una pañalera…) en vez de mostrar solo lo más barato.
+  // Con presupuesto, primero lo que más se acerca a él.
+  function variados(lista, conPresupuesto) {
+    const porCat = new Map();
+    lista
+      .sort((a, b) => S.deLaPromo(b) - S.deLaPromo(a) || (conPresupuesto ? b.precio - a.precio : a.precio - b.precio))
+      .forEach((p) => porCat.set(p.categoria, [...(porCat.get(p.categoria) || []), p]));
+    const filas = [...porCat.values()];
+    const out = [];
+    for (let i = 0; out.length < lista.length; i++) filas.forEach((f) => f[i] && out.push(f[i]));
+    return out;
+  }
+
   function recomendar({ edad, cats, max = Infinity }) {
     diag = null;
     let base = S.productos.filter(
       (p) => S.disponible(p) && (!edad || sirveEdad(p, edad)) && (!cats || cats.includes(p.categoria))
     );
-    let lista = base.filter((p) => p.precio <= max);
+    let lista = variados(base.filter((p) => p.precio <= max), max < Infinity);
     let intro = "Esto es lo que te recomiendo:";
     if (!lista.length && base.length) {
       lista = base.sort((a, b) => a.precio - b.precio);
       intro = `En ese presupuesto no tengo opciones, pero estas son las más económicas que sí le sirven:`;
     }
-    lista.sort((a, b) => S.enPromo(b) - S.enPromo(a) || a.precio - b.precio);
     if (!lista.length) {
       responder("Uy, ahora mismo no tengo productos disponibles para eso. Una persona del equipo te puede ayudar a conseguirlo.", () =>
         botones([hablarConPersona(), { txt: "Volver a empezar", fn: diagnostico }].filter(Boolean))
@@ -173,7 +185,7 @@
   }
 
   function promos() {
-    const lista = S.productos.filter((p) => S.enPromo(p) && S.disponible(p));
+    const lista = S.productos.filter((p) => S.deLaPromo(p) && S.disponible(p));
     if (!lista.length) {
       responder("Ahora mismo no tenemos promos activas, pero te puedo ayudar a encontrar algo en tu presupuesto.", menuPrincipal);
       return;
@@ -262,7 +274,7 @@
     const edad = edadDe(t);
     const max = presupuestoDe(t);
     if (encontrados.length) {
-      let lista = encontrados.filter((p) => (!edad || sirveEdad(p, edad)) && (!max || p.precio <= max));
+      let lista = encontrados.filter((p) => (!edad || sirveEdad(p, edad)) && (!max || (p.precio != null && p.precio <= max)));
       if (!lista.length && (edad || max)) {
         recomendar({ edad, max: max || Infinity, cats: null });
         return;
@@ -361,7 +373,7 @@
       S.abrirProducto(ver.dataset.ver);
     } else if (add) {
       const p = S.producto(add.dataset.agregar);
-      if (p.opciones?.length) {
+      if (S.hayQueElegir(p)) {
         cerrarChat();
         S.abrirProducto(p.id);
       } else if (S.agregar(p.id)) {

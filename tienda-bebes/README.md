@@ -20,13 +20,30 @@ Es aparte de Vitrina: no usa ni cambia nada de la página principal.
 
 | Archivo | Para qué |
 |---|---|
-| `config.js` | Nombre, **WhatsApp**, nombre del asistente, textos de envíos, pagos, horario, cambios y redes |
-| `productos.js` | Categorías y productos. **Los productos actuales son ejemplos**: cámbialos por los reales |
+| `config.js` | Nombre, WhatsApp, nombre del asistente, textos de envíos, pagos, horario, cambios y redes |
+| `productos.js` | El catálogo. **No se edita a mano**: se genera desde el Excel del cliente (abajo) |
+| `pendientes-catalogo.md` | Lo que hay que corregir en el Excel: precios raros, referencias sin precio o sin stock, etc. |
 | `styles.css` | Colores (arriba, en `:root`) |
 
-Para la foto de un producto, sube la imagen a la carpeta `tienda-bebes/img/` y ponla en el producto: `imagen: "img/coche.jpg"`. Si no tiene foto, se muestra un dibujito de la categoría.
+## Actualizar el catálogo desde el Excel
 
-> ⚠️ Mientras `whatsapp` esté vacío en `config.js`, los botones de WhatsApp no aparecen y el pedido no se puede enviar.
+El cliente lleva su catálogo en `Levantamiento de atributos_Catálogo.xlsx` (hoja `plantilla_atributos_productos`). Cuando cambie precios o stock:
+
+```
+python3 tienda-bebes/herramientas/excel_a_productos.py ruta/al/archivo.xlsx
+```
+
+Eso vuelve a crear `productos.js` y `pendientes-catalogo.md`. El Excel no se sube al repositorio.
+
+Cómo se leen los datos:
+- Las filas con el **mismo título** son un solo producto, y cada fila es un **color** con su SKU y su stock. Si el título termina en el color ("COCHE DONA GRIS"), se junta con los otros colores.
+- **Sin precio** → sale "Consultar precio" y se pregunta por WhatsApp.
+- **Stock vacío** → sale "Consultar" (no se sabe si hay). **Stock 0** → "Agotado" con "Avísame cuando llegue".
+- **Categoría vacía o mal escrita** → se corrige sola (queda anotado en `pendientes-catalogo.md`).
+- La **edad** para las recomendaciones de Nubi sale de la categoría (por ejemplo, Caminadores = 6 a 18 meses), porque el Excel casi no trae `RangoEdad`.
+- Las filas de ejemplo de la plantilla (BW-2025 y BW-0002) se ignoran.
+
+Para la foto de un producto, sube la imagen a `tienda-bebes/img/` y agrégala en el producto: `imagen: "img/coche.jpg"`. Si no tiene foto, se muestra un dibujito de la categoría.
 
 ## Verla
 
