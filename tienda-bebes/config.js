@@ -3,7 +3,7 @@
 window.TIENDA = {
   marca: "Baby's World",
   lema: "Tu tienda de confianza para artículos de bebé",
-  whatsapp: "", // número con código de país, sin "+" ni espacios (ej. 573001234567). Vacío = se oculta
+  whatsapp: "573337062951", // número con código de país, sin "+" ni espacios (ej. 573001234567). Vacío = se oculta
   asistente: "Nubi", // nombre del asistente virtual
 
   // Lo que responde el asistente cuando le preguntan por esto. CONFIRMA que sea verdad antes de publicar.
