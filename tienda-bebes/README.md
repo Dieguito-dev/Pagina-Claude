@@ -25,6 +25,13 @@ Es aparte de Vitrina: no usa ni cambia nada de la página principal.
 | `pendientes-catalogo.md` | Lo que hay que corregir en el Excel: precios raros, referencias sin precio o sin stock, etc. |
 | `styles.css` | Colores (arriba, en `:root`) |
 
+## Diseños
+
+La tienda tiene cuatro diseños con el mismo contenido: **actual**, **1 · Boutique** (blanco, sin marcos, letra con serifa), **2 · Juguetería** (los colores del logo, bloques de color) y **3 · Tienda ágil** (estilo tienda grande, catálogo primero). Cada uno es un archivo en `temas/` que se carga encima de `styles.css`; están definidos en `temas.js`.
+
+- Para **comparar**, abre la tienda con `?diseno=1`, `?diseno=2`, `?diseno=3` o `?diseno=actual` al final del link. Arriba aparece una barra para pasar de uno a otro.
+- Para **elegir** el definitivo, cambia `tema` en `config.js`.
+
 ## Banners del inicio
 
 El carrusel de arriba se arma con la lista `banners` de `config.js`. Para agregar uno, sube la imagen a `img/banners/` y agrega en la lista su `imagen`, un `texto` (lo que dice el banner, para lectores de pantalla), el `enlace` (`"#catalogo"`, `"producto:<id>"`, `"categoria:<id>"` o `"whatsapp"`) y un `fondo` del color de sus bordes. Pasan solos cada 5 segundos; con un solo banner no se muestran flechas ni puntos.

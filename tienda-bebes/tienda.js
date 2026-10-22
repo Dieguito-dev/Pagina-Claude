@@ -54,8 +54,9 @@
       .map((r) => r.p);
   }
 
-  // Fotos: las del producto y la de cada color. Cada foto tiene su miniatura "-p.webp".
-  const fotosDe = (p) => [...new Set([...(p.fotos || []), ...p.variantes.map((v) => v.foto).filter(Boolean)])];
+  // Fotos: primero la de cada color (muestran el producto completo), después la galería.
+  // Cada foto tiene su miniatura "-p.webp".
+  const fotosDe = (p) => [...new Set([...p.variantes.map((v) => v.foto).filter(Boolean), ...(p.fotos || [])])];
   const mini = (src) => src.replace(/\.webp$/, "-p.webp");
 
   function imagen(p, clase, src = fotosDe(p)[0], grande = false) {

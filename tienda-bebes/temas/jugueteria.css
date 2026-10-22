@@ -1,0 +1,105 @@
+/* Diseño 2 · Juguetería: los colores de las letras del logo (BABY'S), bloques de color en vez
+   de marcos y botones con relieve. Se carga encima de styles.css. */
+:root {
+  --rojo: #e8453c;
+  --turquesa: #17a9bd;
+  --verde: #6db33f;
+  --amarillo: #f5b81c;
+  --naranja: #f07f2a;
+  --morado: #8a5cc2;
+
+  --azul: #17a9bd;          /* encabezado y franjas */
+  --azul-osc: #0f7f8f;      /* botones */
+  --azul-claro: #e2f6f8;
+  --crema: #ffffff;
+  --blanco: #ffffff;
+  --texto: #25282b;
+  --suave: #5f666c;
+  --rosa: #e8453c;          /* promos */
+  --linea: #e5e7e9;
+  --radio: 18px;
+  --sombra: 0 8px 22px rgba(37, 40, 43, 0.12);
+  --fuente-titulo: "Fredoka", "Nunito", sans-serif;
+  --fuente-texto: "Nunito", system-ui, sans-serif;
+}
+
+h1, h2, h3 { font-weight: 700; }
+/* Botones con relieve */
+.btn { border: 0; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.22); font-family: var(--fuente-titulo); font-weight: 600; letter-spacing: 0.01em; }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.22); }
+.btn-principal { background: var(--naranja); }
+.btn-principal:hover { background: #e2701b; }
+.btn-borde { background: var(--amarillo); color: var(--texto); }
+.btn-mini { background: var(--turquesa); }
+.btn-mini.btn-borde { background: #eef0f2; color: var(--texto); }
+
+/* Encabezado blanco con franja de colores */
+.top { background: #fff; color: var(--texto); border-bottom: 5px solid transparent; border-image: linear-gradient(90deg, var(--rojo) 0 20%, var(--turquesa) 20% 40%, var(--verde) 40% 60%, var(--amarillo) 60% 80%, var(--naranja) 80%) 1; }
+.logo { color: var(--texto); font-weight: 700; }
+.logo-cara { background: var(--azul-claro); }
+.contador { background: var(--rojo); }
+.menu { background: var(--turquesa); }
+
+/* Inicio: amarillo pastel y título con resaltado */
+.hero { background: #fff6dc; }
+.nubes span { background: #fff; opacity: 1; }
+.hero-pill { color: var(--texto); box-shadow: var(--sombra); }
+.punto { background: var(--verde); }
+.hero h1 { font-weight: 700; }
+.hero h1 em { color: var(--texto); background: linear-gradient(transparent 58%, rgba(23, 169, 189, 0.35) 58%); padding: 0 4px; }
+.cinta { background: var(--rojo); }
+.cinta i { color: var(--amarillo); }
+.cinta-pista { font-family: var(--fuente-titulo); letter-spacing: 0.06em; }
+
+/* Catálogo: cada tarjeta con un color del logo, sin marcos */
+.buscador { border: 0; background: #f1f3f4; }
+.chips button { border: 0; background: #f1f3f4; font-family: var(--fuente-titulo); font-weight: 600; }
+.chips button:nth-child(5n + 2) { background: #fde3e1; }
+.chips button:nth-child(5n + 3) { background: #dff4f7; }
+.chips button:nth-child(5n + 4) { background: #e8f5dc; }
+.chips button:nth-child(5n + 5) { background: #fff1cc; }
+.chips button:nth-child(5n + 1) { background: #fde8d6; }
+.chips button[aria-selected="true"] { background: var(--texto); color: #fff; }
+.grilla { gap: 16px; }
+.tarjeta { padding: 10px 10px 14px; border-radius: var(--radio); background: #fde3e1; }
+.tarjeta:nth-child(5n + 2) { background: #dff4f7; }
+.tarjeta:nth-child(5n + 3) { background: #e8f5dc; }
+.tarjeta:nth-child(5n + 4) { background: #fff1cc; }
+.tarjeta:nth-child(5n + 5) { background: #fde8d6; }
+.tarjeta-foto { border: 0; border-radius: 12px; background: #fff; }
+.tarjeta-foto .foto { object-fit: contain; }
+.tarjeta h3 button { color: var(--texto); font-family: var(--fuente-titulo); font-weight: 600; text-transform: none; }
+.tarjeta .precio { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #fff; }
+.sello { border: 0; background: var(--amarillo); color: var(--texto); }
+.sello.promo { background: var(--rojo); }
+
+/* Pasos con color */
+.etapas li { box-shadow: none; }
+.etapas li:nth-child(1) { background: #fde3e1; }
+.etapas li:nth-child(2) { background: #dff4f7; }
+.etapas li:nth-child(3) { background: #e8f5dc; }
+.etapas li::before { color: var(--texto); font-family: var(--fuente-titulo); font-size: 1.4rem; }
+.etapas li strong { color: var(--texto); }
+.datos li { background: #f6f7f8; }
+.datos b { color: var(--naranja); }
+.pie { background: var(--texto); }
+
+/* Ficha, carrito y chat */
+.modal-caja, .carrito, .chat { background: #fff; }
+.ficha-foto { background: #f6f7f8; }
+.modal h2 { color: var(--texto); }
+.opciones span { border: 0; background: #f1f3f4; }
+.opciones input:checked + span { background: var(--turquesa); }
+.cantidad { border: 0; background: #f1f3f4; }
+.ficha-desc { border-top-color: var(--linea); }
+.carrito-cab { background: var(--turquesa); }
+.item { background: #f6f7f8; }
+.burbuja.bot { background: #f1f3f4; }
+.burbuja.yo { background: var(--turquesa); }
+.opcion { border: 0; background: #f1f3f4; color: var(--texto); }
+.opcion.destacada { background: var(--naranja); color: #fff; }
+.chat-form input { border: 0; background: #f1f3f4; }
+.chat-form button { background: var(--naranja); }
+.lanzador { background: radial-gradient(circle at 35% 30%, #ffd36b, var(--naranja)); }
+.lanzador-aviso { background: var(--rojo); }
+.chat-avatar { background: radial-gradient(circle at 35% 30%, #ffd36b, var(--naranja)); }

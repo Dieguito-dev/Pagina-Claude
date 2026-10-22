@@ -5,6 +5,7 @@ window.TIENDA = {
   lema: "Tu tienda de confianza para artículos de bebé",
   whatsapp: "573337062951", // número con código de país, sin "+" ni espacios (ej. 573001234567). Vacío = se oculta
   asistente: "Nubi", // nombre del asistente virtual
+  tema: "actual", // diseño: "actual", 1 (Boutique), 2 (Juguetería) o 3 (Tienda ágil). Ver temas.js
 
   // Lo que responde el asistente cuando le preguntan por esto. CONFIRMA que sea verdad antes de publicar.
   envios: "Hacemos envíos a toda Colombia. El costo y el tiempo de entrega dependen de tu ciudad; te los confirmamos por WhatsApp al hacer el pedido.",
