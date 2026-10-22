@@ -341,6 +341,7 @@
       detenerGiro = null;
       caja.querySelectorAll("[data-vista]").forEach((b) => b.setAttribute("aria-selected", b.dataset.vista === tipo));
       marco.classList.toggle("en-3d", tipo !== "fotos");
+      $(".nota-3d", marco)?.remove();
       const actual = $(".foto, .giro, model-viewer", marco);
       if (tipo === "fotos") {
         actual.outerHTML = imagen(p, "foto", $("[data-foto].activa", caja)?.dataset.foto || v.foto || fotosDe(p)[0], true);
@@ -354,7 +355,7 @@
           camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="18deg" touch-action="pan-y"
           shadow-intensity="1" exposure="1.05" ar ar-modes="webxr scene-viewer quick-look">
           <button slot="ar-button" class="btn btn-principal ar-boton" type="button">Verlo en tu casa</button>
-        </model-viewer>`;
+        </model-viewer>${p.modeloIA ? `<p class="nota-3d">Modelo aproximado, hecho con IA a partir de la foto. Los detalles de atrás pueden variar.</p>` : ""}`;
       }
     }
     caja.querySelectorAll("[data-vista]").forEach((b) => b.addEventListener("click", () => mostrarVista(b.dataset.vista)));

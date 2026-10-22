@@ -211,8 +211,12 @@ def main(ruta):
             p["fotos"] = fotos["producto"][pid]
         if fotos.get("giro", {}).get(pid):
             p["giro"] = fotos["giro"][pid]
+        # Modelo 3D: el escaneado que subieron a Drive o, si no hay, el generado con IA (fotos_a_3d.py).
         if fotos.get("modelo", {}).get(pid):
             p["modelo"] = fotos["modelo"][pid]
+        elif (CARPETA / "modelos" / f"{pid}.ia.glb").exists():
+            p["modelo"] = f"modelos/{pid}.ia.glb"
+            p["modeloIA"] = True
         for v in variantes:
             if v["sku"] in fotos.get("sku", {}):
                 v["foto"] = fotos["sku"][v["sku"]]
