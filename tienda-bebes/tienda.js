@@ -162,7 +162,7 @@
 
   const chips = [{ id: "", nombre: "Todo", emoji: "✨" }, ...conProductos];
   $("[data-chips]").innerHTML = chips
-    .map((c) => `<button type="button" role="tab" data-chip="${c.id}">${c.emoji} ${c.nombre}</button>`)
+    .map((c) => `<button type="button" role="tab" data-chip="${c.id}"><span class="chip-emoji" aria-hidden="true">${c.emoji}</span><span>${c.nombre}</span></button>`)
     .join("");
   $$("[data-chip]").forEach((b) => b.addEventListener("click", () => irACategoria(b.dataset.chip, false)));
 
