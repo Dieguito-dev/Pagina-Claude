@@ -25,6 +25,12 @@ Es aparte de Vitrina: no usa ni cambia nada de la página principal.
 | `pendientes-catalogo.md` | Lo que hay que corregir en el Excel: precios raros, referencias sin precio o sin stock, etc. |
 | `styles.css` | Colores (arriba, en `:root`) |
 
+## Banners del inicio
+
+El carrusel de arriba se arma con la lista `banners` de `config.js`. Para agregar uno, sube la imagen a `img/banners/` y agrega en la lista su `imagen`, un `texto` (lo que dice el banner, para lectores de pantalla), el `enlace` (`"#catalogo"`, `"producto:<id>"`, `"categoria:<id>"` o `"whatsapp"`) y un `fondo` del color de sus bordes. Pasan solos cada 5 segundos; con un solo banner no se muestran flechas ni puntos.
+
+Los dos banners actuales están recortados de una captura de pantalla de la página de Shopify: con los archivos originales se verían más nítidos.
+
 ## Actualizar el catálogo desde el Excel
 
 El cliente lleva su catálogo en `Levantamiento de atributos_Catálogo.xlsx` (hoja `plantilla_atributos_productos`). Cuando cambie precios o stock:
