@@ -156,7 +156,8 @@
   );
 
   // ---------- Catálogo ----------
-  const estado = { cat: "", texto: "", orden: "", mostrar: POR_PAGINA };
+  // cats + etiqueta (+ filtro opcional): varias categorías a la vez, para un momento del día (ver dia.js).
+  const estado = { cat: "", cats: null, filtro: null, etiqueta: "", texto: "", orden: "", mostrar: POR_PAGINA };
   const grilla = $("[data-grilla]");
   const inputBusqueda = $("[data-busqueda]");
 
@@ -170,6 +171,7 @@
     let lista = estado.texto ? buscar(estado.texto) : [...PRODS];
     if (estado.cat === "promos") lista = lista.filter(deLaPromo);
     else if (estado.cat) lista = lista.filter((p) => p.categoria === estado.cat);
+    else if (estado.cats) lista = lista.filter((p) => estado.cats.includes(p.categoria) && (!estado.filtro || estado.filtro(p)));
     // Los que no tienen precio van al final.
     if (estado.orden === "menor") lista.sort((a, b) => (a.precio ?? Infinity) - (b.precio ?? Infinity));
     else if (estado.orden === "mayor") lista.sort((a, b) => (b.precio ?? -1) - (a.precio ?? -1));
@@ -178,23 +180,22 @@
     return lista;
   }
 
-  function pintarCatalogo() {
-    const lista = filtrados();
-    $$("[data-chip]").forEach((b) => b.setAttribute("aria-selected", b.dataset.chip === estado.cat));
-    grilla.innerHTML = lista
-      .slice(0, estado.mostrar)
-      .map(
-        (p) => `<article class="tarjeta${estadoDe(p) === "agotado" ? " sin-stock" : ""}">
+  function tarjetaHTML(p) {
+    return `<article class="tarjeta${estadoDe(p) === "agotado" ? " sin-stock" : ""}">
           <button type="button" class="tarjeta-foto" data-ver="${p.id}" aria-label="Ver ${esc(p.nombre)}">${imagen(p, "foto")}${sello(p)}${p.modelo ? `<span class="sello-3d">3D</span>` : p.giro ? `<span class="sello-3d">360°</span>` : ""}</button>
           <h3><button type="button" data-ver="${p.id}">${esc(p.nombre)}</button></h3>
           <p>${precioHTML(p)}</p>
           ${disponible(p)
             ? `<button type="button" class="btn btn-mini" data-agregar="${p.id}">Agregar</button>`
             : `<button type="button" class="btn btn-mini btn-borde" data-ver="${p.id}">${estadoDe(p) === "agotado" ? "Avísame" : "Consultar"}</button>`}
-        </article>`
-      )
-      .join("");
-    const cat = estado.cat && (estado.cat === "promos" ? "Promos" : categoria(estado.cat).nombre);
+        </article>`;
+  }
+
+  function pintarCatalogo() {
+    const lista = filtrados();
+    $$("[data-chip]").forEach((b) => b.setAttribute("aria-selected", b.dataset.chip === estado.cat && !estado.cats));
+    grilla.innerHTML = lista.slice(0, estado.mostrar).map(tarjetaHTML).join("");
+    const cat = estado.cats ? estado.etiqueta : estado.cat && (estado.cat === "promos" ? "Promos" : categoria(estado.cat).nombre);
     $("[data-resumen]").textContent =
       `${lista.length} producto${lista.length === 1 ? "" : "s"}` +
       (cat ? ` en ${cat}` : "") +
@@ -203,7 +204,8 @@
     $("[data-ver-mas]").hidden = lista.length <= estado.mostrar;
   }
 
-  grilla.addEventListener("click", (e) => {
+  // Clic en una tarjeta (del catálogo o de cualquier estante): ver el producto o agregarlo.
+  function clicTarjeta(e) {
     const ver = e.target.closest("[data-ver]");
     const agregarBtn = e.target.closest("[data-agregar]");
     if (ver) abrirProducto(ver.dataset.ver);
@@ -213,7 +215,8 @@
       if (hayQueElegir(p)) abrirProducto(p.id);
       else agregar(p.id);
     }
-  });
+  }
+  grilla.addEventListener("click", clicTarjeta);
 
   let espera;
   inputBusqueda.addEventListener("input", () => {
@@ -239,6 +242,7 @@
 
   function irACategoria(id, desplazar = true) {
     estado.cat = id;
+    estado.cats = null;
     estado.texto = "";
     estado.mostrar = POR_PAGINA;
     inputBusqueda.value = "";
@@ -247,8 +251,16 @@
     if (desplazar) $("#catalogo").scrollIntoView({ behavior: "smooth" });
   }
 
+  function irAMomento(etiqueta, cats, filtro = null) {
+    Object.assign(estado, { cat: "", cats, filtro, etiqueta, texto: "", mostrar: POR_PAGINA });
+    inputBusqueda.value = "";
+    pintarCatalogo();
+    $("#catalogo").scrollIntoView({ behavior: "smooth" });
+  }
+
   function mostrarBusqueda(texto) {
     estado.cat = "";
+    estado.cats = null;
     estado.texto = texto;
     estado.mostrar = POR_PAGINA;
     inputBusqueda.value = texto;
@@ -659,7 +671,11 @@
     abrirProducto,
     abrirCarrito,
     irACategoria,
+    irAMomento,
     mostrarBusqueda,
+    tarjetaHTML,
+    clicTarjeta,
+    fotosDe,
     total,
     unidades,
     items: () => items,

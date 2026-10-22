@@ -10,8 +10,9 @@
   <meta property="og:image" content="img/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=Nunito:wght@400;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="temas/cuento.css">
   <script src="config.js"></script>
-  <script src="temas.js"></script>
   <script src="productos.js"></script>
 </head>
 <body>
@@ -53,8 +54,29 @@
     <div class="menu-redes" data-redes></div>
   </nav>
 
+  <!-- Hora del día en la que va el recorrido (la actualiza dia.js) -->
+  <p class="reloj" data-reloj aria-live="polite"><span data-reloj-icono>🌅</span> <span data-reloj-texto>Amanecer</span></p>
+  <div class="estrellas" aria-hidden="true"></div>
+
   <main>
-    <!-- Inicio -->
+    <!-- Amanecer: bienvenida y edad del bebé -->
+    <section class="hero amanecer" id="inicio" data-cielo data-momento data-color="#cdeaf4" data-icono="🌅" data-hora="Amanecer">
+      <div class="sol" aria-hidden="true"></div>
+      <div class="nubes" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="antetitulo">Un día en el mundo de tu bebé</p>
+      <h1>Todo lo que tu bebé necesita, <em>de la mañana a la noche.</em></h1>
+      <p class="hero-sub">Recorre su día: la hora de comer, de jugar, del paseo, del baño y de dormir. En cada momento te mostramos lo que le sirve.</p>
+      <div class="nubi-pregunta">
+        <span class="nubi-cara" aria-hidden="true">☁️</span>
+        <div>
+          <p>Hola, soy <b data-asistente>Nubi</b>. <strong>¿Cuántos meses tiene tu bebé?</strong> Así te muestro solo lo que le sirve.</p>
+          <div class="edades" data-edades role="group" aria-label="Edad del bebé"></div>
+        </div>
+      </div>
+      <a class="bajar" href="#momentos">Empieza el día <span aria-hidden="true">↓</span></a>
+      <p class="hero-pista">Toca el cielo: cada toque suelta una estrellita.</p>
+    </section>
+
     <section class="banners" data-banners aria-roledescription="carrusel" aria-label="Promociones">
       <div class="banners-pista" data-banners-pista></div>
       <button class="banners-flecha ant" type="button" data-banner-ant aria-label="Banner anterior">‹</button>
@@ -62,35 +84,13 @@
       <div class="banners-puntos" data-banners-puntos></div>
     </section>
 
-    <section class="hero" id="inicio" data-cielo>
-      <div class="nubes" aria-hidden="true"><span></span><span></span><span></span></div>
-      <svg class="movil" viewBox="0 0 300 150" aria-hidden="true">
-        <path class="movil-gancho" d="M150 0v14M40 32Q150 4 260 32"/>
-        <g class="colgante c1"><path class="hilo" d="M62 25v44"/><path class="luna" d="M70 66a17 17 0 1 0 6 30 13 13 0 1 1-6-30Z"/></g>
-        <g class="colgante c2"><path class="hilo" d="M116 16v68"/><path class="estrella" d="m116 82 5.3 10.8 11.9 1.7-8.6 8.4 2 11.8-10.6-5.6-10.6 5.6 2-11.8-8.6-8.4 11.9-1.7Z"/></g>
-        <g class="colgante c3"><path class="hilo" d="M184 16v58"/><path class="nube" d="M168 96a10 10 0 0 1 2-19.8 13 13 0 0 1 25-2.2 10 10 0 0 1 4 20 1 1 0 0 1-1 2h-28a1 1 0 0 1-2 0Z"/></g>
-        <g class="colgante c4"><path class="hilo" d="M238 25v40"/><path class="corazon" d="M238 92c-12-8-15-18-10-23 4-4 9-2 10 2 1-4 6-6 10-2 5 5 2 15-10 23Z"/></g>
-      </svg>
-      <p class="hero-pill"><span class="punto"></span>Nacimos en Colombia · asesoría al instante</p>
-      <h1>Todo para tu bebé, <em>con alguien que te ayuda a elegir.</em></h1>
-      <p class="hero-sub"><span data-asistente>Nubi</span>, nuestra asistente virtual, te recomienda productos según la edad de tu bebé y tu presupuesto, resuelve tus dudas y te acompaña hasta que el pedido llega a tu casa.</p>
-      <div class="hero-botones">
-        <button class="btn btn-principal" type="button" data-diagnostico>Que <span data-asistente>Nubi</span> me ayude a elegir</button>
-        <a class="btn btn-borde" href="#catalogo">Ver el catálogo</a>
-      </div>
-      <p class="hero-pista">Toca el cielo: cada toque suelta una estrellita.</p>
-    </section>
+    <!-- Los momentos del día (los arma dia.js) -->
+    <div id="momentos" data-momentos></div>
 
-    <div class="cinta" aria-hidden="true">
-      <div class="cinta-pista">
-        <span>Te asesora</span><i>●</i><span>Te recomienda</span><i>●</i><span>Te acompaña</span><i>●</i><span>Envíos a toda Colombia</span><i>●</i>
-        <span>Te asesora</span><i>●</i><span>Te recomienda</span><i>●</i><span>Te acompaña</span><i>●</i><span>Envíos a toda Colombia</span><i>●</i>
-      </div>
-    </div>
-
-    <!-- Catálogo -->
-    <section class="seccion" id="catalogo">
-      <h2>Nuestros productos</h2>
+    <!-- Todo el catálogo -->
+    <section class="seccion" id="catalogo" data-momento data-color="#fffaf5" data-icono="🔎" data-hora="Todo el catálogo">
+      <p class="etiqueta">¿Buscas algo puntual?</p>
+      <h2>Todo el catálogo</h2>
       <div class="buscador">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>
         <input type="search" placeholder="Buscar: coche, tetero, silla para carro…" data-busqueda aria-label="Buscar productos">
@@ -114,33 +114,18 @@
       <div class="centro"><button class="btn btn-borde" type="button" data-ver-mas hidden>Ver más</button></div>
     </section>
 
-    <!-- Cómo te ayuda -->
-    <section class="seccion etapas">
-      <p class="etiqueta">01 · Cómo te ayudamos</p>
-      <h2>Comprar para tu bebé no tiene que ser complicado</h2>
-      <ol>
-        <li><strong>Te asesora</strong><span>Cuéntale a <b data-asistente>Nubi</b> la edad de tu bebé y qué necesitas. Te muestra solo lo que le sirve.</span></li>
-        <li><strong>Te recomienda</strong><span>Compara opciones según tu presupuesto y te avisa qué está en promo o agotado.</span></li>
-        <li><strong>Te acompaña</strong><span>Arma tu pedido, lo envías por WhatsApp y una persona del equipo te confirma envío y pago.</span></li>
-      </ol>
-      <button class="btn btn-principal" type="button" data-diagnostico>Empezar con <span data-asistente>Nubi</span></button>
-    </section>
-
-    <!-- Quiénes somos -->
-    <section class="seccion nosotros" id="nosotros">
-      <p class="etiqueta">02 · ¿Quiénes somos?</p>
-      <h2 data-lema>Tu tienda de confianza para artículos de bebé</h2>
-      <p data-quienes></p>
-    </section>
-
-    <!-- Contacto -->
-    <section class="seccion contacto" id="contacto">
-      <p class="etiqueta">03 · Contacto</p>
-      <h2>¿Hablamos?</h2>
+    <!-- Buenas noches: quiénes somos y contacto -->
+    <section class="buenas-noches" id="contacto" data-momento data-color="#2f2b4d" data-noche data-icono="✨" data-hora="Buenas noches">
+      <div class="luna" aria-hidden="true"></div>
+      <div id="nosotros">
+        <p class="etiqueta">Buenas noches</p>
+        <h2 data-lema>Tu tienda de confianza para artículos de bebé</h2>
+        <p data-quienes></p>
+      </div>
       <ul class="datos">
-        <li><b>Envíos</b><span data-envios></span></li>
-        <li><b>Pagos</b><span data-pagos></span></li>
-        <li><b>Horario</b><span data-horario></span></li>
+        <li><b>🚚 Envíos</b><span data-envios></span></li>
+        <li><b>💳 Pagos</b><span data-pagos></span></li>
+        <li><b>🕘 Horario</b><span data-horario></span></li>
       </ul>
       <div class="hero-botones">
         <a class="btn btn-wa" href="#" target="_blank" rel="noopener" data-whatsapp hidden>Escríbenos por WhatsApp</a>
@@ -220,6 +205,7 @@
   </a>
 
   <script src="tienda.js"></script>
+  <script src="dia.js"></script>
   <script src="asistente.js"></script>
 </body>
 </html>

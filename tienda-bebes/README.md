@@ -25,11 +25,18 @@ Es aparte de Vitrina: no usa ni cambia nada de la página principal.
 | `pendientes-catalogo.md` | Lo que hay que corregir en el Excel: precios raros, referencias sin precio o sin stock, etc. |
 | `styles.css` | Colores (arriba, en `:root`) |
 
-## Diseño
+## Diseño: "Un día en el mundo de tu bebé"
 
-El diseño de la tienda es **"Cuento de cuna"** (`temas/cuento.css`): el cuarto de un bebé de cuento, con colores sacados del logo, un móvil de cuna que se mece en el inicio, costuras punteadas en botones y bordes, productos sobre manchas pastel, precios en etiqueta colgante, categorías como burbujas y los pasos como cubos de juguete. Se carga encima de `styles.css` desde `temas.js`.
+La tienda se recorre como el día de un bebé, de la mañana a la noche:
 
-El diseño anterior sigue disponible: `?diseno=actual` al final del link lo muestra (con una barra arriba para comparar), y `tema` en `config.js` cambia el de todos.
+1. **Amanecer**: bienvenida. Nubi pregunta la edad del bebé y **todos los estantes se ajustan a esa edad** (se recuerda en el navegador).
+2. **Momentos del día**, cada uno con un estante de productos que se desliza: 7:00 a.m. hora de comer · 10:00 a.m. hora de jugar · 3:00 p.m. hora del paseo · 6:00 p.m. hora del baño · 8:00 p.m. hora de dormir (de noche, con estrellas y el móvil de cuna). "Ver los N productos" abre el catálogo con ese momento.
+3. **Todo el catálogo**: buscador, categorías y cuadrícula, para quien busca algo puntual.
+4. **Buenas noches**: quiénes somos, envíos, pagos, horario y WhatsApp.
+
+Al bajar, **el cielo de la página cambia de color** según el momento y una etiqueta arriba marca la hora. Qué categorías van en cada momento, sus horas, frases y colores están al comienzo de `dia.js`.
+
+El estilo visual está en `temas/cuento.css`, encima de `styles.css`: colores del logo, costuras punteadas, productos sobre manchas pastel, precio en etiqueta colgante y categorías como burbujas.
 
 ## Ver los productos en 3D
 

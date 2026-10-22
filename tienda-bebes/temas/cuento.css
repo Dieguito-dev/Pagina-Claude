@@ -217,3 +217,127 @@ h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; le
 .giro, model-viewer { background: var(--cielo); --poster-color: var(--cielo); border-radius: 30px; }
 .giro img { mix-blend-mode: multiply; }
 .sello-3d { left: 12%; bottom: 12%; background: var(--tinta); font-family: var(--fuente-mano); font-size: 1rem; rotate: 5deg; }
+
+/* =====================================================================
+   "Un día en el mundo de tu bebé": la página se recorre por los momentos
+   del día y el cielo (fondo) cambia de color al bajar (ver dia.js).
+   ===================================================================== */
+body { background: var(--cielo-actual, var(--cielo)); transition: background-color 0.9s ease; }
+main { position: relative; z-index: 1; }
+.estrellas {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.9s;
+  background:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 28% 62%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 44% 30%, #ffe9a8 50%, transparent 51%),
+    radial-gradient(1px 1px at 63% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 78% 48%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 82%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 8% 88%, #ffe9a8 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 78%, #fff 50%, transparent 51%);
+  background-size: 420px 420px;
+}
+.es-de-noche .estrellas { opacity: 1; }
+
+/* Reloj: marca el momento del día en el que vas */
+.reloj {
+  position: fixed; z-index: 15; top: calc(env(safe-area-inset-top, 0px) + 68px); left: 50%; translate: -50% 0; margin: 0;
+  padding: 6px 14px; border-radius: 999px; background: rgba(255, 250, 245, 0.88); backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(47, 43, 77, 0.12); font-weight: 800; font-size: 0.85rem; white-space: nowrap;
+  transition: background 0.6s, color 0.6s;
+}
+.es-de-noche .reloj { background: rgba(47, 43, 77, 0.85); color: #fff; }
+
+/* Amanecer */
+.hero.amanecer { background: transparent; padding: 84px 20px 56px; }
+.hero.amanecer::after { display: none; }
+.hero.amanecer > .sol {
+  position: absolute; top: 40px; right: max(-70px, calc(50% - 560px)); width: clamp(170px, 34vw, 260px); height: auto; aspect-ratio: 1;
+  max-width: none; margin: 0; border-radius: 50%;
+  background: radial-gradient(circle, #ffe7a3 0 38%, rgba(255, 214, 140, 0.45) 39% 55%, transparent 70%);
+  animation: salir-sol 2.4s ease-out both;
+}
+@keyframes salir-sol { from { translate: 0 120px; opacity: 0; } }
+.antetitulo { margin: 0; font-family: var(--fuente-mano); font-size: 1.6rem; font-weight: 700; color: var(--coral); }
+.hero.amanecer h1 { margin-top: 6px; }
+.nubi-pregunta {
+  display: flex; gap: 14px; align-items: flex-start; margin-top: 26px !important; padding: 18px 18px 18px 16px;
+  text-align: left; background: #fff; border-radius: 28px 28px 28px 8px; box-shadow: var(--sombra); position: relative;
+}
+.nubi-pregunta::after { content: ""; position: absolute; inset: 6px; border-radius: 22px 22px 22px 6px; border: 1.5px dashed var(--costura); pointer-events: none; }
+.nubi-cara { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; font-size: 1.6rem; background: linear-gradient(160deg, var(--cielo), #9fd2e6); }
+.nubi-pregunta p { margin: 0 0 10px; }
+.edades { display: flex; flex-wrap: wrap; gap: 8px; position: relative; z-index: 1; }
+.edades button, .estante-vacio button {
+  padding: 7px 14px; border-radius: 999px; border: 1.5px dashed var(--costura); background: var(--papel);
+  font-weight: 800; font-size: 0.88rem; color: var(--tinta);
+}
+.edades button[aria-pressed="true"] { background: var(--tinta); border: 1.5px solid var(--tinta); color: #fff; }
+.bajar {
+  display: inline-flex; gap: 8px; margin-top: 28px !important; font-family: var(--fuente-mano); font-size: 1.5rem; font-weight: 700;
+  color: var(--tinta); text-decoration: none;
+}
+.bajar span { animation: rebotar 1.6s ease-in-out infinite; }
+@keyframes rebotar { 50% { translate: 0 6px; } }
+
+/* Banners como una postal */
+.banners { background: transparent; max-width: 1140px; margin: 0 auto; padding: 0 16px 8px; }
+.banners-pista { border-radius: 26px; box-shadow: var(--sombra); }
+
+/* Cada momento del día */
+.momento { position: relative; padding: 64px 0 36px; }
+.momento-cab { max-width: 1100px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
+.momento-hora {
+  display: inline-flex; align-items: center; gap: 8px; margin: 0 0 6px; padding: 4px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7); font-family: var(--fuente-mano); font-size: 1.45rem; font-weight: 700; color: var(--coral);
+}
+.momento h2 { font-size: clamp(2.2rem, 8vw, 3.6rem); margin: 0 0 6px; }
+.momento-cab > p:last-child { margin: 0; max-width: 46ch; color: var(--tinta-suave); font-size: 1.05rem; }
+
+.estante-marco { position: relative; }
+.estante {
+  display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+  padding: 22px max(16px, calc((100% - 1100px) / 2 + 16px)) 18px; scroll-padding-inline: max(16px, calc((100% - 1100px) / 2 + 16px));
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 28px), transparent);
+}
+.estante::-webkit-scrollbar { display: none; }
+.estante .tarjeta { flex: 0 0 min(46vw, 230px); scroll-snap-align: start; }
+.estante-vacio { margin: 0; padding: 20px 0; color: var(--tinta-suave); }
+.estante-flecha {
+  position: absolute; top: 38%; z-index: 2; width: 44px; height: 44px; border: 0; border-radius: 50%;
+  background: #fff; box-shadow: var(--sombra); font-size: 1.6rem; line-height: 1; color: var(--tinta);
+}
+.estante-flecha.ant { left: max(8px, calc((100% - 1180px) / 2)); }
+.estante-flecha.sig { right: max(8px, calc((100% - 1180px) / 2)); }
+@media (max-width: 700px) { .estante-flecha { display: none; } }
+.momento-pie { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+/* Hora de dormir: noche con el móvil de cuna */
+.de-noche { color: #fff; }
+.de-noche h2, .de-noche .tarjeta h3 button { color: #fff; }
+.de-noche .momento-cab > p:last-child { color: rgba(255, 255, 255, 0.75); }
+.de-noche .momento-hora { background: rgba(255, 255, 255, 0.12); color: var(--mantequilla); }
+.de-noche .tarjeta .btn-mini.btn-borde { color: #fff; }
+.de-noche .tarjeta-foto .foto { mix-blend-mode: normal; }
+.momento .movil { position: relative; display: block; top: auto; left: auto; translate: none; width: min(300px, 78vw); margin: -40px auto 6px; }
+.de-noche .movil path { stroke: #fff; }
+.de-noche .movil .luna-m { fill: var(--mantequilla); }
+
+/* Buenas noches: quiénes somos y contacto */
+.buenas-noches { position: relative; color: #fff; max-width: 760px; margin: 0 auto; padding: 72px max(16px, env(safe-area-inset-left, 0px)) 88px; }
+.buenas-noches h2 { color: #fff; font-size: clamp(2rem, 6vw, 2.8rem); }
+.buenas-noches .etiqueta { color: var(--mantequilla); }
+.buenas-noches p { color: rgba(255, 255, 255, 0.82); font-size: 1.08rem; }
+.buenas-noches .datos li { background: rgba(255, 255, 255, 0.07); border: 1.5px dashed rgba(255, 255, 255, 0.22); color: rgba(255, 255, 255, 0.85); }
+.buenas-noches .datos b { color: var(--mantequilla); }
+.buenas-noches .hero-botones { justify-content: flex-start; }
+.luna {
+  position: absolute; top: 24px; right: 16px; width: 74px; height: 74px; border-radius: 50%;
+  box-shadow: inset -16px -6px 0 0 var(--mantequilla); rotate: -20deg; filter: drop-shadow(0 0 18px rgba(255, 227, 161, 0.5));
+}
+.pie { background: #24213d; }
+.pie::before { display: none; }
+
+/* El catálogo completo, sobre papel */
+#catalogo { padding-top: 72px; }

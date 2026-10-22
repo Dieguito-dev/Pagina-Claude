@@ -386,15 +386,6 @@ model-viewer { width: 100%; height: 100%; background: var(--blanco); --poster-co
 }
 .toast.visible { translate: -50% 0; opacity: 1; }
 
-/* Barra para comparar diseños (solo con ?diseno= en el link) */
-.selector-diseno {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px;
-  padding: 8px 12px; background: #1d2327; color: #fff; font: 600 0.8rem/1.2 system-ui, sans-serif;
-}
-.selector-diseno span { opacity: 0.7; margin-right: 4px; }
-.selector-diseno a { padding: 5px 10px; border-radius: 999px; color: #fff; text-decoration: none; background: rgba(255, 255, 255, 0.12); }
-.selector-diseno a[aria-current="page"] { background: #fff; color: #1d2327; }
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
