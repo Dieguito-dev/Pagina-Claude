@@ -29,12 +29,15 @@
   --linea: #ece3da;
   --radio: 28px;
   --sombra: 0 14px 34px rgba(47, 43, 77, 0.1);
-  --fuente-titulo: "Fraunces", Georgia, serif;
+  --fuente-titulo: "Baloo 2", "Nunito", system-ui, sans-serif;
   --fuente-texto: "Nunito", system-ui, sans-serif;
   --fuente-mano: "Caveat", "Comic Sans MS", cursive;
 }
 
-h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; letter-spacing: -0.01em; text-wrap: balance; }
+h1, h2, h3 { font-weight: 800; letter-spacing: -0.01em; line-height: 1.08; text-wrap: balance; }
+h1 em, h2 em { font-style: normal; }
+.btn, .vistas button, .edades button, .chips button, .opcion, .reloj { font-family: var(--fuente-titulo); font-weight: 700; letter-spacing: 0.01em; }
+.logo { font-weight: 800; }
 
 /* Botones cosidos: línea punteada por dentro, como una costura */
 .btn { position: relative; font-weight: 800; border: 0; }
@@ -388,3 +391,25 @@ main { position: relative; z-index: 1; }
 .formulario-contacto .nota { color: rgba(255, 255, 255, 0.65); }
 .buenas-noches .datos { margin-top: 40px; }
 @media (min-width: 800px) { .buenas-noches .datos { grid-template-columns: repeat(3, 1fr); } }
+
+/* Encabezado: toma el color del cielo (más claro de día, oscuro de noche) */
+.top {
+  background: color-mix(in srgb, var(--cielo-actual, var(--cielo)) 70%, #fff);
+  transition: color 0.4s;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 21;
+  background: color-mix(in srgb, var(--cielo-actual, var(--cielo)) 70%, #fff);
+}
+.es-de-noche .top, .es-de-noche::before { background: color-mix(in srgb, var(--cielo-actual) 82%, #000); }
+.es-de-noche .top { color: #fff; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08); }
+.es-de-noche .top::after { border-bottom-color: rgba(255, 255, 255, 0.22); }
+.es-de-noche .logo { color: #fff; }
+
+/* Catálogo completo, de noche como lo que tiene antes y después */
+#catalogo.de-noche .etiqueta { color: var(--mantequilla); }
+#catalogo.de-noche .chips button { color: rgba(255, 255, 255, 0.72); }
+#catalogo.de-noche .chips button[aria-selected="true"] { color: #fff; }
+#catalogo.de-noche .chips button[aria-selected="true"] .chip-emoji { outline-color: var(--mantequilla); }
+#catalogo.de-noche .barra, #catalogo.de-noche .vacio { color: rgba(255, 255, 255, 0.75); }
+#catalogo.de-noche .buscador { border-color: rgba(255, 255, 255, 0.4); }
