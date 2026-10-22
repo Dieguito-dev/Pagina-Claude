@@ -11,6 +11,10 @@ y, opcionalmente, una subcarpeta o foto con el SKU (BW-…) para la foto de cada
 Las fotos quedan en tienda-bebes/img/p/<producto>/ en WebP (grande y miniatura -p) y la
 lista en tienda-bebes/herramientas/fotos.json, que excel_a_productos.py usa al generar
 productos.js. Lo que no se pudo emparejar se agrega a pendientes-catalogo.md.
+
+Para ver el producto en 3D, dentro de la carpeta del producto en Drive:
+  - una subcarpeta "360" con las fotos tomadas alrededor del producto, en orden (giro de 360°);
+  - y/o un archivo .glb con el modelo 3D escaneado (por ejemplo, exportado de Polycam o Luma AI).
 """
 import html
 import io
@@ -29,6 +33,9 @@ from PIL import Image, ImageOps
 CARPETA = Path(__file__).resolve().parent.parent
 SALIDA = CARPETA / "img" / "p"
 MAX_GALERIA = 6  # fotos por producto, además de la de cada color
+MAX_GIRO = 72  # cuadros del giro de 360°; si hay más, se toman repartidos
+GIRO = 900  # px del lado mayor de cada cuadro del giro
+MAX_MODELO_MB = 20
 GRANDE, MINI = 1000, 400  # px del lado mayor
 IMAGEN = (".jpeg", ".jpg", ".png", ".webp", "")  # algunas fotos vienen sin extensión
 SKU = re.compile(r"BW-\d+", re.I)
@@ -71,8 +78,17 @@ def productos_actuales():
     return json.loads(f"[{cuerpo}]")
 
 
+def orden_natural(nombre):
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", nombre)]
+
+
+def es_giro(a):
+    return any(norm(parte) in ("360", "GIRO", "GIRO 360") for parte in a["ruta"][2:])
+
+
 def emparejar(archivos, productos):
-    """Devuelve {id_producto: {"galeria": [archivo…], "sku": {SKU: archivo}}} y lo que sobró."""
+    """Devuelve {id_producto: {"galeria": [archivo…], "sku": {SKU: archivo}, "giro": [archivo…], "modelo": archivo}}
+    y lo que sobró."""
     sku_a_prod = {v["sku"]: p["id"] for p in productos for v in p["variantes"]}
     titulo_a_prod = {norm(p["nombre"]): p for p in productos}
     fotos = [a for a in archivos if Path(a["nombre"]).suffix.lower() in IMAGEN and len(a["ruta"]) >= 2]
@@ -100,10 +116,31 @@ def emparejar(archivos, productos):
                 return p["id"]
         return None
 
-    res = defaultdict(lambda: {"galeria": [], "sku": {}})
+    res = defaultdict(lambda: {"galeria": [], "sku": {}, "giro": [], "modelo": None})
     sobra = defaultdict(int)
     skus_sin_producto = set()
-    for a in sorted(fotos, key=lambda a: (a["ruta"], not a["nombre"].startswith("1."), a["nombre"])):
+
+    # 3D: subcarpeta "360" y archivos .glb dentro de la carpeta del producto.
+    for a in archivos:
+        if len(a["ruta"]) < 2:
+            continue
+        es_modelo = Path(a["nombre"]).suffix.lower() == ".glb"
+        if not (es_modelo or (es_giro(a) and a in fotos)):
+            continue
+        pid = producto_de_carpeta(a["ruta"][:2])
+        if not pid:
+            sobra["/".join(a["ruta"][:2])] += 1
+        elif es_modelo:
+            res[pid]["modelo"] = res[pid]["modelo"] or a
+        else:
+            res[pid]["giro"].append(a)
+    for r in res.values():
+        r["giro"].sort(key=lambda a: orden_natural(a["nombre"]))
+        if len(r["giro"]) > MAX_GIRO:
+            paso = len(r["giro"]) / MAX_GIRO
+            r["giro"] = [r["giro"][int(i * paso)] for i in range(MAX_GIRO)]
+
+    for a in sorted((a for a in fotos if not es_giro(a)), key=lambda a: (a["ruta"], not a["nombre"].startswith("1."), a["nombre"])):
         c = a["ruta"][:2]
         s = sku_de(a)
         if s and "TEST" not in norm(c[1]).split():
@@ -123,10 +160,10 @@ def emparejar(archivos, productos):
     return res, sobra, skus_sin_producto
 
 
-def convertir(datos, destino):
+def convertir(datos, destino, tamanos=((GRANDE, "", 78), (MINI, "-p", 72))):
     im = Image.open(io.BytesIO(datos))
     im = ImageOps.exif_transpose(im).convert("RGB")
-    for lado, sufijo, calidad in ((GRANDE, "", 78), (MINI, "-p", 72)):
+    for lado, sufijo, calidad in tamanos:
         copia = im.copy()
         copia.thumbnail((lado, lado))
         copia.save(destino.with_name(destino.stem + sufijo + ".webp"), "WEBP", quality=calidad, method=6)
@@ -165,28 +202,47 @@ def main(carpeta_id, cache):
     productos = productos_actuales()
     res, sobra, skus_sin_producto = emparejar(archivos, productos)
 
-    trabajos = []  # (archivo, ruta destino sin extensión)
-    salida = {"sku": {}, "producto": {}}
+    trabajos = []  # (archivo, ruta destino sin extensión, tamaños o None para copiar tal cual)
+    salida = {"sku": {}, "producto": {}, "giro": {}, "modelo": {}}
     for pid, r in res.items():
+        for i, a in enumerate(r["giro"], 1):
+            trabajos.append((a, SALIDA / pid / "giro" / f"{i:02d}", ((GIRO, "", 74),)))
+        if r["giro"]:
+            salida["giro"][pid] = [f"img/p/{pid}/giro/{i:02d}.webp" for i in range(1, len(r["giro"]) + 1)]
+        if r["modelo"]:
+            trabajos.append((r["modelo"], CARPETA / "modelos" / pid, None))
+            salida["modelo"][pid] = f"modelos/{pid}.glb"
         rutas = []
         for i, a in enumerate(r["galeria"], 1):
-            trabajos.append((a, SALIDA / pid / str(i)))
+            trabajos.append((a, SALIDA / pid / str(i), None))
             rutas.append(f"img/p/{pid}/{i}.webp")
         for s, a in r["sku"].items():
-            trabajos.append((a, SALIDA / pid / s.lower()))
+            trabajos.append((a, SALIDA / pid / s.lower(), None))
             salida["sku"][s] = f"img/p/{pid}/{s.lower()}.webp"
         salida["producto"][pid] = rutas
 
     def hacer(t):
-        a, destino = t
-        if destino.with_suffix(".webp").exists():
+        a, destino, tamanos = t
+        es_modelo = destino.parent.name == "modelos"
+        final = destino.with_suffix(".glb" if es_modelo else ".webp")
+        if final.exists():
             return None
         crudo = cache / a["id"]
         if not crudo.exists():
             crudo.write_bytes(pedir(f"https://drive.usercontent.google.com/download?id={a['id']}&export=download"))
         destino.parent.mkdir(parents=True, exist_ok=True)
         try:
-            convertir(crudo.read_bytes(), destino)
+            if es_modelo:
+                datos = crudo.read_bytes()
+                if datos[:4] != b"glTF":
+                    return f"{'/'.join(a['ruta'])}/{a['nombre']}: no es un modelo .glb válido"
+                if len(datos) > MAX_MODELO_MB * 1024 * 1024:
+                    return f"{'/'.join(a['ruta'])}/{a['nombre']}: pesa {len(datos) // 2**20} MB (máximo {MAX_MODELO_MB}); expórtalo más liviano"
+                final.write_bytes(datos)
+            elif tamanos:
+                convertir(crudo.read_bytes(), destino, tamanos)
+            else:
+                convertir(crudo.read_bytes(), destino)
         except Exception as e:
             return f"{'/'.join(a['ruta'])}/{a['nombre']}: {e}"
         return None
@@ -198,6 +254,8 @@ def main(carpeta_id, cache):
     existe = lambda r: (CARPETA / r).exists()
     salida["sku"] = {s: r for s, r in salida["sku"].items() if existe(r)}
     salida["producto"] = {p: [r for r in rs if existe(r)] for p, rs in salida["producto"].items()}
+    salida["giro"] = {p: rs for p, rs in salida["giro"].items() if all(existe(r) for r in rs)}
+    salida["modelo"] = {p: r for p, r in salida["modelo"].items() if existe(r)}
     salida["no_emparejadas"] = [f"{c} ({n} fotos)" for c, n in sorted(sobra.items())]
     salida["skus_sin_producto"] = sorted(skus_sin_producto)
     salida["errores"] = errores + fotos_de_otro_producto(salida)
@@ -205,7 +263,8 @@ def main(carpeta_id, cache):
     con_foto = {p for p, rs in salida["producto"].items() if rs} | {
         p["id"] for p in productos for v in p["variantes"] if v["sku"] in salida["sku"]
     }
-    print(f"{len(con_foto)} de {len(productos)} productos con foto · {len(errores)} errores · "
+    print(f"{len(con_foto)} de {len(productos)} productos con foto · {len(salida['giro'])} con giro 360° · "
+          f"{len(salida['modelo'])} con modelo 3D · {len(errores)} errores · "
           f"{len(sobra)} carpetas sin emparejar. Ahora corre excel_a_productos.py")
 
 

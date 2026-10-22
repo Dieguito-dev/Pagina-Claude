@@ -31,6 +31,17 @@ El diseño de la tienda es **"Cuento de cuna"** (`temas/cuento.css`): el cuarto 
 
 El diseño anterior sigue disponible: `?diseno=actual` al final del link lo muestra (con una barra arriba para comparar), y `tema` en `config.js` cambia el de todos.
 
+## Ver los productos en 3D
+
+En la página de cada producto aparecen los botones **Fotos · Girar 360° · Ver en 3D** cuando ese producto tiene el material. En el catálogo, su tarjeta lleva un sello "3D" o "360°". Hay dos formas, las dos fieles al producto real:
+
+1. **Modelo 3D escaneado** (archivo `.glb`): se gira, se le hace zoom y en el celular se puede **ver en tu casa** con la cámara (realidad aumentada). Se hace con apps como **Polycam** o **Luma AI**: se le da la vuelta al producto grabándolo con el celular y se exporta en formato **GLB**, de 20 MB como máximo. Funciona mejor con productos sólidos; mallas, telas transparentes y piezas muy delgadas pueden salir imperfectas.
+2. **Giro de 360°** (fotos reales): de 24 a 36 fotos alrededor del producto, todas desde la misma altura y distancia, sobre una base giratoria y con fondo liso. Se nombran en orden (`01.jpg`, `02.jpg`…). Al arrastrar, el producto gira.
+
+**Dónde ponerlos:** en el Drive del cliente, dentro de la carpeta del producto (`CATEGORÍA / NOMBRE DEL PRODUCTO /`), el archivo `.glb` suelto y las fotos del giro en una subcarpeta llamada **`360`**. Después se corren `fotos_drive.py` y `excel_a_productos.py` (ver abajo). Los modelos quedan en `modelos/` y los cuadros del giro en `img/p/<producto>/giro/`.
+
+El visor 3D es [model-viewer](https://modelviewer.dev) de Google (`vendor/model-viewer.min.js`, versión 3.5.0). Se carga solo cuando alguien abre la vista 3D.
+
 ## Banners del inicio
 
 El carrusel de arriba se arma con la lista `banners` de `config.js`. Para agregar uno, sube la imagen a `img/banners/` y agrega en la lista su `imagen`, un `texto` (lo que dice el banner, para lectores de pantalla), el `enlace` (`"#catalogo"`, `"producto:<id>"`, `"categoria:<id>"` o `"whatsapp"`) y un `fondo` del color de sus bordes. Pasan solos cada 5 segundos; con un solo banner no se muestran flechas ni puntos.

@@ -209,6 +209,10 @@ def main(ruta):
         p["descripcion"] = desc
         if fotos.get("producto", {}).get(pid):
             p["fotos"] = fotos["producto"][pid]
+        if fotos.get("giro", {}).get(pid):
+            p["giro"] = fotos["giro"][pid]
+        if fotos.get("modelo", {}).get(pid):
+            p["modelo"] = fotos["modelo"][pid]
         for v in variantes:
             if v["sku"] in fotos.get("sku", {}):
                 v["foto"] = fotos["sku"][v["sku"]]

@@ -254,6 +254,25 @@ s { color: var(--suave); font-size: 0.85em; }
 .ficha-foto { position: relative; aspect-ratio: 1; border-radius: var(--radio); overflow: hidden; background: var(--blanco); margin-bottom: 14px; }
 .ficha-foto .emoji { font-size: 5rem; }
 .ficha-foto img.foto { object-fit: contain; background: var(--blanco); }
+/* Vistas: fotos, giro de 360° y modelo 3D */
+.vistas { display: flex; gap: 6px; margin: -4px 0 12px; }
+.vistas button { flex: 1; padding: 8px 10px; border: 2px solid var(--azul); border-radius: 999px; background: var(--blanco); font-weight: 800; font-size: 0.85rem; }
+.vistas button[aria-selected="true"] { background: var(--azul-osc); border-color: var(--azul-osc); color: var(--blanco); }
+.ficha-foto.en-3d .sello { display: none; }
+.giro { position: relative; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; user-select: none; background: var(--blanco); }
+.giro.girando { cursor: grabbing; }
+.giro img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.giro-pista {
+  position: absolute; left: 50%; bottom: 12px; translate: -50% 0; padding: 4px 12px; border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 0.8rem; font-weight: 700; pointer-events: none; transition: opacity 0.3s;
+}
+.giro.girando .giro-pista { opacity: 0; }
+model-viewer { width: 100%; height: 100%; background: var(--blanco); --poster-color: var(--blanco); }
+.ar-boton { position: absolute; left: 50%; bottom: 12px; translate: -50% 0; }
+.sello-3d {
+  position: absolute; left: 10px; bottom: 10px; padding: 2px 9px; border-radius: 999px;
+  background: var(--texto); color: var(--blanco); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+}
 .miniaturas { display: flex; gap: 8px; overflow-x: auto; margin: -4px 0 14px; padding-bottom: 4px; }
 .miniaturas button { flex: none; width: 62px; height: 62px; padding: 0; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: var(--blanco); }
 .miniaturas button.activa { border-color: var(--azul-osc); }
