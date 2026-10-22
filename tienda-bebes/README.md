@@ -47,17 +47,18 @@ En la página de cada producto aparecen los botones **Fotos · Girar 360° · Ve
 
 **Dónde ponerlos:** en el Drive del cliente, dentro de la carpeta del producto (`CATEGORÍA / NOMBRE DEL PRODUCTO /`), el archivo `.glb` suelto y las fotos del giro en una subcarpeta llamada **`360`**. Después se corren `fotos_drive.py` y `excel_a_productos.py` (ver abajo). Los modelos quedan en `modelos/` y los cuadros del giro en `img/p/<producto>/giro/`.
 
-**3. Modelo generado con IA a partir de la foto** (`herramientas/fotos_a_3d.py`, con [TripoSR](https://github.com/VAST-AI-Research/TripoSR), gratis y sin tarjeta gráfica): unos 25 segundos y ~800 KB por producto. Queda en `modelos/<producto>.ia.glb` y en la tienda sale con la nota "Modelo aproximado, hecho con IA a partir de la foto". Si después suben un modelo escaneado a Drive, ese reemplaza al de IA.
-- El frente sale parecido a la foto; **la parte de atrás la estima la IA**.
-- Funciona con fotos del **producto solo y completo, sobre fondo blanco**. Con montajes (varios productos o textos en la misma imagen) sale mal: **revisa cada modelo antes de publicarlo** y borra el `.ia.glb` si no se parece.
-- El modelo sale del color de la foto usada (el primer color con foto), aunque la persona elija otro color.
-- Primera prueba: triciclo dinosaurio (bien), silla para carro Kidilo y mecedora Mastela (frente bien, atrás aproximado). El coche moisés Kidilo se descartó porque su foto trae dos coches y un bolso.
+**3. Modelo generado con IA a partir de la foto** (`herramientas/fotos_a_3d.py`, con **Hunyuan3D-2.1** de Tencent a través de su demo gratuita en Hugging Face): modelo con textura, unos 2 minutos y ~3 MB por producto. Queda en `modelos/<producto>.ia.glb` y en la tienda sale con la nota "Modelo aproximado, hecho con IA a partir de la foto". Si después suben un modelo escaneado a Drive, ese reemplaza al de IA.
+- Necesita un token de Hugging Face en la variable `HF_TOKEN` (guárdalo como secreto del entorno, no en el código) y acceso a `huggingface.co` y `*.hf.space`.
+- **Cuota:** cada modelo reserva unos 4,5 minutos de tarjeta gráfica de Hugging Face. La cuenta gratis alcanza para ~1 modelo al día; Hugging Face PRO da 40 minutos diarios.
+- El frente sale fiel a la foto y la parte de atrás la estima la IA. Funciona con fotos del **producto solo y completo, sobre fondo blanco**; con montajes (varios productos o textos) sale mal. **Revisa cada modelo antes de publicarlo** y borra el `.ia.glb` si no se parece.
+- El programa pasa la textura al formato estándar del GLB (Hunyuan la deja como texto y con el tipo de imagen equivocado, lo que puede cerrar la realidad aumentada de Google) y deja el modelo a tamaño real.
+- Primera prueba: triciclo dinosaurio (muy fiel; un pedal quedó suelto). Antes se probó TripoSR, que corre sin tarjeta gráfica, pero sus modelos salían borrosos y deformes.
 
 **Ver en tu espacio (realidad aumentada, como en Amazon):** en celulares compatibles (Android con Google, iPhone con AR Quick Look) la vista 3D muestra el botón "📱 Ver en tu espacio", que abre la cámara y pone el producto en el piso **a tamaño real y fijo** (no se puede agrandar ni achicar). En computador sale "Abre esta página en tu celular…". Para el tamaño, `fotos_a_3d.py` escala cada modelo así:
 1. Con las medidas reales de `herramientas/medidas.json` (alto, ancho y largo en cm): el modelo queda exacto, por ejemplo el triciclo dinosaurio a 66 × 42 × 62 cm, sacado de su foto de medidas en Drive.
 2. Si no hay, con un alto típico según el tipo de producto (`ALTO_TIPICO`), y la tienda avisa "Tamaño aproximado".
 
-Para que todos queden exactos, hay que anotar las medidas reales de cada producto en `medidas.json` y volver a correr `fotos_a_3d.py`.
+Para que todos queden exactos, hay que anotar las medidas reales de cada producto en `medidas.json` antes de generar su modelo.
 
 El visor 3D es [model-viewer](https://modelviewer.dev) de Google (`vendor/model-viewer.min.js`, versión 3.5.0). Se carga solo cuando alguien abre la vista 3D.
 
