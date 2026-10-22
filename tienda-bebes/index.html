@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Baby's World · Artículos para bebé</title>
+  <meta name="description" content="Tu tienda de confianza para artículos de bebé. Coches, sillas para carro, lactancia, baño, juguetes y más, con asesoría al instante.">
+  <meta name="theme-color" content="#5ec3db">
+  <link rel="icon" href="img/logo-cara.png" type="image/png">
+  <meta property="og:image" content="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="productos.js"></script>
+</head>
+<body>
+  <header class="top">
+    <button class="icono" type="button" data-abrir-menu aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href="#inicio" class="logo"><img class="logo-cara" src="img/logo-cara.png" alt="" width="40" height="40"><span data-marca>Baby's World</span></a>
+    <div class="top-der">
+      <button class="icono" type="button" data-abrir-busqueda aria-label="Buscar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>
+      </button>
+      <button class="icono" type="button" data-abrir-carrito aria-label="Abrir carrito">
+        <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+        <span class="contador" data-contador hidden>0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Menú lateral -->
+  <div class="velo" data-velo hidden></div>
+  <nav class="menu" data-menu aria-label="Menú" hidden>
+    <div class="menu-cab">
+      <button class="icono" type="button" data-cerrar aria-label="Cerrar menú">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="menu-panel" data-menu-principal>
+      <a href="#inicio">Inicio</a>
+      <button type="button" data-ver-categorias>Catálogo <span>→</span></button>
+      <a href="#contacto">Contacto</a>
+      <a href="#nosotros">¿Quiénes somos?</a>
+      <button type="button" data-hablar-asistente>Pregúntale a <span data-asistente>Nubi</span> 💬</button>
+    </div>
+    <div class="menu-panel" data-menu-categorias hidden>
+      <button type="button" class="menu-volver" data-volver>← Catálogo</button>
+      <div data-lista-categorias></div>
+    </div>
+    <div class="menu-redes" data-redes></div>
+  </nav>
+
+  <main>
+    <!-- Inicio -->
+    <section class="hero" id="inicio" data-cielo>
+      <div class="nubes" aria-hidden="true"><span></span><span></span><span></span></div>
+      <img class="hero-logo" src="img/logo.png" alt="Baby's World" width="300" height="416">
+      <p class="hero-pill"><span class="punto"></span>Nacimos en Colombia · asesoría al instante</p>
+      <h1>Todo para tu bebé, <em>con alguien que te ayuda a elegir.</em></h1>
+      <p class="hero-sub"><span data-asistente>Nubi</span>, nuestra asistente virtual, te recomienda productos según la edad de tu bebé y tu presupuesto, resuelve tus dudas y te acompaña hasta que el pedido llega a tu casa.</p>
+      <div class="hero-botones">
+        <button class="btn btn-principal" type="button" data-diagnostico>Que <span data-asistente>Nubi</span> me ayude a elegir</button>
+        <a class="btn btn-borde" href="#catalogo">Ver el catálogo</a>
+      </div>
+      <p class="hero-pista">Toca el cielo: cada toque suelta una estrellita.</p>
+    </section>
+
+    <div class="cinta" aria-hidden="true">
+      <div class="cinta-pista">
+        <span>Te asesora</span><i>●</i><span>Te recomienda</span><i>●</i><span>Te acompaña</span><i>●</i><span>Envíos a toda Colombia</span><i>●</i>
+        <span>Te asesora</span><i>●</i><span>Te recomienda</span><i>●</i><span>Te acompaña</span><i>●</i><span>Envíos a toda Colombia</span><i>●</i>
+      </div>
+    </div>
+
+    <!-- Catálogo -->
+    <section class="seccion" id="catalogo">
+      <h2>Nuestros productos</h2>
+      <div class="buscador">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>
+        <input type="search" placeholder="Buscar: coche, tetero, silla para carro…" data-busqueda aria-label="Buscar productos">
+      </div>
+      <div class="chips" data-chips role="tablist" aria-label="Categorías"></div>
+      <div class="barra">
+        <p data-resumen></p>
+        <label>Ordenar
+          <select data-orden>
+            <option value="">Destacados</option>
+            <option value="menor">Menor precio</option>
+            <option value="mayor">Mayor precio</option>
+          </select>
+        </label>
+      </div>
+      <div class="grilla" data-grilla></div>
+      <div class="vacio" data-vacio hidden>
+        <p>No encontramos ese producto. 🙈</p>
+        <button class="btn btn-borde" type="button" data-preguntar-vacio>Pregúntale a <span data-asistente>Nubi</span></button>
+      </div>
+      <div class="centro"><button class="btn btn-borde" type="button" data-ver-mas hidden>Ver más</button></div>
+    </section>
+
+    <!-- Cómo te ayuda -->
+    <section class="seccion etapas">
+      <p class="etiqueta">01 · Cómo te ayudamos</p>
+      <h2>Comprar para tu bebé no tiene que ser complicado</h2>
+      <ol>
+        <li><strong>Te asesora</strong><span>Cuéntale a <b data-asistente>Nubi</b> la edad de tu bebé y qué necesitas. Te muestra solo lo que le sirve.</span></li>
+        <li><strong>Te recomienda</strong><span>Compara opciones según tu presupuesto y te avisa qué está en promo o agotado.</span></li>
+        <li><strong>Te acompaña</strong><span>Arma tu pedido, lo envías por WhatsApp y una persona del equipo te confirma envío y pago.</span></li>
+      </ol>
+      <button class="btn btn-principal" type="button" data-diagnostico>Empezar con <span data-asistente>Nubi</span></button>
+    </section>
+
+    <!-- Quiénes somos -->
+    <section class="seccion nosotros" id="nosotros">
+      <p class="etiqueta">02 · ¿Quiénes somos?</p>
+      <h2 data-lema>Tu tienda de confianza para artículos de bebé</h2>
+      <p data-quienes></p>
+    </section>
+
+    <!-- Contacto -->
+    <section class="seccion contacto" id="contacto">
+      <p class="etiqueta">03 · Contacto</p>
+      <h2>¿Hablamos?</h2>
+      <ul class="datos">
+        <li><b>Envíos</b><span data-envios></span></li>
+        <li><b>Pagos</b><span data-pagos></span></li>
+        <li><b>Horario</b><span data-horario></span></li>
+      </ul>
+      <div class="hero-botones">
+        <a class="btn btn-wa" href="#" target="_blank" rel="noopener" data-whatsapp hidden>Escríbenos por WhatsApp</a>
+        <button class="btn btn-borde" type="button" data-hablar-asistente>Pregúntale a <span data-asistente>Nubi</span></button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>© <span data-anio></span> <span data-marca>Baby's World</span></p>
+    <div class="menu-redes" data-redes></div>
+  </footer>
+
+  <!-- Producto -->
+  <div class="modal" data-modal hidden role="dialog" aria-modal="true" aria-label="Producto">
+    <div class="modal-caja">
+      <button class="icono modal-cerrar" type="button" data-cerrar aria-label="Cerrar">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <div data-modal-contenido></div>
+    </div>
+  </div>
+
+  <!-- Carrito -->
+  <aside class="carrito" data-carrito hidden aria-label="Carrito">
+    <div class="carrito-cab">
+      <h2>Tu carrito</h2>
+      <button class="icono" type="button" data-cerrar aria-label="Cerrar carrito">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="carrito-items" data-items></div>
+    <form class="carrito-pie" data-pedido>
+      <p class="total">Subtotal <b data-subtotal>$0</b></p>
+      <p class="nota" data-nota-envio></p>
+      <fieldset class="datos-pedido" data-datos-pedido hidden disabled>
+        <label>Tu nombre<input name="nombre" required autocomplete="name"></label>
+        <label>Ciudad<input name="ciudad" required autocomplete="address-level2"></label>
+        <label>Dirección<input name="direccion" required autocomplete="street-address"></label>
+        <label>¿Cómo quieres pagar?
+          <select name="pago">
+            <option>Transferencia</option>
+            <option>Nequi</option>
+            <option>Daviplata</option>
+            <option>Contraentrega</option>
+          </select>
+        </label>
+      </fieldset>
+      <button class="btn btn-wa ancho" type="submit" data-finalizar>Finalizar pedido</button>
+      <a class="btn btn-wa ancho" href="#" target="_blank" rel="noopener" data-enviar hidden>Enviar pedido por WhatsApp</a>
+    </form>
+  </aside>
+
+  <!-- Asistente -->
+  <button class="lanzador" type="button" data-lanzador aria-label="Hablar con la asistente">
+    <span class="lanzador-cara">☁️</span>
+    <span class="lanzador-aviso" data-aviso>1</span>
+  </button>
+  <section class="chat" data-chat hidden aria-label="Asistente virtual">
+    <div class="chat-cab">
+      <span class="chat-avatar">☁️</span>
+      <div><strong data-asistente>Nubi</strong><small>Asistente virtual de <span data-marca>Baby's World</span> · responde al instante</small></div>
+      <button class="icono" type="button" data-cerrar aria-label="Cerrar chat">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="chat-log" data-log aria-live="polite"></div>
+    <div class="chat-opciones" data-opciones></div>
+    <form class="chat-form" data-chat-form>
+      <input type="text" placeholder="Escribe aquí…" autocomplete="off" maxlength="300" aria-label="Mensaje">
+      <button type="submit" aria-label="Enviar">↑</button>
+    </form>
+  </section>
+
+  <a class="wa-flotante" href="#" target="_blank" rel="noopener" data-whatsapp hidden aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Zm5.2 12.6c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.7-.1 1.3Z"/></svg>
+  </a>
+
+  <script src="tienda.js"></script>
+  <script src="asistente.js"></script>
+</body>
+</html>
