@@ -124,9 +124,9 @@ h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; le
 .tarjeta:nth-child(5n + 3) .tarjeta-foto { background: var(--menta); border-radius: 42% 58% 60% 40% / 52% 44% 56% 48%; }
 .tarjeta:nth-child(5n + 4) .tarjeta-foto { background: var(--mantequilla); border-radius: 55% 45% 40% 60% / 48% 56% 44% 52%; }
 .tarjeta:nth-child(5n + 5) .tarjeta-foto { background: var(--lila); border-radius: 50% 50% 46% 54% / 60% 40% 60% 40%; }
-/* La foto toma la misma forma orgánica, un poco más chica: queda un borde pastel alrededor.
-   Con "multiply" el fondo blanco de las fotos de producto se vuelve del color de la mancha. */
-.tarjeta-foto .foto { width: 86%; height: 86%; margin: 7%; border-radius: inherit; object-fit: cover; mix-blend-mode: multiply; transition: transform 0.25s; }
+/* La foto toma la misma forma orgánica, apenas más chica: queda un borde pastel delgado alrededor.
+   La foto conserva sus colores (fondo blanco detrás). */
+.tarjeta-foto .foto { width: 94%; height: 94%; margin: 3%; border-radius: inherit; object-fit: cover; background: #fff; transition: transform 0.25s; }
 .tarjeta-foto:hover .foto { transform: scale(1.05) rotate(-1.5deg); }
 .foto.emoji { background: none; }
 .tarjeta h3 { margin: 4px 2px 0; }
@@ -176,7 +176,7 @@ h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; le
 .modal-caja { background: var(--papel); }
 .modal-cerrar { box-shadow: var(--sombra); }
 .ficha-foto { background: var(--cielo); border-radius: 30px; }
-.ficha-foto img.foto { width: 92%; height: 92%; margin: 4%; border-radius: 24px; background: transparent; mix-blend-mode: multiply; }
+.ficha-foto img.foto { width: 96%; height: 96%; margin: 2%; border-radius: 26px; background: #fff; }
 .miniaturas button { border-radius: 16px; background: #fff; }
 .miniaturas button.activa { border-color: var(--coral); }
 .modal h2 { color: var(--tinta); text-transform: lowercase; }
@@ -205,7 +205,7 @@ h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; le
 .chat-form button { background: var(--coral); }
 .mini { border-radius: 20px; }
 .mini-foto { background: var(--cielo); }
-.mini-foto .foto { object-fit: contain; mix-blend-mode: multiply; }
+.mini-foto .foto { object-fit: contain; background: #fff; }
 .mini strong { text-transform: lowercase; }
 .mini strong::first-letter { text-transform: uppercase; }
 .lanzador { background: linear-gradient(160deg, var(--cielo), #8ccfe4); box-shadow: 0 0 0 0 rgba(226, 96, 77, 0.45), var(--sombra); }
@@ -215,7 +215,7 @@ h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; le
 .vistas button { border: 1.5px dashed var(--costura); background: #fff; color: var(--tinta); }
 .vistas button[aria-selected="true"] { background: var(--tinta); border: 1.5px solid var(--tinta); color: #fff; }
 .giro, model-viewer { background: var(--cielo); --poster-color: var(--cielo); border-radius: 30px; }
-.giro img { mix-blend-mode: multiply; }
+.giro img { background: #fff; }
 .sello-3d { left: 12%; bottom: 12%; background: var(--tinta); font-family: var(--fuente-mano); font-size: 1rem; rotate: 5deg; }
 
 /* =====================================================================
@@ -285,6 +285,14 @@ main { position: relative; z-index: 1; }
 /* Banners como una postal */
 .banners { background: transparent; max-width: none; margin: 0; padding: 0 var(--margen) 8px; }
 .banners-pista { border-radius: 26px; box-shadow: var(--sombra); }
+.banners .banner { height: min(34vw, 230px); }
+
+/* Aviso al elegir la edad del bebé */
+.edad-aviso { position: relative; z-index: 1; margin: 12px 0 0 !important; padding: 8px 12px; border-radius: 14px; background: var(--menta); font-weight: 700; font-size: 0.92rem; }
+.edad-aviso.saltar { animation: saltar 0.5s ease-out; }
+@keyframes saltar { 30% { transform: scale(1.04); } }
+.momento-edad { margin-left: 4px; font-family: var(--fuente-texto); font-size: 0.85rem; font-weight: 800; color: var(--tinta-suave); }
+.de-noche .momento-edad { color: rgba(255, 255, 255, 0.7); }
 
 /* Cada momento del día */
 .momento { position: relative; padding: 64px 0 36px; }
@@ -321,7 +329,6 @@ main { position: relative; z-index: 1; }
 .de-noche .momento-cab > p:last-child { color: rgba(255, 255, 255, 0.75); }
 .de-noche .momento-hora { background: rgba(255, 255, 255, 0.12); color: var(--mantequilla); }
 .de-noche .tarjeta .btn-mini.btn-borde { color: #fff; }
-.de-noche .tarjeta-foto .foto { mix-blend-mode: normal; }
 .momento .movil { position: relative; display: block; top: auto; left: auto; translate: none; width: min(300px, 78vw); margin: -40px auto 6px; }
 .de-noche .movil path { stroke: #fff; }
 .de-noche .movil .luna-m { fill: var(--mantequilla); }
@@ -345,3 +352,37 @@ main { position: relative; z-index: 1; }
 #catalogo { max-width: none; padding: 72px var(--margen) 48px; }
 /* Tantas columnas como quepan: 2 en el celular, 7 u 8 en una pantalla ancha. */
 #catalogo .grilla { grid-template-columns: repeat(auto-fill, minmax(min(42vw, 210px), 1fr)); }
+
+/* ---------- Contacto (dentro de "Buenas noches") ---------- */
+.buenas-noches { max-width: calc(1100px + 2 * var(--margen)); }
+#nosotros { max-width: 760px; }
+.contacto-titulo { margin-top: 56px; }
+.contacto-tarjetas { display: grid; gap: 16px; margin-top: 18px; }
+@media (min-width: 800px) { .contacto-tarjetas { grid-template-columns: repeat(3, 1fr); } }
+.contacto-tarjeta {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  min-height: 190px; padding: 26px 18px; border-radius: 30px; background: #fff; color: var(--tinta); text-align: center;
+}
+.contacto-tarjeta::after { content: ""; position: absolute; inset: 7px; border-radius: 24px; border: 1.5px dashed var(--costura); pointer-events: none; }
+.contacto-tarjeta h3 { margin: 0; font-size: 1.35rem; }
+.contacto-dato, .contacto-redes a {
+  position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 10px;
+  color: var(--tinta); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere;
+}
+.contacto-dato svg, .contacto-redes svg { flex: none; width: 22px; height: 22px; fill: currentColor; }
+.contacto-redes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; justify-items: start; }
+
+.formulario-contacto { margin-top: 40px; max-width: 720px; }
+.formulario-contacto h3 { color: #fff; font-size: clamp(1.6rem, 5vw, 2.1rem); margin-bottom: 14px; }
+.campos { display: grid; gap: 14px; }
+@media (min-width: 640px) { .campos { grid-template-columns: 1fr 1fr; } .campos .ancho-total { grid-column: 1 / -1; } }
+.campos label { display: grid; gap: 6px; font-weight: 700; font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); }
+.campos input, .campos textarea {
+  width: 100%; padding: 12px 16px; border-radius: 16px; border: 1.5px dashed rgba(255, 255, 255, 0.35);
+  background: var(--papel); color: var(--tinta); font: inherit; resize: vertical;
+}
+.campos input:focus-visible, .campos textarea:focus-visible { outline: 3px solid var(--mantequilla); outline-offset: 2px; }
+.formulario-contacto .btn { margin-top: 18px; }
+.formulario-contacto .nota { color: rgba(255, 255, 255, 0.65); }
+.buenas-noches .datos { margin-top: 40px; }
+@media (min-width: 800px) { .buenas-noches .datos { grid-template-columns: repeat(3, 1fr); } }

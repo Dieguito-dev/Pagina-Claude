@@ -81,6 +81,56 @@ ALIAS = {
 }
 
 
+# Edad típica (meses) por tipo de producto, según palabras del título. Va antes que la de la categoría.
+EDAD_POR_TIPO = [
+    (r"\b(SILLA (PARA )?CARRO|SILLA CARRO|PORTABEBE)", (0, 48)),
+    (r"\b(CARRO|MOTO|CUATRIMOTO|VEHICULO|JEEP|AUTOMOVIL)\b", (36, 96)),
+    (r"\bPATINETA|SCOOTER\b", (36, 96)),
+    (r"\bBICI", (30, 96)),
+    (r"\bTRICI|TRCICLO", (12, 60)),
+    (r"\b(MONTABLE|CABALLITO|BALANCIN|PUSH CAR|GO CAR)\b", (12, 48)),
+    (r"\b(CAMINADOR|ANDADERA|ANDADOR|PASEADOR EMPUJADOR)", (6, 18)),
+    (r"\b(GIMNASIO|MOVIL MUSICAL|TAPETE|ALFOMBRA)", (0, 12)),
+    (r"\b(SONAJERO|MORDEDOR|CHUPO|TETINA)", (0, 12)),
+    (r"\b(EXTRACTOR|ESTRACTOR|EXTRACTRO|RECOLECTORA|COJIN DE LACT|LACTANCIA|PEZONERA)", (-9, 12)),
+    (r"\b(ESTERILIZ|ESTERIZ|CALENTADOR)", (-9, 12)),
+    (r"\b(BIBERON|TETERO)", (0, 18)),
+    (r"\b(COMEDOR|SILLA DE COMER|PROCESADOR|VAJILLA|VASO|PLATO)", (6, 36)),
+    (r"\b(BACIN|REDUCTOR|ESCALERA)", (18, 48)),
+    (r"\b(BANERA|BANO|DUCHA|TERMOMETRO)", (0, 18)),
+    (r"\b(MECEDORA|ROCKER|COLUMPIO)", (0, 12)),
+    (r"\b(CORRAL|CUNA|COLECHO|MOISES|NIDO)", (0, 24)),
+    (r"\bCOCHE", (0, 36)),
+    (r"\b(COCINA|OLLA|DOCTOR|CASTILLO|MUNECA|PISTA|LICUADORA|REGISTRADORA|DINOSAURIO|TABLET)", (36, 96)),
+    (r"\b(PANALERA|PANITOS|COBIJA|FORRO|MOSQUITERO)", (-9, 36)),
+]
+
+
+def edad_de(titulo, desc, cat):
+    """Rango de edad en meses: lo que diga la descripción, si no el tipo de producto, si no la categoría."""
+    t = sin_tildes(titulo).upper()
+    rango = next((list(r) for patron, r in EDAD_POR_TIPO if re.search(patron, t)), None)
+    rango = rango or (list(EDAD[cat]) if EDAD.get(cat) else None)
+    d = sin_tildes(desc).lower()
+    a_meses = lambda n, u: int(float(n.replace(",", ".")) * (12 if u.startswith("a") else 1))
+    m = re.search(r"(\d+(?:[.,]\d+)?)\s*(?:a|-|hasta)\s*(\d+(?:[.,]\d+)?)\s*(mes|ano)", d)
+    if m:
+        return [a_meses(m.group(1), m.group(3)), a_meses(m.group(2), m.group(3))]
+    desde = re.search(r"desde (?:los |el )?(\d+)\s*(mes|ano)", d)
+    hasta = re.search(r"hasta (?:los )?(\d+)\s*(mes|ano)", d)
+    if "recien nacid" in d or desde or hasta:
+        rango = rango or [0, 36]
+        if "recien nacid" in d:
+            rango[0] = 0
+        if desde:
+            rango[0] = a_meses(desde.group(1), desde.group(2))
+        if hasta:
+            rango[1] = a_meses(hasta.group(1), hasta.group(2))
+        if rango[1] < rango[0]:
+            rango[1] = rango[0] + 12
+    return rango
+
+
 def sin_tildes(s):
     s = unicodedata.normalize("NFD", s)
     return "".join(c for c in s if unicodedata.category(c) != "Mn")
@@ -204,8 +254,9 @@ def main(ruta):
             pid += "-2"
         usados.add(pid)
         p = {"id": pid, "nombre": titulo, "categoria": cat, "precio": precio}
-        if EDAD.get(cat):
-            p["edad"] = list(EDAD[cat])
+        edad = edad_de(titulo, desc, cat)
+        if edad:
+            p["edad"] = edad
         p["descripcion"] = desc
         if fotos.get("producto", {}).get(pid):
             p["fotos"] = fotos["producto"][pid]

@@ -54,11 +54,24 @@
     const r = EDADES.find((e) => e.id === edad)?.rango;
     return !r || !p.edad || (p.edad[0] <= r[1] && p.edad[1] >= r[0]);
   };
+  // Qué tan bien le queda un producto a la edad elegida: 0 es perfecto. Gana el que empieza cerca
+  // de esa edad y es específico para ella (un "0 a 6 meses" antes que un "0 a 4 años").
+  const ajuste = (p) => {
+    const r = EDADES.find((e) => e.id === edad)?.rango;
+    if (!r || !p.edad) return 0;
+    return Math.abs(p.edad[0] - r[0]) + (p.edad[1] - p.edad[0]) / 4;
+  };
   const ORDEN = { disponible: 0, consultar: 1, agotado: 2 };
   const productosDe = (m) =>
     S.productos
       .filter((p) => m.cats.includes(p.categoria) && sirve(p))
-      .sort((a, b) => ORDEN[S.estadoDe(a)] - ORDEN[S.estadoDe(b)] || !S.fotosDe(a).length - !S.fotosDe(b).length || S.deLaPromo(b) - S.deLaPromo(a));
+      .sort(
+        (a, b) =>
+          ORDEN[S.estadoDe(a)] - ORDEN[S.estadoDe(b)] ||
+          !S.fotosDe(a).length - !S.fotosDe(b).length ||
+          ajuste(a) - ajuste(b) ||
+          S.deLaPromo(b) - S.deLaPromo(a)
+      );
 
   // Móvil de cuna para la hora de dormir.
   const MOVIL = `<svg class="movil" viewBox="0 0 300 150" aria-hidden="true">
@@ -75,7 +88,7 @@
       data-color="${m.color}" data-icono="${m.icono}" data-hora="${m.hora} · ${m.titulo}"${m.noche ? " data-noche" : ""}>
       ${m.noche ? MOVIL : ""}
       <header class="momento-cab">
-        <p class="momento-hora"><span aria-hidden="true">${m.icono}</span> ${m.hora}</p>
+        <p class="momento-hora"><span aria-hidden="true">${m.icono}</span> ${m.hora}<span class="momento-edad" data-momento-edad hidden></span></p>
         <h2>${m.titulo}</h2>
         <p>${m.frase}</p>
       </header>
@@ -104,6 +117,13 @@
     $("[data-edades]").innerHTML = EDADES.map(
       (e) => `<button type="button" data-edad="${e.id}" aria-pressed="${e.id === edad}">${e.txt}</button>`
     ).join("");
+    document.querySelectorAll("[data-momento-edad]").forEach((el) => {
+      el.hidden = !etiqueta.rango;
+      el.textContent = `para ${etiqueta.txt.toLowerCase()}`;
+    });
+    const aviso = $("[data-edad-aviso]");
+    aviso.hidden = !etiqueta.rango;
+    aviso.textContent = etiqueta.rango ? `Listo 💙 Ahora en cada momento del día te muestro lo que sirve para ${etiqueta.txt.toLowerCase()}.` : "";
   }
 
   document.addEventListener("click", (e) => {
@@ -114,6 +134,12 @@
       localStorage.setItem(CLAVE, edad);
     } catch {}
     pintar();
+    const aviso = $("[data-edad-aviso]");
+    if (!aviso.hidden) {
+      aviso.classList.remove("saltar");
+      void aviso.offsetWidth; // reinicia la animación
+      aviso.classList.add("saltar");
+    }
   });
 
   contenedor.addEventListener("click", (e) => {

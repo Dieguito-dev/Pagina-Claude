@@ -29,10 +29,10 @@ Es aparte de Vitrina: no usa ni cambia nada de la página principal.
 
 La tienda se recorre como el día de un bebé, de la mañana a la noche:
 
-1. **Amanecer**: bienvenida. Nubi pregunta la edad del bebé y **todos los estantes se ajustan a esa edad** (se recuerda en el navegador).
+1. **Amanecer**: bienvenida. Nubi pregunta la edad del bebé y **todos los estantes se ajustan a esa edad**: solo salen los productos que le sirven, primero los más específicos para esa edad, y aparece un aviso. Se recuerda en el navegador.
 2. **Momentos del día**, cada uno con un estante de productos que se desliza: 7:00 a.m. hora de comer · 10:00 a.m. hora de jugar · 3:00 p.m. hora del paseo · 6:00 p.m. hora del baño · 8:00 p.m. hora de dormir (de noche, con estrellas y el móvil de cuna). "Ver los N productos" abre el catálogo con ese momento.
 3. **Todo el catálogo**: buscador, categorías y cuadrícula, para quien busca algo puntual.
-4. **Buenas noches**: quiénes somos, envíos, pagos, horario y WhatsApp.
+4. **Buenas noches**: quiénes somos y **contacto**: número, redes sociales y correo (de `config.js`), un formulario que manda el mensaje por WhatsApp, y envíos, pagos y horario.
 
 Al bajar, **el cielo de la página cambia de color** según el momento y una etiqueta arriba marca la hora. Qué categorías van en cada momento, sus horas, frases y colores están al comienzo de `dia.js`.
 
@@ -72,11 +72,11 @@ python3 tienda-bebes/herramientas/excel_a_productos.py ruta/al/archivo.xlsx
 Eso vuelve a crear `productos.js` y `pendientes-catalogo.md`. El Excel no se sube al repositorio.
 
 Cómo se leen los datos:
+- **Edad** (para el filtro de Nubi): sale de la descripción si dice algo como "desde los 4 meses", "recién nacido" o "1 a 4 años"; si no, del tipo de producto (bicicleta, sonajero, bañera…, ver `EDAD_POR_TIPO`) y, por último, de la categoría. Si el Excel trae `RangoEdad`, conviene usarlo.
 - Las filas con el **mismo título** son un solo producto, y cada fila es un **color** con su SKU y su stock. Si el título termina en el color ("COCHE DONA GRIS"), se junta con los otros colores.
 - **Sin precio** → sale "Consultar precio" y se pregunta por WhatsApp.
 - **Stock vacío** → sale "Consultar" (no se sabe si hay). **Stock 0** → "Agotado" con "Avísame cuando llegue".
 - **Categoría vacía o mal escrita** → se corrige sola (queda anotado en `pendientes-catalogo.md`).
-- La **edad** para las recomendaciones de Nubi sale de la categoría (por ejemplo, Caminadores = 6 a 18 meses), porque el Excel casi no trae `RangoEdad`.
 - Las filas de ejemplo de la plantilla (BW-2025 y BW-0002) se ignoran.
 
 ## Actualizar las fotos desde Drive

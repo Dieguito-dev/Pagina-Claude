@@ -109,6 +109,57 @@
       .join("");
   });
 
+  // ---------- Contacto ----------
+  // 573337062951 -> +57 333 706 2951
+  const telefono = T.whatsapp ? T.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/, "+$1 $2 $3 $4") : "";
+  const enlaceTel = $("[data-telefono]");
+  if (enlaceTel) {
+    enlaceTel.closest(".contacto-tarjeta").hidden = !telefono;
+    enlaceTel.href = waLink(`Hola ${T.marca}, quiero información.`);
+    $("[data-telefono-texto]").textContent = telefono;
+  }
+  const enlaceCorreo = $("[data-correo]");
+  if (enlaceCorreo) {
+    enlaceCorreo.closest(".contacto-tarjeta").hidden = !T.correo;
+    enlaceCorreo.href = `mailto:${T.correo}`;
+    $("[data-correo-texto]").textContent = T.correo || "";
+  }
+  const ICONOS_REDES = {
+    facebook: '<path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8.5c0-.3.2-.5.5-.5Z"/>',
+    instagram: '<path d="M8 3h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm4 3.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm0 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM17 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/>',
+    tiktok: '<path d="M14 3h3a4 4 0 0 0 4 4v3a7 7 0 0 1-4-1.3V15a6 6 0 1 1-6-6v3.2a2.8 2.8 0 1 0 3 2.8V3Z"/>',
+  };
+  const listaRedes = $("[data-redes-contacto]");
+  if (listaRedes) {
+    listaRedes.innerHTML = Object.entries(REDES)
+      .filter(([k]) => T.redes?.[k])
+      .map(([k, n]) => `<li><a href="${esc(T.redes[k])}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONOS_REDES[k]}</svg>${n}</a></li>`)
+      .join("");
+    listaRedes.closest(".contacto-tarjeta").hidden = !listaRedes.children.length;
+  }
+  // El formulario arma el mensaje y lo abre en WhatsApp.
+  $("[data-formulario-contacto]")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const texto = [
+      `¡Hola ${T.marca}! Les escribo desde la página:`,
+      "",
+      f.get("nombre") && `Nombre: ${f.get("nombre")}`,
+      `Correo: ${f.get("correo")}`,
+      f.get("telefono") && `Teléfono: ${f.get("telefono")}`,
+      f.get("comentario") && `\n${f.get("comentario")}`,
+    ]
+      .filter((x) => x !== null && x !== "")
+      .join("\n");
+    if (!T.whatsapp) return avisar("Falta el número de WhatsApp en config.js");
+    // Con "noopener" window.open siempre devuelve null; se corta el vínculo a mano.
+    const ventana = window.open(waLink(texto), "_blank");
+    if (ventana) ventana.opener = null;
+    else location.href = waLink(texto);
+    e.target.reset();
+    avisar("¡Gracias! Termina de enviar tu mensaje en WhatsApp");
+  });
+
   // ---------- Paneles (menú, carrito, ficha) ----------
   const velo = $("[data-velo]");
   const menu = $("[data-menu]");
