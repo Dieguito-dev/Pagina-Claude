@@ -185,7 +185,7 @@
       .slice(0, estado.mostrar)
       .map(
         (p) => `<article class="tarjeta${estadoDe(p) === "agotado" ? " sin-stock" : ""}">
-          <button type="button" class="tarjeta-foto" data-ver="${p.id}" aria-label="Ver ${esc(p.nombre)}">${imagen(p, "foto")}${sello(p)}</button>
+          <button type="button" class="tarjeta-foto" data-ver="${p.id}" aria-label="Ver ${esc(p.nombre)}">${imagen(p, "foto")}${sello(p)}${p.modelo ? `<span class="sello-3d">3D</span>` : p.giro ? `<span class="sello-3d">360°</span>` : ""}</button>
           <h3><button type="button" data-ver="${p.id}">${esc(p.nombre)}</button></h3>
           <p>${precioHTML(p)}</p>
           ${disponible(p)
@@ -272,6 +272,13 @@
     const textoBoton = { disponible: "Preguntar por WhatsApp", agotado: "Avísame cuando llegue", consultar: "Consultar por WhatsApp" }[est];
     $("[data-modal-contenido]").innerHTML = `
       <div class="ficha-foto" data-ficha-foto>${imagen(p, "foto", v.foto || fotosDe(p)[0], true)}${sello(p)}</div>
+      ${p.giro || p.modelo
+        ? `<div class="vistas" role="tablist" aria-label="Cómo ver el producto">
+            <button type="button" role="tab" data-vista="fotos" aria-selected="true">Fotos</button>
+            ${p.giro ? `<button type="button" role="tab" data-vista="giro" aria-selected="false">Girar 360°</button>` : ""}
+            ${p.modelo ? `<button type="button" role="tab" data-vista="modelo" aria-selected="false">Ver en 3D</button>` : ""}
+          </div>`
+        : ""}
       ${fotosDe(p).length > 1
         ? `<div class="miniaturas">${fotosDe(p)
             .map((f, i) => `<button type="button" data-foto="${esc(f)}" aria-label="Foto ${i + 1}"><img src="${esc(mini(f))}" alt="" loading="lazy"></button>`)
@@ -304,14 +311,43 @@
     const caja = $("[data-modal-contenido]");
     let cant = 1;
     const out = $("[data-cant]", caja);
+    const marco = $("[data-ficha-foto]", caja);
+    let vista = "fotos";
     const verFoto = (src) => {
       if (!src) return;
-      $("[data-ficha-foto] .foto", caja).outerHTML = imagen(p, "foto", src, true);
+      if (vista !== "fotos") mostrarVista("fotos");
+      $(".foto", marco).outerHTML = imagen(p, "foto", src, true);
       caja.querySelectorAll("[data-foto]").forEach((b) => b.classList.toggle("activa", b.dataset.foto === src));
     };
     caja.querySelectorAll("[data-foto]").forEach((b) => b.addEventListener("click", () => verFoto(b.dataset.foto)));
+
+    // Fotos, giro de 360° (fotos reales alrededor del producto) o modelo 3D escaneado.
+    let detenerGiro = null;
+    function mostrarVista(tipo) {
+      vista = tipo;
+      detenerGiro?.();
+      detenerGiro = null;
+      caja.querySelectorAll("[data-vista]").forEach((b) => b.setAttribute("aria-selected", b.dataset.vista === tipo));
+      marco.classList.toggle("en-3d", tipo !== "fotos");
+      const actual = $(".foto, .giro, model-viewer", marco);
+      if (tipo === "fotos") {
+        actual.outerHTML = imagen(p, "foto", $("[data-foto].activa", caja)?.dataset.foto || v.foto || fotosDe(p)[0], true);
+      } else if (tipo === "giro") {
+        actual.outerHTML = `<div class="giro" tabindex="0" aria-label="${esc(p.nombre)} en 360°. Arrastra o usa las flechas para girarlo.">
+          <img src="${esc(p.giro[0])}" alt="" draggable="false"><span class="giro-pista">↔ Arrastra para girar</span></div>`;
+        detenerGiro = activarGiro($(".giro", marco), p.giro);
+      } else {
+        cargarVisor3D();
+        actual.outerHTML = `<model-viewer src="${esc(p.modelo)}" poster="${esc(fotosDe(p)[0] || "")}" alt="${esc(p.nombre)} en 3D"
+          camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="18deg" touch-action="pan-y"
+          shadow-intensity="1" exposure="1.05" ar ar-modes="webxr scene-viewer quick-look">
+          <button slot="ar-button" class="btn btn-principal ar-boton" type="button">Verlo en tu casa</button>
+        </model-viewer>`;
+      }
+    }
+    caja.querySelectorAll("[data-vista]").forEach((b) => b.addEventListener("click", () => mostrarVista(b.dataset.vista)));
     const pintarVariante = () => {
-      verFoto(v.foto || $("[data-foto].activa", caja)?.dataset.foto || fotosDe(p)[0]);
+      if (vista === "fotos") verFoto(v.foto || $("[data-foto].activa", caja)?.dataset.foto || fotosDe(p)[0]);
       if (est !== "disponible") return;
       $("[data-ficha-precio]", caja).innerHTML = precioHTML(p, v);
       $("[data-ficha-stock]", caja).textContent = v.stock <= 3 ? `¡Quedan solo ${v.stock}!` : "Disponible";
@@ -332,6 +368,48 @@
       irACategoria(p.categoria);
     });
     abrir(modal);
+  }
+
+  // Giro de 360°: cambia de foto según cuánto se arrastre (o con las flechas). Devuelve cómo detenerlo.
+  function activarGiro(el, cuadros) {
+    const img = $("img", el);
+    cuadros.forEach((src) => (new Image().src = src)); // precarga para que gire sin saltos
+    let i = 0, x0 = null, i0 = 0, auto;
+    const ver = (n) => (img.src = cuadros[(i = ((n % cuadros.length) + cuadros.length) % cuadros.length)]);
+    const parar = () => clearInterval(auto);
+    el.addEventListener("pointerdown", (e) => {
+      parar();
+      x0 = e.clientX;
+      i0 = i;
+      el.setPointerCapture(e.pointerId);
+      el.classList.add("girando");
+    });
+    el.addEventListener("pointermove", (e) => x0 !== null && ver(i0 - Math.round((e.clientX - x0) / 9)));
+    el.addEventListener("pointerup", () => (x0 = null));
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        parar();
+        ver(i + (e.key === "ArrowRight" ? 1 : -1));
+        e.preventDefault();
+      }
+    });
+    // Una vuelta lenta al abrir, para que se entienda que gira.
+    if (!quieto) {
+      let pasos = 0;
+      auto = setInterval(() => (++pasos > cuadros.length ? parar() : ver(i + 1)), 90);
+    }
+    return parar;
+  }
+
+  // El visor 3D (model-viewer, de Google) se carga solo la primera vez que alguien lo usa.
+  let visor3D = false;
+  function cargarVisor3D() {
+    if (visor3D) return;
+    visor3D = true;
+    const s = document.createElement("script");
+    s.type = "module";
+    s.src = "vendor/model-viewer.min.js";
+    document.head.appendChild(s);
   }
 
   // ---------- Carrito ----------

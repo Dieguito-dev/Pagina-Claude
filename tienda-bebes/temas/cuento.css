@@ -210,3 +210,10 @@ h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; le
 .mini strong::first-letter { text-transform: uppercase; }
 .lanzador { background: linear-gradient(160deg, var(--cielo), #8ccfe4); box-shadow: 0 0 0 0 rgba(226, 96, 77, 0.45), var(--sombra); }
 .lanzador-aviso { background: var(--coral); }
+
+/* Vistas 360° y 3D */
+.vistas button { border: 1.5px dashed var(--costura); background: #fff; color: var(--tinta); }
+.vistas button[aria-selected="true"] { background: var(--tinta); border: 1.5px solid var(--tinta); color: #fff; }
+.giro, model-viewer { background: var(--cielo); --poster-color: var(--cielo); border-radius: 30px; }
+.giro img { mix-blend-mode: multiply; }
+.sello-3d { left: 12%; bottom: 12%; background: var(--tinta); font-family: var(--fuente-mano); font-size: 1rem; rotate: 5deg; }
