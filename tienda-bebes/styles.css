@@ -268,6 +268,10 @@ s { color: var(--suave); font-size: 0.85em; }
 }
 .giro.girando .giro-pista { opacity: 0; }
 model-viewer { width: 100%; height: 100%; background: var(--blanco); --poster-color: var(--blanco); }
+.nota-3d {
+  position: absolute; left: 10px; right: 64px; top: 10px; margin: 0; padding: 6px 10px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85); font-size: 0.75rem; line-height: 1.3; color: var(--suave); pointer-events: none;
+}
 .ar-boton { position: absolute; left: 50%; bottom: 12px; translate: -50% 0; }
 .sello-3d {
   position: absolute; left: 10px; bottom: 10px; padding: 2px 9px; border-radius: 999px;
