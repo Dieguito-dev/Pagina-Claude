@@ -222,7 +222,7 @@ h1, h2, h3 { font-weight: 600; font-variation-settings: "SOFT" 100, "WONK" 1; le
    "Un día en el mundo de tu bebé": la página se recorre por los momentos
    del día y el cielo (fondo) cambia de color al bajar (ver dia.js).
    ===================================================================== */
-body { background: var(--cielo-actual, var(--cielo)); transition: background-color 0.9s ease; }
+body { background: var(--cielo-actual, var(--cielo)); }
 main { position: relative; z-index: 1; }
 /* Margen lateral del contenido: el mismo para títulos, estantes y catálogo, alineados a la izquierda. */
 :root { --margen: max(16px, env(safe-area-inset-left, 0px), 4vw); }
@@ -251,10 +251,12 @@ main { position: relative; z-index: 1; }
 .es-de-noche .reloj { background: rgba(47, 43, 77, 0.85); color: #fff; }
 
 /* Amanecer */
-.hero.amanecer { background: transparent; padding: 84px 20px 56px; }
+.hero.amanecer { background: transparent; padding: 68px 20px 44px; cursor: auto; user-select: text; }
+.hero.amanecer h1 { font-size: clamp(1.9rem, 5.6vw, 3rem); }
+.hero.amanecer .hero-sub { font-size: 1rem; }
 .hero.amanecer::after { display: none; }
 .hero.amanecer > .sol {
-  position: absolute; top: 40px; right: max(-70px, calc(50% - 560px)); width: clamp(170px, 34vw, 260px); height: auto; aspect-ratio: 1;
+  position: absolute; top: 34px; right: max(-60px, calc(50% - 540px)); width: clamp(120px, 24vw, 200px); height: auto; aspect-ratio: 1;
   max-width: none; margin: 0; border-radius: 50%;
   background: radial-gradient(circle, #ffe7a3 0 38%, rgba(255, 214, 140, 0.45) 39% 55%, transparent 70%);
   animation: salir-sol 2.4s ease-out both;
@@ -263,7 +265,7 @@ main { position: relative; z-index: 1; }
 .antetitulo { margin: 0; font-family: var(--fuente-mano); font-size: 1.6rem; font-weight: 700; color: var(--coral); }
 .hero.amanecer h1 { margin-top: 6px; }
 .nubi-pregunta {
-  display: flex; gap: 14px; align-items: flex-start; margin-top: 26px !important; padding: 18px 18px 18px 16px;
+  display: flex; gap: 14px; align-items: flex-start; margin-top: 20px !important; padding: 16px 16px 16px 14px;
   text-align: left; background: #fff; border-radius: 28px 28px 28px 8px; box-shadow: var(--sombra); position: relative;
 }
 .nubi-pregunta::after { content: ""; position: absolute; inset: 6px; border-radius: 22px 22px 22px 6px; border: 1.5px dashed var(--costura); pointer-events: none; }
@@ -276,7 +278,7 @@ main { position: relative; z-index: 1; }
 }
 .edades button[aria-pressed="true"] { background: var(--tinta); border: 1.5px solid var(--tinta); color: #fff; }
 .bajar {
-  display: inline-flex; gap: 8px; margin-top: 28px !important; font-family: var(--fuente-mano); font-size: 1.5rem; font-weight: 700;
+  display: inline-flex; gap: 8px; margin-top: 20px !important; font-family: var(--fuente-mano); font-size: 1.4rem; font-weight: 700;
   color: var(--tinta); text-decoration: none;
 }
 .bajar span { animation: rebotar 1.6s ease-in-out infinite; }
@@ -285,7 +287,7 @@ main { position: relative; z-index: 1; }
 /* Banners como una postal */
 .banners { background: transparent; max-width: none; margin: 0; padding: 0 var(--margen) 8px; }
 .banners-pista { border-radius: 26px; box-shadow: var(--sombra); }
-.banners .banner { height: min(34vw, 230px); }
+.banners .banner { height: min(42vw, 290px); }
 
 /* Aviso al elegir la edad del bebé */
 .edad-aviso { position: relative; z-index: 1; margin: 12px 0 0 !important; padding: 8px 12px; border-radius: 14px; background: var(--menta); font-weight: 700; font-size: 0.92rem; }
