@@ -1,33 +1,38 @@
-"""Genera el modelo 3D de un producto a partir de su foto, con TripoSR (IA abierta, corre sin
-tarjeta gráfica). El modelo queda en tienda-bebes/modelos/<producto>.ia.glb y
-excel_a_productos.py lo agrega a la ficha ("Ver en 3D"), marcado como generado con IA.
+"""Genera el modelo 3D de un producto a partir de su foto con Hunyuan3D-2.1 (IA abierta de
+Tencent), usando la demo gratuita de Hugging Face, que corre en sus tarjetas gráficas.
 
 Uso:
-    python fotos_a_3d.py RUTA_TRIPOSR RUTA_PESOS id-producto [id-producto …]
+    HF_TOKEN=… python fotos_a_3d.py id-producto [id-producto …]
 
-RUTA_TRIPOSR: copia de https://github.com/VAST-AI-Research/TripoSR (con torchmcubes cambiado
-por scikit-image si no se puede compilar). RUTA_PESOS: carpeta con config.yaml y model.ckpt de
-https://huggingface.co/stabilityai/TripoSR. Necesita torch, transformers, rembg, trimesh,
-scikit-image y fast-simplification.
+Necesita gradio_client y trimesh (pip install gradio_client trimesh), acceso a huggingface.co
+y *.hf.space, y un token de Hugging Face (huggingface.co/settings/tokens, tipo "Read") en la
+variable HF_TOKEN: sin token la cuota de tarjeta gráfica es mínima. Cada modelo gasta unos
+2 minutos de esa cuota diaria.
 
-Usa la foto del primer color que tenga foto (suelen ser las de fondo blanco, que son las que
-mejor funcionan). La parte de atrás del producto la estima la IA: revisa cada modelo antes de
-publicarlo.
+El modelo (con textura) queda en tienda-bebes/modelos/<producto>.ia.glb, a tamaño real y
+apoyado en el piso para "Ver en tu espacio": con las medidas de herramientas/medidas.json o,
+si no hay, con un alto típico por tipo de producto. excel_a_productos.py lo agrega a la ficha.
+
+Usa la foto del primer color que tenga foto (suelen ser de fondo blanco, las que mejor
+funcionan). La parte de atrás la estima la IA: revisa cada modelo antes de publicarlo.
 """
+import base64
 import json
-import subprocess
+import os
+import re
+import struct
 import sys
 import time
+import unicodedata
 from pathlib import Path
 
 import numpy as np
-import torch
 import trimesh
-from PIL import Image
 
 CARPETA = Path(__file__).resolve().parent.parent
-# Alto típico (cm) por tipo de producto, para cuando no hay medidas reales. Así en "Verlo en tu
-# casa" el producto aparece de un tamaño creíble; la tienda avisa que es aproximado.
+ESPACIO = "tencent/Hunyuan3D-2.1"
+# Alto típico (cm) por tipo de producto, para cuando no hay medidas reales. Así en "Ver en tu
+# espacio" el producto aparece de un tamaño creíble; la tienda avisa que es aproximado.
 ALTO_TIPICO = [
     (r"SILLA (PARA )?CARRO|SILLA CARRO", 65),
     (r"CARRO|MOTO|CUATRIMOTO|VEHICULO|JEEP|AUTOMOVIL", 55),
@@ -45,8 +50,6 @@ ALTO_TIPICO = [
     (r"MONTABLE|CABALLITO", 50),
     (r"PANALERA", 40),
 ]
-RESOLUCION = 256  # detalle de la malla
-MAX_CARAS = 40000  # para que el archivo pese poco en el celular
 
 
 def productos():
@@ -58,50 +61,12 @@ def productos():
 def medidas_de(p):
     """(alto, ancho, largo en cm —los dos últimos pueden ser None—, ¿son reales?): medidas.json
     o, si no hay, un alto típico por tipo de producto."""
-    import re
-    import unicodedata
-
     medidas = json.loads((CARPETA / "herramientas" / "medidas.json").read_text(encoding="utf-8"))
     if p["id"] in medidas:
         m = medidas[p["id"]]
         return m["alto"], m.get("ancho"), m.get("largo"), True
     titulo = "".join(c for c in unicodedata.normalize("NFD", p["nombre"].upper()) if unicodedata.category(c) != "Mn")
     return next((alto for patron, alto in ALTO_TIPICO if re.search(patron, titulo)), 50), None, None, False
-
-
-def exportar_glb(malla, destino):
-    """GLB con material y normales: la realidad aumentada de Google (Scene Viewer) se cierra con
-    modelos que solo traen colores por vértice."""
-    import struct
-
-    # Fuera triángulos de área cero y vértices sueltos: dejan normales de largo 0, que son un error.
-    malla.update_faces(malla.nondegenerate_faces())
-    malla.remove_unreferenced_vertices()
-    normales = malla.vertex_normals.copy()
-    largo = np.linalg.norm(normales, axis=1)
-    normales[largo < 1e-6] = [0, 1, 0]
-    malla.vertex_normals = normales / np.linalg.norm(normales, axis=1, keepdims=True)
-    datos = trimesh.exchange.gltf.export_glb(trimesh.Scene(malla), include_normals=True)
-    # Se agrega un material mate (los colores siguen saliendo de los vértices) y el tipo de cada
-    # bloque de datos, que algunos visores exigen. El GLB es: cabecera de 12 bytes + JSON + binario.
-    largo_json = struct.unpack("<I", datos[12:16])[0]
-    gltf = json.loads(datos[20 : 20 + largo_json])
-    binario = datos[20 + largo_json :]
-    gltf["materials"] = [
-        {"name": "producto", "doubleSided": True,
-         "pbrMetallicRoughness": {"baseColorFactor": [1, 1, 1, 1], "metallicFactor": 0, "roughnessFactor": 0.85}}
-    ]
-    for malla_gltf in gltf["meshes"]:
-        for primitiva in malla_gltf["primitives"]:
-            primitiva["material"] = 0
-            for acc in primitiva["attributes"].values():
-                gltf["bufferViews"][gltf["accessors"][acc]["bufferView"]]["target"] = 34962  # vértices
-            if "indices" in primitiva:
-                gltf["bufferViews"][gltf["accessors"][primitiva["indices"]]["bufferView"]]["target"] = 34963
-    texto = json.dumps(gltf, separators=(",", ":")).encode()
-    texto += b" " * (-len(texto) % 4)
-    cuerpo = struct.pack("<I4s", len(texto), b"JSON") + texto + binario
-    destino.write_bytes(struct.pack("<4sII", b"glTF", 2, 12 + len(cuerpo)) + cuerpo)
 
 
 def foto_de(p):
@@ -113,23 +78,61 @@ def foto_de(p):
     return None
 
 
-def main(ruta_triposr, ruta_pesos, ids):
-    # Cada producto en un proceso aparte: TripoSR no suelta la memoria entre uno y otro y con
-    # 16 GB de RAM el segundo ya no cabe.
-    if len(ids) > 1:
-        for pid in ids:
-            subprocess.run([sys.executable, __file__, ruta_triposr, ruta_pesos, pid], check=False)
-        return
-    sys.path.insert(0, str(Path(ruta_triposr).resolve()))
-    import rembg
-    from tsr.system import TSR
-    from tsr.utils import remove_background, resize_foreground
+def a_tamano_real(glb, destino, alto, ancho=None, largo=None):
+    """Escala el modelo a centímetros reales (los visores usan metros) y lo apoya en el piso, sin
+    tocar la malla ni la textura: se agrega un nodo raíz con la escala y el desplazamiento."""
+    malla = trimesh.load(glb, force="mesh")
+    (x0, y0, z0), (x1, y1, z1) = malla.bounds
+    k = alto / 100 / (y1 - y0)
+    escala = [k, k, k]
+    # Con ancho y largo reales se ajusta la huella en el piso (x = ancho, de frente; z = largo).
+    if ancho and largo:
+        escala = [ancho / 100 / (x1 - x0), k, largo / 100 / (z1 - z0)]
+    mover = [-(x0 + x1) / 2 * escala[0], -y0 * escala[1], -(z0 + z1) / 2 * escala[2]]
 
-    torch.set_num_threads(max(1, torch.get_num_threads()))
-    modelo = TSR.from_pretrained(ruta_pesos, config_name="config.yaml", weight_name="model.ckpt")
-    modelo.renderer.set_chunk_size(8192)
-    modelo.to("cpu")
-    sesion = rembg.new_session("isnet-general-use")  # recorta el fondo; más liviano que el de por defecto
+    datos = Path(glb).read_bytes()
+    largo_json = struct.unpack("<I", datos[12:16])[0]
+    gltf = json.loads(datos[20 : 20 + largo_json])
+    binario = bytearray(datos[28 + largo_json :])  # tras el JSON: largo, tipo "BIN" y los datos
+    # Hunyuan deja la textura como texto (data URI) y marcada PNG aunque es JPG; la realidad
+    # aumentada de Google puede cerrarse con eso. Se pasa a los datos binarios, con su tipo real.
+    for imagen in gltf.get("images", []):
+        if imagen.get("uri", "").startswith("data:"):
+            crudo = base64.b64decode(imagen.pop("uri").split(",", 1)[1])
+            binario += b"\0" * (-len(binario) % 4)
+            gltf.setdefault("bufferViews", []).append({"buffer": 0, "byteOffset": len(binario), "byteLength": len(crudo)})
+            binario += crudo
+            imagen["bufferView"] = len(gltf["bufferViews"]) - 1
+            imagen["mimeType"] = "image/jpeg" if crudo[:3] == b"\xff\xd8\xff" else "image/png"
+    binario += b"\0" * (-len(binario) % 4)
+    gltf["buffers"][0]["byteLength"] = len(binario)
+    # Detalles que el validador de glTF marca: alphaCutoff solo vale con alphaMode MASK, y cada
+    # bloque de vértices o índices debe decir qué es.
+    for material in gltf.get("materials", []):
+        if material.get("alphaMode") != "MASK":
+            material.pop("alphaCutoff", None)
+    for malla_gltf in gltf.get("meshes", []):
+        for primitiva in malla_gltf["primitives"]:
+            for acc in primitiva["attributes"].values():
+                gltf["bufferViews"][gltf["accessors"][acc]["bufferView"]]["target"] = 34962
+            if "indices" in primitiva:
+                gltf["bufferViews"][gltf["accessors"][primitiva["indices"]]["bufferView"]]["target"] = 34963
+    resto = struct.pack("<I4s", len(binario), b"BIN\0") + bytes(binario)
+    escena = gltf["scenes"][gltf.get("scene", 0)]
+    gltf["nodes"].append({"name": "tamano-real", "children": escena["nodes"], "scale": escala, "translation": mover})
+    escena["nodes"] = [len(gltf["nodes"]) - 1]
+    texto = json.dumps(gltf, separators=(",", ":")).encode()
+    texto += b" " * (-len(texto) % 4)
+    cuerpo = struct.pack("<I4s", len(texto), b"JSON") + texto + resto
+    Path(destino).write_bytes(struct.pack("<4sII", b"glTF", 2, 12 + len(cuerpo)) + cuerpo)
+
+
+def main(ids):
+    from gradio_client import Client, handle_file
+
+    if not os.environ.get("HF_TOKEN"):
+        print("Aviso: sin HF_TOKEN la cuota gratuita alcanza para muy poco.")
+    cliente = Client(ESPACIO, verbose=False, token=os.environ.get("HF_TOKEN"))
     catalogo = productos()
     salida = CARPETA / "modelos"
     salida.mkdir(exist_ok=True)
@@ -141,42 +144,24 @@ def main(ruta_triposr, ruta_pesos, ids):
             print(f"{pid}: no existe o no tiene foto")
             continue
         inicio = time.time()
-        # Igual que el ejemplo de TripoSR: se quita el fondo y el producto se centra sobre gris.
-        imagen = remove_background(Image.open(foto).convert("RGB"), sesion)
-        imagen = resize_foreground(imagen, 0.85)
-        arr = np.array(imagen).astype(np.float32) / 255.0
-        arr = arr[:, :, :3] * arr[:, :, 3:4] + (1 - arr[:, :, 3:4]) * 0.5
-        imagen = Image.fromarray((arr * 255.0).astype(np.uint8))
-
-        with torch.no_grad():
-            codigos = modelo([imagen], device="cpu")
-        malla = modelo.extract_mesh(codigos, True, resolution=RESOLUCION)[0]
-
-        # TripoSR deja el modelo acostado (z hacia arriba); los visores 3D usan y hacia arriba.
-        malla.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0]))
-        malla.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [0, 1, 0]))  # frente hacia la cámara
-        malla.fix_normals()
-        # Tamaño real (en metros, la unidad de los visores 3D) y apoyado en el piso.
+        try:
+            r = cliente.predict(
+                image=handle_file(str(foto)), mv_image_front=None, mv_image_back=None, mv_image_left=None,
+                mv_image_right=None, steps=30, guidance_scale=5.0, seed=1234, octree_resolution=256,
+                check_box_rembg=True, num_chunks=8000, randomize_seed=False, api_name="/generation_all",
+            )
+        except Exception as e:  # cuota agotada, demo caída…
+            print(f"{pid}: no se pudo generar: {e}")
+            continue
+        con_textura = r[1]["value"] if isinstance(r[1], dict) else r[1]
         alto, ancho, largo, real = medidas_de(p)
-        malla.apply_scale(alto / 100 / malla.extents[1])
-        # Con ancho y largo reales se ajusta la huella en el piso (x = ancho, de frente; z = largo).
-        if ancho and largo:
-            malla.apply_transform(np.diag([ancho / 100 / malla.extents[0], 1, largo / 100 / malla.extents[2], 1]))
-        malla.apply_translation([-malla.bounds.mean(axis=0)[0], -malla.bounds[0][1], -malla.bounds.mean(axis=0)[2]])
-        if len(malla.faces) > MAX_CARAS:
-            colores = malla.visual.vertex_colors
-            reducida = malla.simplify_quadric_decimation(face_count=MAX_CARAS)
-            # La simplificación pierde los colores: se le pasan los del vértice más cercano.
-            _, cercano = trimesh.proximity.ProximityQuery(malla).vertex(reducida.vertices)
-            reducida.visual.vertex_colors = colores[cercano]
-            malla = reducida
         destino = salida / f"{pid}.ia.glb"
-        exportar_glb(malla, destino)
-        (salida / f"{pid}.ia.json").write_text(json.dumps({"alto_cm": alto, "medida_real": real}), encoding="utf-8")
-        print(f"{pid}: {len(malla.faces)} caras, {destino.stat().st_size // 1024} KB, {time.time() - inicio:.0f} s")
+        a_tamano_real(con_textura, destino, alto, ancho, largo)
+        (salida / f"{pid}.ia.json").write_text(json.dumps({"alto_cm": alto, "medida_real": real, "ia": ESPACIO}), encoding="utf-8")
+        print(f"{pid}: {destino.stat().st_size // 1024} KB, {time.time() - inicio:.0f} s")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 2:
         sys.exit(__doc__)
-    main(sys.argv[1], sys.argv[2], sys.argv[3:])
+    main(sys.argv[1:])
