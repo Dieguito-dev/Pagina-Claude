@@ -498,6 +498,64 @@
     s.addEventListener("animationend", () => s.remove());
   });
 
+  // ---------- Carrusel de banners ----------
+  const carrusel = $("[data-banners]");
+  const BANNERS = T.banners || [];
+  if (!BANNERS.length) carrusel.hidden = true;
+  else {
+    const pista = $("[data-banners-pista]", carrusel);
+    const puntos = $("[data-banners-puntos]", carrusel);
+    const destino = (b) => (b.enlace === "whatsapp" ? waLink(`Hola ${T.marca}, vi el banner: ${b.texto}`) : b.enlace?.startsWith("#") ? b.enlace : "#catalogo");
+    pista.innerHTML = BANNERS.map(
+      (b, i) => `<a class="banner" href="${esc(destino(b))}"${b.enlace === "whatsapp" ? ' target="_blank" rel="noopener"' : ""} data-banner="${i}" style="background:${esc(b.fondo || "#f2efdd")}">
+        <img src="${esc(b.imagen)}" alt="${esc(b.texto)}"${i ? ' loading="lazy"' : ""}>
+      </a>`
+    ).join("");
+    puntos.innerHTML = BANNERS.map((_, i) => `<button type="button" data-punto="${i}" aria-label="Ver banner ${i + 1}"></button>`).join("");
+    carrusel.classList.toggle("uno", BANNERS.length === 1);
+
+    let actual = 0;
+    const marcar = () => $$("[data-punto]", puntos).forEach((b, i) => b.setAttribute("aria-current", i === actual));
+    const ir = (i) => {
+      actual = (i + BANNERS.length) % BANNERS.length;
+      pista.scrollTo({ left: actual * pista.clientWidth, behavior: quieto ? "auto" : "smooth" });
+      marcar();
+    };
+    pista.addEventListener("scroll", () => {
+      actual = Math.round(pista.scrollLeft / pista.clientWidth);
+      marcar();
+    }, { passive: true });
+
+    // Pasa solo cada 5 s; se detiene un rato cuando la persona lo toca.
+    let auto;
+    const arrancar = () => {
+      clearInterval(auto);
+      if (!quieto && BANNERS.length > 1) auto = setInterval(() => ir(actual + 1), 5000);
+    };
+    const pausar = () => {
+      clearInterval(auto);
+      auto = setTimeout(arrancar, 8000);
+    };
+    carrusel.addEventListener("pointerdown", pausar);
+    carrusel.addEventListener("focusin", pausar);
+    $("[data-banner-ant]", carrusel).addEventListener("click", () => ir(actual - 1));
+    $("[data-banner-sig]", carrusel).addEventListener("click", () => ir(actual + 1));
+    puntos.addEventListener("click", (e) => e.target.dataset.punto && ir(+e.target.dataset.punto));
+    pista.addEventListener("click", (e) => {
+      const b = BANNERS[e.target.closest("[data-banner]")?.dataset.banner];
+      const [tipo, id] = (b?.enlace || "").split(":");
+      if (tipo === "producto" && producto(id)) {
+        e.preventDefault();
+        abrirProducto(id);
+      } else if (tipo === "categoria") {
+        e.preventDefault();
+        irACategoria(id);
+      }
+    });
+    marcar();
+    arrancar();
+  }
+
   pintarCatalogo();
   pintarCarrito();
 

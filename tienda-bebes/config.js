@@ -15,6 +15,23 @@ window.TIENDA = {
 
   quienesSomos: "Somos una tienda colombiana de artículos para bebé. Elegimos cada producto pensando en la seguridad y la comodidad de tu bebé, y te acompañamos desde el embarazo hasta sus primeros años.",
 
+  // Carrusel de banners de arriba. enlace: "#catalogo", "producto:<id>", "categoria:<id>" o "whatsapp".
+  // fondo: color que rellena los lados cuando el banner no ocupa todo el ancho.
+  banners: [
+    {
+      imagen: "img/banners/bienvenidos.webp",
+      texto: "Bienvenidos a Baby's World, tu tienda de confianza para artículos de bebé",
+      enlace: "#catalogo",
+      fondo: "#fef6f0",
+    },
+    {
+      imagen: "img/banners/combo-paseo-suenos.webp",
+      texto: "Combo Premium Paseo y Sueños: coche, cuna corral y bolso pañalero",
+      enlace: "producto:combo-premium-paseo-y-suenos",
+      fondo: "#fde3e5",
+    },
+  ],
+
   redes: {
     facebook: "",
     instagram: "",
