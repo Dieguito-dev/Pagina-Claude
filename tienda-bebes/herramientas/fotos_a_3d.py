@@ -26,6 +26,25 @@ import trimesh
 from PIL import Image
 
 CARPETA = Path(__file__).resolve().parent.parent
+# Alto típico (cm) por tipo de producto, para cuando no hay medidas reales. Así en "Verlo en tu
+# casa" el producto aparece de un tamaño creíble; la tienda avisa que es aproximado.
+ALTO_TIPICO = [
+    (r"SILLA (PARA )?CARRO|SILLA CARRO", 65),
+    (r"CARRO|MOTO|CUATRIMOTO|VEHICULO|JEEP|AUTOMOVIL", 55),
+    (r"TRICI", 60),
+    (r"BICI", 65),
+    (r"PATINETA|SCOOTER", 70),
+    (r"COCHE", 105),
+    (r"CORRAL|CUNA|COLECHO", 80),
+    (r"COMEDOR", 100),
+    (r"MECEDORA|ROCKER|COLUMPIO", 65),
+    (r"CAMINADOR|ANDADERA|ANDADOR", 55),
+    (r"BANERA", 25),
+    (r"BACIN", 35),
+    (r"GIMNASIO", 45),
+    (r"MONTABLE|CABALLITO", 50),
+    (r"PANALERA", 40),
+]
 RESOLUCION = 256  # detalle de la malla
 MAX_CARAS = 40000  # para que el archivo pese poco en el celular
 
@@ -34,6 +53,20 @@ def productos():
     txt = (CARPETA / "productos.js").read_text(encoding="utf-8")
     cuerpo = txt.split("window.PRODUCTOS = [", 1)[1].rsplit("];", 1)[0].strip().rstrip(",")
     return {p["id"]: p for p in json.loads(f"[{cuerpo}]")}
+
+
+def medidas_de(p):
+    """(alto, ancho, largo en cm —los dos últimos pueden ser None—, ¿son reales?): medidas.json
+    o, si no hay, un alto típico por tipo de producto."""
+    import re
+    import unicodedata
+
+    medidas = json.loads((CARPETA / "herramientas" / "medidas.json").read_text(encoding="utf-8"))
+    if p["id"] in medidas:
+        m = medidas[p["id"]]
+        return m["alto"], m.get("ancho"), m.get("largo"), True
+    titulo = "".join(c for c in unicodedata.normalize("NFD", p["nombre"].upper()) if unicodedata.category(c) != "Mn")
+    return next((alto for patron, alto in ALTO_TIPICO if re.search(patron, titulo)), 50), None, None, False
 
 
 def foto_de(p):
@@ -88,6 +121,13 @@ def main(ruta_triposr, ruta_pesos, ids):
         malla.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0]))
         malla.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [0, 1, 0]))  # frente hacia la cámara
         malla.fix_normals()
+        # Tamaño real (en metros, la unidad de los visores 3D) y apoyado en el piso.
+        alto, ancho, largo, real = medidas_de(p)
+        malla.apply_scale(alto / 100 / malla.extents[1])
+        # Con ancho y largo reales se ajusta la huella en el piso (x = ancho, de frente; z = largo).
+        if ancho and largo:
+            malla.apply_transform(np.diag([ancho / 100 / malla.extents[0], 1, largo / 100 / malla.extents[2], 1]))
+        malla.apply_translation([-malla.bounds.mean(axis=0)[0], -malla.bounds[0][1], -malla.bounds.mean(axis=0)[2]])
         if len(malla.faces) > MAX_CARAS:
             colores = malla.visual.vertex_colors
             reducida = malla.simplify_quadric_decimation(face_count=MAX_CARAS)
@@ -97,6 +137,7 @@ def main(ruta_triposr, ruta_pesos, ids):
             malla = reducida
         destino = salida / f"{pid}.ia.glb"
         malla.export(destino)
+        (salida / f"{pid}.ia.json").write_text(json.dumps({"alto_cm": alto, "medida_real": real}), encoding="utf-8")
         print(f"{pid}: {len(malla.faces)} caras, {destino.stat().st_size // 1024} KB, {time.time() - inicio:.0f} s")
 
 

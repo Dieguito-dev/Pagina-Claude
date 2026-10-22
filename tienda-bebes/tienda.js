@@ -393,6 +393,7 @@
       caja.querySelectorAll("[data-vista]").forEach((b) => b.setAttribute("aria-selected", b.dataset.vista === tipo));
       marco.classList.toggle("en-3d", tipo !== "fotos");
       $(".nota-3d", marco)?.remove();
+      $(".sin-ar", marco)?.remove();
       const actual = $(".foto, .giro, model-viewer", marco);
       if (tipo === "fotos") {
         actual.outerHTML = imagen(p, "foto", $("[data-foto].activa", caja)?.dataset.foto || v.foto || fotosDe(p)[0], true);
@@ -404,9 +405,14 @@
         cargarVisor3D();
         actual.outerHTML = `<model-viewer src="${esc(p.modelo)}" poster="${esc(fotosDe(p)[0] || "")}" alt="${esc(p.nombre)} en 3D"
           camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="18deg" touch-action="pan-y"
-          shadow-intensity="1" exposure="1.05" ar ar-modes="webxr scene-viewer quick-look">
-          <button slot="ar-button" class="btn btn-principal ar-boton" type="button">Verlo en tu casa</button>
-        </model-viewer>${p.modeloIA ? `<p class="nota-3d">Modelo aproximado, hecho con IA a partir de la foto. Los detalles de atrás pueden variar.</p>` : ""}`;
+          shadow-intensity="1" exposure="1.05" ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor">
+          <button slot="ar-button" class="btn btn-principal ar-boton" type="button">📱 Ver en tu espacio</button>
+        </model-viewer>${p.modeloIA
+          ? `<p class="nota-3d">Modelo aproximado, hecho con IA a partir de la foto.${p.medidaAproximada ? " Tamaño aproximado." : ""} Los detalles de atrás pueden variar.</p>`
+          : ""}<p class="sin-ar" hidden>Abre esta página en tu celular para verlo en tu espacio con la cámara.</p>`;
+        // "Ver en tu espacio" solo existe en celulares con realidad aumentada; si no, se explica cómo verlo.
+        const visor = $("model-viewer", marco);
+        visor.addEventListener("load", () => ($(".sin-ar", marco).hidden = visor.canActivateAR), { once: true });
       }
     }
     caja.querySelectorAll("[data-vista]").forEach((b) => b.addEventListener("click", () => mostrarVista(b.dataset.vista)));

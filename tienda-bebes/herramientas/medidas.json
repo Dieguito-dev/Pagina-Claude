@@ -1,0 +1,4 @@
+{
+  "_nota": "Medidas reales en cm (alto, largo, ancho) para escalar los modelos 3D. Se usan si el Excel no las trae. Fuente de cada una al lado.",
+  "triciclo-dinisaurio-dk": { "alto": 66, "largo": 62, "ancho": 42, "fuente": "foto 'Conoce sus medidas' del Drive" }
+}
