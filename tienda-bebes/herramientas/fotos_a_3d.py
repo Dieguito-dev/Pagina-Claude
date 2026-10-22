@@ -15,6 +15,7 @@ mejor funcionan). La parte de atrás del producto la estima la IA: revisa cada m
 publicarlo.
 """
 import json
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -45,6 +46,12 @@ def foto_de(p):
 
 
 def main(ruta_triposr, ruta_pesos, ids):
+    # Cada producto en un proceso aparte: TripoSR no suelta la memoria entre uno y otro y con
+    # 16 GB de RAM el segundo ya no cabe.
+    if len(ids) > 1:
+        for pid in ids:
+            subprocess.run([sys.executable, __file__, ruta_triposr, ruta_pesos, pid], check=False)
+        return
     sys.path.insert(0, str(Path(ruta_triposr).resolve()))
     import rembg
     from tsr.system import TSR
@@ -54,7 +61,7 @@ def main(ruta_triposr, ruta_pesos, ids):
     modelo = TSR.from_pretrained(ruta_pesos, config_name="config.yaml", weight_name="model.ckpt")
     modelo.renderer.set_chunk_size(8192)
     modelo.to("cpu")
-    sesion = rembg.new_session()
+    sesion = rembg.new_session("isnet-general-use")  # recorta el fondo; más liviano que el de por defecto
     catalogo = productos()
     salida = CARPETA / "modelos"
     salida.mkdir(exist_ok=True)
@@ -79,7 +86,7 @@ def main(ruta_triposr, ruta_pesos, ids):
 
         # TripoSR deja el modelo acostado (z hacia arriba); los visores 3D usan y hacia arriba.
         malla.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0]))
-        malla.apply_transform(trimesh.transformations.rotation_matrix(np.pi / 2, [0, 1, 0]))
+        malla.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [0, 1, 0]))  # frente hacia la cámara
         malla.fix_normals()
         if len(malla.faces) > MAX_CARAS:
             colores = malla.visual.vertex_colors

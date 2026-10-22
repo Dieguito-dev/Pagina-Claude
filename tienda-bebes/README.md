@@ -47,6 +47,12 @@ En la página de cada producto aparecen los botones **Fotos · Girar 360° · Ve
 
 **Dónde ponerlos:** en el Drive del cliente, dentro de la carpeta del producto (`CATEGORÍA / NOMBRE DEL PRODUCTO /`), el archivo `.glb` suelto y las fotos del giro en una subcarpeta llamada **`360`**. Después se corren `fotos_drive.py` y `excel_a_productos.py` (ver abajo). Los modelos quedan en `modelos/` y los cuadros del giro en `img/p/<producto>/giro/`.
 
+**3. Modelo generado con IA a partir de la foto** (`herramientas/fotos_a_3d.py`, con [TripoSR](https://github.com/VAST-AI-Research/TripoSR), gratis y sin tarjeta gráfica): unos 25 segundos y ~800 KB por producto. Queda en `modelos/<producto>.ia.glb` y en la tienda sale con la nota "Modelo aproximado, hecho con IA a partir de la foto". Si después suben un modelo escaneado a Drive, ese reemplaza al de IA.
+- El frente sale parecido a la foto; **la parte de atrás la estima la IA**.
+- Funciona con fotos del **producto solo y completo, sobre fondo blanco**. Con montajes (varios productos o textos en la misma imagen) sale mal: **revisa cada modelo antes de publicarlo** y borra el `.ia.glb` si no se parece.
+- El modelo sale del color de la foto usada (el primer color con foto), aunque la persona elija otro color.
+- Primera prueba: triciclo dinosaurio (bien), silla para carro Kidilo y mecedora Mastela (frente bien, atrás aproximado). El coche moisés Kidilo se descartó porque su foto trae dos coches y un bolso.
+
 El visor 3D es [model-viewer](https://modelviewer.dev) de Google (`vendor/model-viewer.min.js`, versión 3.5.0). Se carga solo cuando alguien abre la vista 3D.
 
 ## Banners del inicio
