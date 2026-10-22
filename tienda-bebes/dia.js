@@ -157,22 +157,45 @@
     }
   });
 
-  // El cielo y el reloj siguen al momento que está en pantalla.
+  // El cielo y el reloj siguen al momento que está en pantalla. El color se mezcla poco a poco
+  // cerca del cambio de un momento al siguiente (no de golpe).
   const reloj = $("[data-reloj]");
-  const visibles = new Map();
-  const observador = new IntersectionObserver(
-    (entradas) => {
-      entradas.forEach((en) => visibles.set(en.target, en.intersectionRatio));
-      const [actual] = [...visibles].sort((a, b) => b[1] - a[1])[0] || [];
-      if (!actual) return;
-      document.body.style.setProperty("--cielo-actual", actual.dataset.color);
-      document.body.classList.toggle("es-de-noche", actual.hasAttribute("data-noche"));
-      $("[data-reloj-icono]", reloj).textContent = actual.dataset.icono;
-      $("[data-reloj-texto]", reloj).textContent = actual.dataset.hora;
-    },
-    { threshold: [0, 0.15, 0.3, 0.5, 0.7, 0.9] }
-  );
-  document.querySelectorAll("[data-momento]").forEach((el) => observador.observe(el));
+  const secciones = [...document.querySelectorAll("[data-momento]")];
+  const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const mezcla = (a, b, t) => `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(",")})`;
+  let pendiente = false;
+
+  function pintarCielo() {
+    pendiente = false;
+    const y = scrollY + innerHeight * 0.45; // la línea de referencia, un poco arriba del centro
+    const ancho = Math.min(innerHeight * 0.4, 320); // cuánto dura la mezcla antes y después del cambio
+    const tops = secciones.map((el) => el.getBoundingClientRect().top + scrollY);
+    let i = tops.findLastIndex((t) => t <= y);
+    if (i < 0) i = 0;
+    const actual = secciones[i];
+    let color = rgb(actual.dataset.color);
+    const siguiente = secciones[i + 1];
+    if (siguiente && tops[i + 1] - y < ancho) {
+      color = mezcla(color, rgb(siguiente.dataset.color), 0.5 - (tops[i + 1] - y) / (2 * ancho));
+    } else if (i > 0 && y - tops[i] < ancho) {
+      color = mezcla(rgb(secciones[i - 1].dataset.color), color, 0.5 + (y - tops[i]) / (2 * ancho));
+    } else {
+      color = `rgb(${color.join(",")})`;
+    }
+    document.body.style.setProperty("--cielo-actual", color);
+    document.body.classList.toggle("es-de-noche", actual.hasAttribute("data-noche"));
+    $("[data-reloj-icono]", reloj).textContent = actual.dataset.icono;
+    $("[data-reloj-texto]", reloj).textContent = actual.dataset.hora;
+  }
+  const programar = () => {
+    if (!pendiente) {
+      pendiente = true;
+      requestAnimationFrame(pintarCielo);
+    }
+  };
+  addEventListener("scroll", programar, { passive: true });
+  addEventListener("resize", programar);
+  pintarCielo();
 
   pintar();
 })();

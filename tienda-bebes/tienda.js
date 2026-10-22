@@ -629,7 +629,8 @@
   const FIGURAS = ["⭐", "✨", "☁️", "💙", "🌙", "💛"];
   const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
   cielo.addEventListener("pointerdown", (e) => {
-    if (quieto || e.target.closest("button, a")) return;
+    // Solo al tocar el cielo vacío, para no estorbar al seleccionar o copiar texto.
+    if (quieto || !(e.target === cielo || e.target.closest(".nubes, .sol"))) return;
     const r = cielo.getBoundingClientRect();
     const s = document.createElement("span");
     s.className = "estrellita";
