@@ -69,6 +69,41 @@ def medidas_de(p):
     return next((alto for patron, alto in ALTO_TIPICO if re.search(patron, titulo)), 50), None, None, False
 
 
+def exportar_glb(malla, destino):
+    """GLB con material y normales: la realidad aumentada de Google (Scene Viewer) se cierra con
+    modelos que solo traen colores por vértice."""
+    import struct
+
+    # Fuera triángulos de área cero y vértices sueltos: dejan normales de largo 0, que son un error.
+    malla.update_faces(malla.nondegenerate_faces())
+    malla.remove_unreferenced_vertices()
+    normales = malla.vertex_normals.copy()
+    largo = np.linalg.norm(normales, axis=1)
+    normales[largo < 1e-6] = [0, 1, 0]
+    malla.vertex_normals = normales / np.linalg.norm(normales, axis=1, keepdims=True)
+    datos = trimesh.exchange.gltf.export_glb(trimesh.Scene(malla), include_normals=True)
+    # Se agrega un material mate (los colores siguen saliendo de los vértices) y el tipo de cada
+    # bloque de datos, que algunos visores exigen. El GLB es: cabecera de 12 bytes + JSON + binario.
+    largo_json = struct.unpack("<I", datos[12:16])[0]
+    gltf = json.loads(datos[20 : 20 + largo_json])
+    binario = datos[20 + largo_json :]
+    gltf["materials"] = [
+        {"name": "producto", "doubleSided": True,
+         "pbrMetallicRoughness": {"baseColorFactor": [1, 1, 1, 1], "metallicFactor": 0, "roughnessFactor": 0.85}}
+    ]
+    for malla_gltf in gltf["meshes"]:
+        for primitiva in malla_gltf["primitives"]:
+            primitiva["material"] = 0
+            for acc in primitiva["attributes"].values():
+                gltf["bufferViews"][gltf["accessors"][acc]["bufferView"]]["target"] = 34962  # vértices
+            if "indices" in primitiva:
+                gltf["bufferViews"][gltf["accessors"][primitiva["indices"]]["bufferView"]]["target"] = 34963
+    texto = json.dumps(gltf, separators=(",", ":")).encode()
+    texto += b" " * (-len(texto) % 4)
+    cuerpo = struct.pack("<I4s", len(texto), b"JSON") + texto + binario
+    destino.write_bytes(struct.pack("<4sII", b"glTF", 2, 12 + len(cuerpo)) + cuerpo)
+
+
 def foto_de(p):
     for v in p["variantes"]:
         if v.get("foto"):
@@ -136,7 +171,7 @@ def main(ruta_triposr, ruta_pesos, ids):
             reducida.visual.vertex_colors = colores[cercano]
             malla = reducida
         destino = salida / f"{pid}.ia.glb"
-        malla.export(destino)
+        exportar_glb(malla, destino)
         (salida / f"{pid}.ia.json").write_text(json.dumps({"alto_cm": alto, "medida_real": real}), encoding="utf-8")
         print(f"{pid}: {len(malla.faces)} caras, {destino.stat().st_size // 1024} KB, {time.time() - inicio:.0f} s")
 
