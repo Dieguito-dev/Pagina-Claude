@@ -53,6 +53,12 @@ En la página de cada producto aparecen los botones **Fotos · Girar 360° · Ve
 - El modelo sale del color de la foto usada (el primer color con foto), aunque la persona elija otro color.
 - Primera prueba: triciclo dinosaurio (bien), silla para carro Kidilo y mecedora Mastela (frente bien, atrás aproximado). El coche moisés Kidilo se descartó porque su foto trae dos coches y un bolso.
 
+**Ver en tu espacio (realidad aumentada, como en Amazon):** en celulares compatibles (Android con Google, iPhone con AR Quick Look) la vista 3D muestra el botón "📱 Ver en tu espacio", que abre la cámara y pone el producto en el piso **a tamaño real y fijo** (no se puede agrandar ni achicar). En computador sale "Abre esta página en tu celular…". Para el tamaño, `fotos_a_3d.py` escala cada modelo así:
+1. Con las medidas reales de `herramientas/medidas.json` (alto, ancho y largo en cm): el modelo queda exacto, por ejemplo el triciclo dinosaurio a 66 × 42 × 62 cm, sacado de su foto de medidas en Drive.
+2. Si no hay, con un alto típico según el tipo de producto (`ALTO_TIPICO`), y la tienda avisa "Tamaño aproximado".
+
+Para que todos queden exactos, hay que anotar las medidas reales de cada producto en `medidas.json` y volver a correr `fotos_a_3d.py`.
+
 El visor 3D es [model-viewer](https://modelviewer.dev) de Google (`vendor/model-viewer.min.js`, versión 3.5.0). Se carga solo cuando alguien abre la vista 3D.
 
 ## Banners del inicio

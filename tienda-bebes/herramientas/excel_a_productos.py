@@ -268,6 +268,9 @@ def main(ruta):
         elif (CARPETA / "modelos" / f"{pid}.ia.glb").exists():
             p["modelo"] = f"modelos/{pid}.ia.glb"
             p["modeloIA"] = True
+            info = CARPETA / "modelos" / f"{pid}.ia.json"
+            if info.exists() and not json.loads(info.read_text(encoding="utf-8")).get("medida_real"):
+                p["medidaAproximada"] = True
         for v in variantes:
             if v["sku"] in fotos.get("sku", {}):
                 v["foto"] = fotos["sku"][v["sku"]]
