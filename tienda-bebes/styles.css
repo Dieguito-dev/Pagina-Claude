@@ -125,7 +125,8 @@ img { max-width: 100%; display: block; }
   background: linear-gradient(180deg, var(--azul-claro), var(--crema));
   text-align: center; cursor: crosshair; user-select: none;
 }
-.hero > *:not(.nubes) { position: relative; max-width: 640px; margin-left: auto; margin-right: auto; }
+.movil { display: none; }
+.hero > *:not(.nubes):not(.movil) { position: relative; max-width: 640px; margin-left: auto; margin-right: auto; }
 .hero-pill {
   display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
   background: var(--blanco); border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: var(--azul-osc);
@@ -185,6 +186,7 @@ img { max-width: 100%; display: block; }
 .chips { display: flex; gap: 8px; overflow-x: auto; padding: 14px 2px; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chips button {
+  display: inline-flex; align-items: center; gap: 6px;
   flex: none; padding: 7px 14px; border-radius: 999px; border: 2px solid var(--azul);
   background: var(--blanco); font-weight: 700; font-size: 0.9rem; white-space: nowrap;
 }

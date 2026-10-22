@@ -25,12 +25,11 @@ Es aparte de Vitrina: no usa ni cambia nada de la página principal.
 | `pendientes-catalogo.md` | Lo que hay que corregir en el Excel: precios raros, referencias sin precio o sin stock, etc. |
 | `styles.css` | Colores (arriba, en `:root`) |
 
-## Diseños
+## Diseño
 
-La tienda tiene cuatro diseños con el mismo contenido: **actual**, **1 · Boutique** (blanco, sin marcos, letra con serifa), **2 · Juguetería** (los colores del logo, bloques de color) y **3 · Tienda ágil** (estilo tienda grande, catálogo primero). Cada uno es un archivo en `temas/` que se carga encima de `styles.css`; están definidos en `temas.js`.
+El diseño de la tienda es **"Cuento de cuna"** (`temas/cuento.css`): el cuarto de un bebé de cuento, con colores sacados del logo, un móvil de cuna que se mece en el inicio, costuras punteadas en botones y bordes, productos sobre manchas pastel, precios en etiqueta colgante, categorías como burbujas y los pasos como cubos de juguete. Se carga encima de `styles.css` desde `temas.js`.
 
-- Para **comparar**, abre la tienda con `?diseno=1`, `?diseno=2`, `?diseno=3` o `?diseno=actual` al final del link. Arriba aparece una barra para pasar de uno a otro.
-- Para **elegir** el definitivo, cambia `tema` en `config.js`.
+El diseño anterior sigue disponible: `?diseno=actual` al final del link lo muestra (con una barra arriba para comparar), y `tema` en `config.js` cambia el de todos.
 
 ## Banners del inicio
 
