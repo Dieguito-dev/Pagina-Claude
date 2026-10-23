@@ -407,12 +407,25 @@
           camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="18deg" touch-action="pan-y"
           shadow-intensity="1" exposure="1.05" ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor">
           <button slot="ar-button" class="btn btn-principal ar-boton" type="button">📱 Ver en tu espacio</button>
+          <p class="carga-3d" slot="progress-bar" data-carga-3d>Cargando el modelo 3D… <span>0%</span></p>
         </model-viewer>${p.modeloIA
           ? `<p class="nota-3d">Modelo aproximado, hecho con IA a partir de la foto.${p.medidaAproximada ? " Tamaño aproximado." : ""} Los detalles de atrás pueden variar.</p>`
           : ""}<p class="sin-ar" hidden>Abre esta página en tu celular para verlo en tu espacio con la cámara.</p>`;
         // "Ver en tu espacio" solo existe en celulares con realidad aumentada; si no, se explica cómo verlo.
         const visor = $("model-viewer", marco);
         visor.addEventListener("load", () => ($(".sin-ar", marco).hidden = visor.canActivateAR), { once: true });
+        // Se muestra cuánto va cargando (el modelo pesa unos 3 MB) o, si falla, qué pasó.
+        const carga = $("[data-carga-3d]", marco);
+        visor.addEventListener("progress", (e) => {
+          const avance = e.detail.totalProgress;
+          $("span", carga).textContent = `${Math.round(avance * 100)}%`;
+          if (avance >= 1) carga.hidden = true;
+        });
+        visor.addEventListener("error", (e) => {
+          carga.hidden = false;
+          carga.classList.add("fallo");
+          carga.textContent = `No se pudo mostrar el modelo 3D en este dispositivo (${e.detail?.type || "error"}).`;
+        });
       }
     }
     caja.querySelectorAll("[data-vista]").forEach((b) => b.addEventListener("click", () => mostrarVista(b.dataset.vista)));
