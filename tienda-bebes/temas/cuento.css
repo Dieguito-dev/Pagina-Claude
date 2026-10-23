@@ -230,6 +230,13 @@ h1 em, h2 em { font-style: normal; }
 .vistas button { border: 1.5px dashed var(--costura); background: #fff; color: var(--tinta); }
 .vistas button[aria-selected="true"] { background: var(--tinta); border: 1.5px solid var(--tinta); color: #fff; }
 .giro, model-viewer { background: var(--cielo); --poster-color: var(--cielo); border-radius: 30px; }
+/* .btn es position: relative en este tema; el botón de realidad aumentada va abajo, sobre el visor */
+model-viewer .ar-boton { position: absolute; left: 50%; bottom: 14px; translate: -50% 0; white-space: nowrap; }
+.carga-3d {
+  position: absolute; left: 50%; bottom: 74px; translate: -50% 0; margin: 0; padding: 6px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92); color: var(--tinta); font-size: 0.85rem; font-weight: 600; white-space: nowrap;
+}
+.carga-3d.fallo { width: min(86%, 320px); white-space: normal; text-align: center; border-radius: 16px; color: var(--coral); }
 .giro img { background: #fff; }
 .sello-3d { left: 12%; bottom: 12%; background: var(--tinta); font-family: var(--fuente-mano); font-size: 1rem; rotate: 5deg; }
 
