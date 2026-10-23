@@ -8,9 +8,8 @@
   <meta name="theme-color" content="#5ec3db">
   <link rel="icon" href="img/logo-cara.png" type="image/png">
   <meta property="og:image" content="img/logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preload" href="fuentes/fredoka.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="temas/cuento.css">
   <script src="config.js"></script>
   <script src="productos.js"></script>
@@ -48,7 +47,7 @@
     <div class="top-der">
       <form class="buscador-top" role="search" data-buscador-top>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>
-        <input type="search" id="busqueda-top" placeholder="Buscar coches, teteros, cunas…" autocomplete="off" aria-label="Buscar productos" data-busqueda-top>
+        <input type="search" id="busqueda-top" placeholder="Buscar productos…" autocomplete="off" aria-label="Buscar productos" data-busqueda-top>
         <div class="sugerencias" data-sugerencias hidden></div>
       </form>
       <button class="icono" type="button" data-abrir-busqueda aria-label="Buscar">
