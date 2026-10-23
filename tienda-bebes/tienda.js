@@ -405,7 +405,7 @@
         cargarVisor3D();
         actual.outerHTML = `<model-viewer src="${esc(p.modelo)}" poster="${esc(fotosDe(p)[0] || "")}" alt="${esc(p.nombre)} en 3D"
           camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="18deg" touch-action="pan-y"
-          shadow-intensity="1" exposure="1.05" ar ar-modes="scene-viewer webxr quick-look" ar-scale="fixed" ar-placement="floor">
+          shadow-intensity="1" exposure="1.05" ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor">
           <button slot="ar-button" class="btn btn-principal ar-boton" type="button">📱 Ver en tu espacio</button>
         </model-viewer>${p.modeloIA
           ? `<p class="nota-3d">Modelo aproximado, hecho con IA a partir de la foto.${p.medidaAproximada ? " Tamaño aproximado." : ""} Los detalles de atrás pueden variar.</p>`
