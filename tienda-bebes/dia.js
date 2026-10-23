@@ -101,6 +101,13 @@
     </section>`
   ).join("");
 
+  // Los momentos también van en el menú "Catálogo" del escritorio.
+  const navMomentos = $("[data-nav-momentos]");
+  if (navMomentos)
+    navMomentos.innerHTML = MOMENTOS.map(
+      (m) => `<a href="#momento-${m.id}"><span aria-hidden="true">${m.icono}</span><span><strong>${m.titulo}</strong><small>${m.hora} · ${m.frase}</small></span></a>`
+    ).join("");
+
   function pintar() {
     const etiqueta = EDADES.find((e) => e.id === edad);
     MOMENTOS.forEach((m) => {

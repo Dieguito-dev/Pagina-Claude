@@ -10,7 +10,7 @@
   <meta property="og:image" content="img/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="temas/cuento.css">
   <script src="config.js"></script>
   <script src="productos.js"></script>
@@ -21,7 +21,36 @@
       <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
     <a href="#inicio" class="logo"><img class="logo-cara" src="img/logo-cara.png" alt="" width="40" height="40"><span data-marca>Baby's World</span></a>
+
+    <!-- Menú de escritorio (en el celular se usa el menú lateral) -->
+    <nav class="nav-escritorio" aria-label="Secciones">
+      <a href="#inicio">Inicio</a>
+      <div class="nav-desplegable">
+        <button type="button" aria-expanded="false" data-desplegar="momentos">Catálogo
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-panel nav-panel-momentos" data-panel="momentos" hidden>
+          <p class="nav-panel-titulo">Un día en su mundo</p>
+          <div data-nav-momentos></div>
+          <a class="nav-panel-todo" href="#catalogo">Ver todo el catálogo →</a>
+        </div>
+      </div>
+      <div class="nav-desplegable">
+        <button type="button" aria-expanded="false" data-desplegar="categorias">Categorías
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-panel nav-panel-categorias" data-panel="categorias" hidden>
+          <div class="nav-categorias" data-nav-categorias></div>
+        </div>
+      </div>
+      <a href="#nosotros">¿Quiénes somos?</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
     <div class="top-der">
+      <form class="buscador-top" role="search" data-buscador-top>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>
+        <input type="search" id="busqueda-top" placeholder="Buscar coches, teteros, cunas…" autocomplete="off" aria-label="Buscar productos" data-busqueda-top>
+        <div class="sugerencias" data-sugerencias hidden></div>
+      </form>
       <button class="icono" type="button" data-abrir-busqueda aria-label="Buscar">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>
       </button>
