@@ -648,6 +648,67 @@
     s.addEventListener("animationend", () => s.remove());
   });
 
+  // ---------- Menú de escritorio: desplegables, categorías y buscador ----------
+  const navCategorias = $("[data-nav-categorias]");
+  if (navCategorias) {
+    navCategorias.innerHTML = conProductos
+      .map((c) => `<button type="button" data-ir-categoria="${c.id}"><span class="chip-emoji" aria-hidden="true">${c.emoji}</span>${esc(c.nombre)}</button>`)
+      .join("");
+    const cerrarPaneles = (excepto) =>
+      $$("[data-desplegar]").forEach((b) => {
+        if (b.dataset.desplegar === excepto) return;
+        b.setAttribute("aria-expanded", "false");
+        $(`[data-panel="${b.dataset.desplegar}"]`).hidden = true;
+      });
+    $$("[data-desplegar]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const abierto = b.getAttribute("aria-expanded") === "true";
+        cerrarPaneles(b.dataset.desplegar);
+        b.setAttribute("aria-expanded", String(!abierto));
+        $(`[data-panel="${b.dataset.desplegar}"]`).hidden = abierto;
+      })
+    );
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".nav-desplegable")) cerrarPaneles();
+      if (!e.target.closest("[data-buscador-top]")) $("[data-sugerencias]").hidden = true;
+      const cat = e.target.closest("[data-ir-categoria]");
+      if (cat) {
+        cerrarPaneles();
+        irACategoria(cat.dataset.irCategoria);
+      }
+      if (e.target.closest(".nav-panel a")) cerrarPaneles();
+    });
+    document.addEventListener("keydown", (e) => e.key === "Escape" && cerrarPaneles());
+
+    // Buscador: sugiere productos mientras se escribe; Enter muestra todos en el catálogo.
+    const campo = $("[data-busqueda-top]");
+    const sugerencias = $("[data-sugerencias]");
+    campo.addEventListener("input", () => {
+      const texto = campo.value.trim();
+      const lista = texto.length > 1 ? buscar(texto) : [];
+      sugerencias.hidden = !texto;
+      sugerencias.innerHTML = lista.length
+        ? lista
+            .slice(0, 6)
+            .map((p) => `<button type="button" data-sugerencia="${p.id}">${imagen(p, "sugerencia-foto")}<span><strong>${esc(p.nombre.toLowerCase())}</strong><small>${precioTexto(p)}</small></span></button>`)
+            .join("") + (lista.length > 6 ? `<button type="submit" class="sugerencias-todas">Ver los ${lista.length} resultados →</button>` : "")
+        : texto.length > 1
+          ? `<p class="sugerencias-vacio">No encontramos "${esc(texto)}". Prueba con otra palabra o pregúntale a ${esc(T.asistente)}.</p>`
+          : "";
+    });
+    sugerencias.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-sugerencia]");
+      if (!b) return;
+      sugerencias.hidden = true;
+      abrirProducto(b.dataset.sugerencia);
+    });
+    $("[data-buscador-top]").addEventListener("submit", (e) => {
+      e.preventDefault();
+      sugerencias.hidden = true;
+      if (campo.value.trim()) mostrarBusqueda(campo.value.trim());
+    });
+  }
+
   // ---------- Carrusel de banners ----------
   const carrusel = $("[data-banners]");
   const BANNERS = T.banners || [];
