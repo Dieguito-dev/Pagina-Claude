@@ -2,6 +2,10 @@
    carita, rosado de las mejillas, cielo), costuras punteadas como de cobijita, un móvil de cuna en
    el inicio, productos sobre manchas pastel y precios en etiqueta colgante.
    Se carga encima de styles.css. */
+/* Las fuentes van dentro de la tienda (no desde Google) para que se vean igual en todos los
+   celulares, aunque Google Fonts no cargue o el teléfono tenga otra letra por defecto. */
+@font-face { font-family: "Fredoka"; src: url("../fuentes/fredoka.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
+@font-face { font-family: "Caveat"; src: url("../fuentes/caveat.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
 :root {
   /* Paleta */
   --papel: #fffaf5;         /* fondo, blanco cálido */
@@ -418,7 +422,7 @@ body::before {
 .nav-escritorio, .buscador-top { display: none; }
 body { letter-spacing: 0.005em; }
 
-@media (min-width: 1000px) {
+@media (min-width: 900px) {
   .top { gap: 28px; padding: 10px var(--margen); }
   .top [data-abrir-menu], .top [data-abrir-busqueda] { display: none; }
   .logo { flex: none; font-size: 1.5rem; }
@@ -532,6 +536,15 @@ body { letter-spacing: 0.005em; }
   .tarjeta { transition: translate 0.25s ease; }
   .tarjeta:hover { translate: 0 -4px; }
 }
-@media (min-width: 1000px) and (prefers-reduced-motion: reduce) {
+/* Pantallas medianas (y "versión para ordenador" del celular, de 980px): todo cabe en una línea */
+@media (min-width: 900px) and (max-width: 1299px) {
+  .top { gap: 14px; }
+  .logo span { display: none; }
+  .nav-escritorio > a[href="#inicio"] { display: none; }
+  .nav-escritorio > a, .nav-desplegable > button { padding: 8px 10px; font-size: 0.96rem; }
+  .buscador-top { width: clamp(180px, 20vw, 240px); }
+  .hero.amanecer { grid-template-columns: minmax(0, 1fr) minmax(330px, 0.9fr); column-gap: 32px; }
+}
+@media (min-width: 900px) and (prefers-reduced-motion: reduce) {
   .tarjeta:hover { translate: none; }
 }
