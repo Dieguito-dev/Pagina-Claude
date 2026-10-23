@@ -38,7 +38,7 @@
   --fuente-mano: "Caveat", "Comic Sans MS", cursive;
 }
 
-h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; line-height: 1.08; text-wrap: balance; }
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.01em; line-height: 1.08; text-wrap: balance; }
 h1 em, h2 em { font-style: normal; }
 .btn, .vistas button, .edades button, .chips button, .opcion, .reloj { font-family: var(--fuente-titulo); font-weight: 700; letter-spacing: 0.01em; }
 .logo { font-weight: 700; }
@@ -137,7 +137,7 @@ h1 em, h2 em { font-style: normal; }
 .tarjeta-foto:hover .foto { transform: scale(1.05) rotate(-1.5deg); }
 .foto.emoji { background: none; }
 .tarjeta h3 { margin: 4px 2px 0; }
-.tarjeta h3 button { display: block; color: var(--tinta); font-family: var(--fuente-texto); font-weight: 700; font-size: 0.95rem; line-height: 1.25; text-transform: lowercase; }
+.tarjeta h3 button { display: block; color: var(--tinta); font-family: var(--fuente-titulo); font-weight: 600; font-size: 0.95rem; line-height: 1.25; text-transform: lowercase; }
 .tarjeta h3 button::first-letter { text-transform: uppercase; }
 .tarjeta p { margin: 0 2px; }
 .tarjeta .precio, .ficha-precio .precio {
