@@ -127,49 +127,6 @@ def a_tamano_real(glb, destino, alto, ancho=None, largo=None):
     Path(destino).write_bytes(struct.pack("<4sII", b"glTF", 2, 12 + len(cuerpo)) + cuerpo)
 
 
-def agregar_normales(glb):
-    """Hunyuan no guarda las normales (hacia dónde mira cada punto de la malla). El visor de
-    realidad aumentada de Google ("Ver en tu espacio") puede cerrarse sin ellas: se calculan
-    y se agregan al archivo, sin tocar nada más."""
-    datos = Path(glb).read_bytes()
-    largo_json = struct.unpack("<I", datos[12:16])[0]
-    gltf = json.loads(datos[20 : 20 + largo_json])
-    binario = bytearray(datos[28 + largo_json :])
-    def leer(i, tipo, ancho):
-        acc = gltf["accessors"][i]
-        vista = gltf["bufferViews"][acc["bufferView"]]
-        inicio = vista.get("byteOffset", 0) + acc.get("byteOffset", 0)
-        cuantos = acc["count"] * {"SCALAR": 1, "VEC2": 2, "VEC3": 3}[acc["type"]]
-        return np.frombuffer(binario, tipo, cuantos, inicio).reshape(-1, ancho).copy()
-
-    cambio = False
-    for malla_gltf in gltf["meshes"]:
-        for primitiva in malla_gltf["primitives"]:
-            if "NORMAL" in primitiva["attributes"]:
-                continue
-            # Con los puntos tal como están en el archivo (sin la escala del nodo raíz).
-            puntos = leer(primitiva["attributes"]["POSITION"], "<f4", 3)
-            tipo = {5121: "<u1", 5123: "<u2", 5125: "<u4"}[gltf["accessors"][primitiva["indices"]]["componentType"]]
-            caras = leer(primitiva["indices"], tipo, 3)
-            cuantos = len(puntos)
-            malla = trimesh.Trimesh(puntos, caras.astype(np.int64), process=False)
-            normales = np.ascontiguousarray(malla.vertex_normals, dtype="<f4")
-            binario += b"\0" * (-len(binario) % 4)
-            gltf["bufferViews"].append({"buffer": 0, "byteOffset": len(binario), "byteLength": normales.nbytes, "target": 34962})
-            binario += normales.tobytes()
-            gltf["accessors"].append({"bufferView": len(gltf["bufferViews"]) - 1, "componentType": 5126, "count": cuantos, "type": "VEC3"})
-            primitiva["attributes"]["NORMAL"] = len(gltf["accessors"]) - 1
-            cambio = True
-    if not cambio:
-        return
-    binario += b"\0" * (-len(binario) % 4)
-    gltf["buffers"][0]["byteLength"] = len(binario)
-    texto = json.dumps(gltf, separators=(",", ":")).encode()
-    texto += b" " * (-len(texto) % 4)
-    cuerpo = struct.pack("<I4s", len(texto), b"JSON") + texto + struct.pack("<I4s", len(binario), b"BIN\0") + bytes(binario)
-    Path(glb).write_bytes(struct.pack("<4sII", b"glTF", 2, 12 + len(cuerpo)) + cuerpo)
-
-
 def main(ids):
     from gradio_client import Client, handle_file
 
@@ -200,7 +157,6 @@ def main(ids):
         alto, ancho, largo, real = medidas_de(p)
         destino = salida / f"{pid}.ia.glb"
         a_tamano_real(con_textura, destino, alto, ancho, largo)
-        agregar_normales(destino)
         (salida / f"{pid}.ia.json").write_text(json.dumps({"alto_cm": alto, "medida_real": real, "ia": ESPACIO}), encoding="utf-8")
         print(f"{pid}: {destino.stat().st_size // 1024} KB, {time.time() - inicio:.0f} s")
 
