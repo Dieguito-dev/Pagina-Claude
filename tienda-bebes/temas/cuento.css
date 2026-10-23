@@ -210,6 +210,14 @@ h1 em, h2 em { font-style: normal; }
 .chat-form { border-top: 1.5px dashed var(--linea); }
 .chat-form input { border: 1.5px dashed var(--costura); }
 .chat-form button { background: var(--coral); }
+.chat-form { padding-bottom: 8px; }
+.chat-powered {
+  display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 16px 12px;
+  color: var(--tinta-suave); font-size: 0.78rem; text-decoration: none;
+}
+.chat-powered svg { width: 18px; height: 18px; flex: none; }
+.chat-powered strong { font-weight: 600; color: var(--tinta); }
+.chat-powered:hover strong { text-decoration: underline; }
 .mini { border-radius: 20px; }
 .mini-foto { background: var(--cielo); }
 .mini-foto .foto { object-fit: contain; background: #fff; }
